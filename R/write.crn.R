@@ -1,6 +1,6 @@
 `write.crn` <- function(crn, fname, header=NULL, append=FALSE)
 {
-    if(ncol(crn) != 2) stop("input should only have 2 cols")
+    if(ncol(crn) != 2) stop("'crn' must have 2 columns")
 
     if(any(is.na(crn))) {
         na.flag <- is.na(crn[, 1])
@@ -11,9 +11,9 @@
 
     if(append) {
         if(!file.exists(fname))
-            stop("file 'fname' does not exist, cannot append")
+            stop(gettextf("file %s does not exist, cannot append", fname))
         if(length(header) > 0)
-            stop("bad idea to append with header")
+            stop("bad idea to append with 'header'")
     }
     if(length(header) > 0){
         if(!is.list(header)) stop("header must be a list")
@@ -22,7 +22,7 @@
               "spp", "elev", "lat", "long", "first.yr", "last.yr",
               "lead.invs", "comp.date")
         if(!all(header.names %in% names(header)))
-            stop("header must be a list with names ",
+            stop("'header' must be a list with the following names: ",
                  paste(dQuote(header.names), collapse = ", "))
         ## Record #1: 1-6 Site ID, 10-61 Site Name, 62-65 Species Code,
         ## optional ID#s
@@ -79,7 +79,7 @@
     if(crn.width > 6)
         crn.name <- substr(crn.name, 1, 6)
     else if(crn.width < 6) # Pad to nchar 6 (no leading zero)
-        crn.name <- formatC(crn.name, wid = 6, format = "f")
+        crn.name <- formatC(crn.name, width = 6, format = "f")
 
     dec.str <- character(n.decades)
     for(i in 1:n.decades){
@@ -89,17 +89,17 @@
         n.yrs <- length(dec.idx)
         dec.yrs <- yrs[dec.idx]
         ## Pad to nchar 4 (no leading zero)
-        dec.yrs <- formatC(dec.yrs, dig = 0, wid = 4, format = "f")
+        dec.yrs <- formatC(dec.yrs, digits = 0, width = 4, format = "f")
 
         dec.rwi <- crn[dec.idx, 1]
         ## Pad to nchar 4 (no leading zero)
         dec.rwi <- round(dec.rwi, 3) * 1000
-        dec.rwi <- formatC(dec.rwi, dig = 0, wid = 4, format = "f")
+        dec.rwi <- formatC(dec.rwi, digits = 0, width = 4, format = "f")
 
         ## Pad to nchar 3 (no leading zero)
         dec.samp.depth <- crn[dec.idx, 2]
         dec.samp.depth <- formatC(dec.samp.depth,
-                                  dig = 0, wid = 3, format = "f")
+                                  digits = 0, width = 3, format = "f")
         ## Pad front end
         if(i == 1) tmp <- paste(rep("9990  0", 10-n.yrs), collapse="")
         else tmp <- ""

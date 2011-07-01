@@ -3,8 +3,8 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                          make.plot = TRUE, label.cex=1, ...){
 
     ## helper function
-    yr.range <- function(x) {
-        if(any(mask <- !is.na(x))) range(as.numeric(names(x))[mask])
+    yr.range <- function(x, yr.vec=as.numeric(names(x))) {
+        if(any(mask <- !is.na(x))) range(yr.vec[mask])
         else c(NA, NA)
     }
 
@@ -21,7 +21,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     cnames <- colnames(rwl)
     seg.lag <- seg.length / 2
     nseries <- ncol(rwl)
-    if(nseries < 2) stop("At least 2 series are needed in rwl")
+    if(nseries < 2) stop("At least 2 series are needed in 'rwl'")
     yrs <- as.numeric(rnames)
     nyrs <- length(yrs)
     min.yr <- min(yrs)
@@ -44,9 +44,6 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     overall.cor <- matrix(NA, nseries, 2)
     rownames(overall.cor) <- cnames
     colnames(overall.cor) <- c("rho", "p-val")
-
-    segavg.cor <- rep(NA, nbins)
-    names(segavg.cor) <- bin.names
 
     ## normalize all series
     norm.one <- normalize1(rwl, n, prewhiten)
@@ -113,13 +110,12 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     if(make.plot){
         p.val <- res.pval
         segs <- rwi
-        extreme.year <- apply(segs, 2, yr.range)
+        extreme.year <- apply(segs, 2, yr.range, yr.vec=yrs)
         first.year <- extreme.year[1, ]
         rsult <- sort.int(first.year, decreasing=FALSE, index.return=TRUE)
         neworder <- rsult$ix
         segs <- segs[, neworder, drop=FALSE]
-        segs.df <- data.frame(t(extreme.year[, neworder]))
-        names(segs.df) <- c("first.yr", "last.yr")
+        segs.mat <- t(extreme.year[, neworder])
         first.year <- first.year[neworder]
         last.year <- extreme.year[2, neworder]
 
@@ -129,9 +125,10 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         col.pal <- c("#E41A1C", "#377EB8", "#4DAF4A")
         par(mar=c(4, 5, 4, 5) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)
         plot(yrs, segs[, 1], type="n", ylim=c(0, nsegs),
-             axes=FALSE, ylab="", xlab="Year",
-             sub=paste("Segments: length=", seg.length, ",lag=",
-             seg.lag, sep=""), ...)
+             axes=FALSE, ylab="", xlab=gettext("Year"),
+             sub=gettextf("Segments: length=%d,lag=%d", seg.length, seg.lag,
+             domain="R-dplR"),
+             ...)
         ## bounding poly for even series
         xx <- c(min.yr-100, max.yr+100)
         xx <- c(xx, rev(xx))
@@ -147,10 +144,8 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         for(odd.even in 1:2){
             this.seq <- seq(from=odd.even, to=nbins, by=2)
             these.bins <- bins[this.seq, , drop=FALSE]
-            com.segs <- as.data.frame(matrix(1, ncol=nseries, nrow=nyrs))
-            rownames(com.segs) <- rnames
-            flag.segs <- as.data.frame(matrix(NA, ncol=nseries, nrow=nyrs))
-            rownames(flag.segs) <- rnames
+            com.segs <- matrix(1, ncol=nseries, nrow=nyrs)
+            flag.segs <- matrix(NA, ncol=nseries, nrow=nyrs)
             ## loop through these.bins
             tmp <- p.val[neworder, this.seq, drop=FALSE] > pcrit
             for(i in 1:nseries){
@@ -183,8 +178,10 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             com.segs[idx.small.large, ] <- NA
             flag.segs[idx.small.large, ] <- NA
 
-            com.segs.df <- data.frame(t(apply(com.segs, 2, yr.range)))
-            flag.segs.df <- data.frame(t(apply(flag.segs, 2, yr.range)))
+            com.segs.mat <-
+                t(apply(com.segs, 2, yr.range, yr.vec=yrs))
+            flag.segs.mat <-
+                t(apply(flag.segs, 2, yr.range, yr.vec=yrs))
 
             axis(ax[odd.even], at=these.bins)
             ## polygons for these bins (go down or up from series line)
@@ -194,21 +191,21 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             for(i in seq(from=1, to=nseries)){
                 y.deviation <- y.deviation + 1
                 ## whole segs
-                xx <- c(segs.df[i, ], recursive=TRUE)
+                xx <- segs.mat[i, ]
                 xx <- c(xx, rev(xx))
                 yy <- c(i, i, y.deviation, y.deviation)
                 polygon(xx, yy, col=col.pal[3], border=NA)
                 ## complete segs
-                xx <- c(com.segs.df[i, ], recursive=TRUE)
+                xx <- com.segs.mat[i, ]
                 xx <- c(xx, rev(xx))
                 polygon(xx, yy, col=col.pal[2], border=NA)
                 ## flags
-                xx <- c(flag.segs.df[i, ], recursive=TRUE)
+                xx <- flag.segs.mat[i, ]
                 xx <- c(xx, rev(xx))
                 polygon(xx, yy, col=col.pal[1], border=NA)
                 ## guides
-                guides.x <- guides.x.base[guides.x.base >= segs.df[i, 1]]
-                guides.x <- guides.x[guides.x <= segs.df[i, 2]]
+                guides.x <- guides.x.base[guides.x.base >= segs.mat[i, 1]]
+                guides.x <- guides.x[guides.x <= segs.mat[i, 2]]
                 segments(guides.x, i, guides.x, y.deviation, col="white")
             }
         }

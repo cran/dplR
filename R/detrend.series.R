@@ -20,8 +20,8 @@
             a <- mean(Y[1:floor(length(Y)*0.1)])
             b <- -0.01
             k <- mean(Y[floor(length(Y)*0.9):length(Y)])
-            nec <- nls(Y ~ a * exp(b*1:length(Y)) + k,
-            start <- list(a=a, b=b, k=k))
+            nec <- nls(formula = Y ~ a * exp(b*1:length(Y)) + k,
+                       start = list(a=a, b=b, k=k))
             if(coef(nec)[2] >= 0) stop()
             fits <- predict(nec)
             if(fits[1] < fits[length(fits)]) stop()
@@ -78,28 +78,35 @@
                widths=rep(0.5, ncol(mat)),
                heights=rep(1, nrow(mat)))
 
-        plot(y2, type="l", ylab="mm", xlab="Age (Yrs)",
-             main=paste("Raw Series ", y.name))
+        plot(y2, type="l", ylab="mm",
+             xlab=gettext("Age (Yrs)", domain="R-dplR"),
+             main=gettextf("Raw Series %s", y.name, domain="R-dplR"))
         if(do.spline) lines(Spline, col="green", lwd=2)
         if(do.mne) lines(ModNegExp, col="red", lwd=2)
         if(do.mean) lines(Mean, col="blue", lwd=2)
 
         if(do.spline){
-            plot(resids$Spline, type="l", col="green", main="Spline",
-                 xlab="Age (Yrs)", ylab="RWI")
+            plot(resids$Spline, type="l", col="green",
+                 main=gettext("Spline", domain="R-dplR"),
+                 xlab=gettext("Age (Yrs)", domain="R-dplR"),
+                 ylab=gettext("RWI", domain="R-dplR"))
             abline(h=1)
         }
 
         if(do.mne){
             plot(resids$ModNegExp, type="l", col="red",
-                 main="Neg. Exp. Curve or Straight Line",
-                 xlab="Age (Yrs)", ylab="RWI")
+                 main=gettext("Neg. Exp. Curve or Straight Line",
+                 domain="R-dplR"),
+                 xlab=gettext("Age (Yrs)", domain="R-dplR"),
+                 ylab=gettext("RWI", domain="R-dplR"))
             abline(h=1)
         }
 
         if(do.mean){
             plot(resids$Mean, type="l", col="blue",
-                 main="Horizontal Line (Mean)", xlab="Age (Yrs)", ylab="RWI")
+                 main=gettext("Horizontal Line (Mean)", domain="R-dplR"),
+                 xlab=gettext("Age (Yrs)", domain="R-dplR"),
+                 ylab=gettext("RWI", domain="R-dplR"))
             abline(h=1)
         }
 

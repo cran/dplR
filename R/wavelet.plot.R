@@ -1,8 +1,8 @@
 wavelet.plot <-
     function(wave.list,
              wavelet.levels = quantile(wave.list$Power,probs=seq(from=0, to=1, by=0.1)),
-             add.coi = TRUE, add.sig = TRUE, x.lab = "Time",
-             period.lab = "Period", crn.lab = "RWI",
+             add.coi = TRUE, add.sig = TRUE, x.lab = gettext("Time"),
+             period.lab = gettext("Period"), crn.lab = gettext("RWI"),
              key.cols = rev(rainbow(length(wavelet.levels)-1)),
              key.lab = expression(paste("Power"^2)),
              add.spline = FALSE, f = 0.5, nyrs = NULL,
@@ -58,7 +58,8 @@ wavelet.plot <-
 
     if(side.by.side) {
         ## plot set up
-        layout(matrix(c(3, 2, 1), nr=1, byrow=TRUE), widths=c(1, 1, 0.2))
+        layout(matrix(c(3, 2, 1), nrow=1, byrow=TRUE),
+               widths=c(1, 1, 0.2))
         ## plot 1: scale
         mar <- c(3, 1, 3, 3)
         par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0), las=las)
@@ -118,7 +119,8 @@ wavelet.plot <-
     }
     else {
         ## plot set up
-        layout(matrix(c(3, 2, 1), nc=1, byrow=TRUE), heights=c(1, 1, 0.3))
+        layout(matrix(c(3, 2, 1), ncol=1, byrow=TRUE),
+               heights=c(1, 1, 0.3))
         ## plot 1: scale
         mar <- c(3, 3, 0.1, 3)
         par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0), las=las)
