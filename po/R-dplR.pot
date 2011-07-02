@@ -1,0 +1,541 @@
+# Translation template for messages in dplR R code
+# Copyright (C) dplR copyright holders
+# This file is distributed under the same license as the dplR package.
+# Mikko Korpela <mvkorpel@iki.fi>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: dplR 1.4.3\n"
+"Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
+"POT-Creation-Date: 2011-06-29 15:34+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+msgid "dimension problem:"
+msgstr ""
+
+msgid "'ncol(rw)' != 'nrow(d2pith)'"
+msgstr ""
+
+msgid "series ids in 'd2pith' and 'rwl' do not match"
+msgstr ""
+
+msgid "'ncol(rw)' != 'nrow(diam)'"
+msgstr ""
+
+msgid "series ids in 'diam' and 'rwl' do not match"
+msgstr ""
+
+msgid "'lag.max' > 'seg.length'"
+msgstr ""
+
+msgid "maximum year in (filtered) series: %d"
+msgstr ""
+
+msgid "first bin begins: %d"
+msgstr ""
+
+msgid "cannot fit two segments (not enough years in the series)"
+msgstr ""
+
+msgid "shorten 'seg.length' or adjust 'bin.floor'"
+msgstr ""
+
+msgid "Lag"
+msgstr ""
+
+msgid "Correlation"
+msgstr ""
+
+msgid "'prefix' must be a character string with less than 4 characters"
+msgstr ""
+
+msgid "'ncol(rw)' != 'nrow(po)'"
+msgstr ""
+
+msgid "series ids in 'po' and 'rwl' do not match"
+msgstr ""
+
+msgid "Nothing to combine here. Please supply data.frames formatted according to the data standards in dplR."
+msgstr ""
+
+msgid "At least 2 series are needed in 'rwl'"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Segments: length=%d,lag=%d"
+msgstr ""
+
+msgid "'crn' must be a data.frame"
+msgstr ""
+
+msgid "Years"
+msgstr ""
+
+msgid "RWI"
+msgstr ""
+
+msgid "Sample Depth"
+msgstr ""
+
+msgid "Age (Yrs)"
+msgstr ""
+
+msgid "Raw Series %s"
+msgstr ""
+
+msgid "Spline"
+msgstr ""
+
+msgid "Neg. Exp. Curve or Straight Line"
+msgstr ""
+
+msgid "Horizontal Line (Mean)"
+msgstr ""
+
+msgid "'x' must be a vector"
+msgstr ""
+
+msgid "'y' must be a vector"
+msgstr ""
+
+msgid "there must be at least 3 data points"
+msgstr ""
+
+msgid "the data abscissae must be distinct"
+msgstr ""
+
+msgid "abscissa and ordinate vector must be of the same length"
+msgstr ""
+
+msgid "characters outside a-z, A-Z, 0-9 present: renaming series"
+msgstr ""
+
+msgid "some names are too long: renaming series"
+msgstr ""
+
+msgid "duplicate names present: renaming series"
+msgstr ""
+
+msgid "could not remap a name: some series will be missing"
+msgstr ""
+
+msgid "Detrend series %d of %d"
+msgstr ""
+
+msgid "Choose a detrending method for this series %s."
+msgstr ""
+
+msgid "Methods are:"
+msgstr ""
+
+msgid "Enter a number"
+msgstr ""
+
+msgid "number out of range or not an integer"
+msgstr ""
+
+msgid "'x1' and 'y1' lengths differ"
+msgstr ""
+
+msgid "'seg.length' can be at most 1/2 the number of years in 'rwl'"
+msgstr ""
+
+msgid "'seg.length' must be even"
+msgstr ""
+
+msgid "'seg.length' and 'seg.lag' must be integers"
+msgstr ""
+
+msgid "'seg.length' must be positive"
+msgstr ""
+
+msgid "'n' must be an integer"
+msgstr ""
+
+msgid "'n' must be odd"
+msgstr ""
+
+msgid "'n' must be larger than 3"
+msgstr ""
+
+msgid "'bin.floor' must be a non-negative integer"
+msgstr ""
+
+msgid "minimum 'po' is 1"
+msgstr ""
+
+msgid "each value in 'po' must be an integer"
+msgstr ""
+
+msgid "indexing problem when restoring to cal years: first+length(tmp) != last+1"
+msgstr ""
+
+msgid "Cambial Age (Years)"
+msgstr ""
+
+msgid "Comments:"
+msgstr ""
+
+msgid "file is empty"
+msgstr ""
+
+msgid "first line in the crn file ends before col 10"
+msgstr ""
+
+msgid "There appears to be a header in the crn file"
+msgstr ""
+
+msgid "There does not appear to be a header in the crn file"
+msgstr ""
+
+msgid "'header' must be NULL or logical"
+msgstr ""
+
+msgid "file has under 4 lines"
+msgstr ""
+
+msgid "first data line ends before col 10"
+msgstr ""
+
+msgid "cols %d-%d of first data line not a year"
+msgstr ""
+
+msgid "Embedded chronology statistics"
+msgstr ""
+
+msgid "All embedded sample depths are one...Dumping from matrix"
+msgstr ""
+
+msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
+msgstr ""
+
+msgid "Site-Tree-Core mask does not sum to 8"
+msgstr ""
+
+msgid "unable to create tree ids"
+msgstr ""
+
+msgid "there appears to be more than one site"
+msgstr ""
+
+msgid "Detected a DPL compact format file."
+msgstr ""
+
+msgid "Detected a Heidelberg format file."
+msgstr ""
+
+msgid "Detected a TRiDaS file."
+msgstr ""
+
+msgid "Assuming a Tucson format file."
+msgstr ""
+
+msgid "in project %d, object %s, element %d, sample %d, radius %d, series %d:"
+msgstr ""
+
+msgid "lastYear < firstYear"
+msgstr ""
+
+msgid "external entities are not supported: %s"
+msgstr ""
+
+msgid "unknown entity: %s"
+msgstr ""
+
+msgid "negative missingHeartwoodRingsToPith"
+msgstr ""
+
+msgid "negative missingSapwoodRingsToPith"
+msgstr ""
+
+msgid "negative nrOfSapwoodRings"
+msgstr ""
+
+msgid "negative nrOfUnmeasuredInnerRings"
+msgstr ""
+
+msgid "in project %d, derived series %d:"
+msgstr ""
+
+msgid "negative values interpreted as missing"
+msgstr ""
+
+msgid "too many values (expected %d, got %d)"
+msgstr ""
+
+msgid "too few values (expected %d, got %d)"
+msgstr ""
+
+msgid "in undated series %d:"
+msgstr ""
+
+msgid "unitless measurements present"
+msgstr ""
+
+msgid "strange unit \"%s\""
+msgstr ""
+
+msgid "negative counts interpreted as missing"
+msgstr ""
+
+msgid "in derived series %d:"
+msgstr ""
+
+msgid "data from the future"
+msgstr ""
+
+msgid "'$measurements' is a data.frame"
+msgstr ""
+
+msgid "there are %d data.frames in the '$measurements' list"
+msgstr ""
+
+msgid "in data.frame %d:"
+msgstr ""
+
+msgid "data.frame #%d"
+msgstr ""
+
+msgid "* site:"
+msgstr ""
+
+msgid "* taxon:"
+msgstr ""
+
+msgid "* variable:"
+msgstr ""
+
+msgid "first line in rwl file ends before col 12"
+msgstr ""
+
+msgid "There appears to be a header in the rwl file"
+msgstr ""
+
+msgid "There does not appear to be a header in the rwl file"
+msgstr ""
+
+msgid "precision unknown in series %s"
+msgstr ""
+
+msgid "'ncol(rwi)' != 'nrow(ids)'"
+msgstr ""
+
+msgid "'ids' must have numeric columns"
+msgstr ""
+
+msgid "Correlations are all NA. No overlap in series?"
+msgstr ""
+
+msgid "minimum 'window.length' is 3"
+msgstr ""
+
+msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
+msgstr ""
+
+msgid "'window.length' is smaller than 'min.corr.overlap'"
+msgstr ""
+
+msgid "'window.length' is larger than the number of years in 'rwi'"
+msgstr ""
+
+msgid "at least 2 trees are needed"
+msgstr ""
+
+msgid "too few years with enough trees for correlation calculations"
+msgstr ""
+
+msgid "'first.start' too small, must be >= 1"
+msgstr ""
+
+msgid "'first.start' too large"
+msgstr ""
+
+msgid "'x' must be a data.frame"
+msgstr ""
+
+msgid "NA result at position %d."
+msgstr ""
+
+msgid "You could check whether 'key' years are in range."
+msgstr ""
+
+msgid "Exact p-value (< %f) could not be estimated for superposed epoch at position %d."
+msgstr ""
+
+msgid "You could try a higher value for 'resample'."
+msgstr ""
+
+msgid "Detrended Series"
+msgstr ""
+
+msgid "Detrended Master"
+msgstr ""
+
+msgid "Master"
+msgstr ""
+
+msgid "Series"
+msgstr ""
+
+msgid "Segments: length=%d,lag=%d,bin.floor=%d"
+msgstr ""
+
+msgid "Series:%d-%d"
+msgstr ""
+
+msgid "Master:%d-%d"
+msgstr ""
+
+msgid "Detrended and Trimmed:"
+msgstr ""
+
+msgid "%d-%d"
+msgstr ""
+
+msgid "Detrending Options:"
+msgstr ""
+
+msgid "'sname' must be a character string less than 8 characters long"
+msgstr ""
+
+msgid "input series has length of %d"
+msgstr ""
+
+msgid "long series (> 840) must be split into multiple plots"
+msgstr ""
+
+msgid "'filt.weight' is %f"
+msgstr ""
+
+msgid "'filt.weight' must not be larger than length of input series"
+msgstr ""
+
+msgid "empty 'rwl' given, nothing to draw"
+msgstr ""
+
+msgid "a user-coded (pseudo) random number generator is in use"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Period"
+msgstr ""
+
+msgid "'prec' must equal 0.01 or 0.001"
+msgstr ""
+
+msgid "file %s does not exist, cannot append"
+msgstr ""
+
+msgid "series %s: header line would be too long"
+msgstr ""
+
+msgid "'crn' must have 2 columns"
+msgstr ""
+
+msgid "bad idea to append with 'header'"
+msgstr ""
+
+msgid "header must be a list"
+msgstr ""
+
+msgid "'header' must be a list with the following names:"
+msgstr ""
+
+msgid ","
+msgstr ""
+
+msgid "'lab.info' must be a data.frame with at least one row"
+msgstr ""
+
+msgid "\"name\" is a required variable in 'lab.info'"
+msgstr ""
+
+msgid "\"domain\" is required together with \"identifier\" in 'lab.info'"
+msgstr ""
+
+msgid "\"identifier\" is a required variable in 'research.info'"
+msgstr ""
+
+msgid "\"domain\" is a required variable in 'research.info'"
+msgstr ""
+
+msgid "\"description\" is a required variable in 'research.info'"
+msgstr ""
+
+msgid "'%s' must be of type character - inserting \"%s\""
+msgstr ""
+
+msgid "'%s' must be a list. Creating one."
+msgstr ""
+
+msgid "'%s$%s' must be of type character - inserting \"%s\""
+msgstr ""
+
+msgid "2-col 'ids' needs \"tree\" and \"core\" columns"
+msgstr ""
+
+msgid "3-col 'ids' needs \"tree\", \"core\", and \"radius\" columns"
+msgstr ""
+
+msgid "4-col 'ids' needs \"tree\", \"core\", \"radius\", and \"measurement\" columns"
+msgstr ""
+
+msgid "argument 'ids' is in wrong format (2, 3, or 4 columns required)"
+msgstr ""
+
+msgid "argument 'ids' is not data.frame or has wrong number of rows"
+msgstr ""
+
+msgid "columns needed in 'titles': \"tree\", \"core\", \"radius\", and \"measurement\""
+msgstr ""
+
+msgid "argument 'titles' is not data.frame or has wrong number of rows"
+msgstr ""
+
+msgid "'ids' and 'titles' not consistent or duplicates present"
+msgstr ""
+
+msgid "unknown 'prec' specified: no unit conversion or rounding done"
+msgstr ""
+
+msgid "'nrow(wood.completeness)' must be equal to 'ncol(rwl.df)'"
+msgstr ""
+
+msgid "row names of 'wood.completeness' must match column names of 'rwl.df'"
+msgstr ""
+
+msgid "some values in 'wood.completeness$%s' are invalid, i.e. not integer or < 0"
+msgstr ""
+
+msgid "'header' must be a list"
+msgstr ""
+
+msgid "years earlier than -9999 (10000 BC) are not supported"
+msgstr ""
+
+msgid "years later than 99999 are not possible"
+msgstr ""
+
+msgid        "There is %d series\n"
+msgid_plural "There are %d series\n"
+msgstr[0]    ""
+msgstr[1]    ""
+
+msgid        "There is %d undated series, returned in '$undated'\n"
+msgid_plural "There are %d undated series, returned in '$undated'\n"
+msgstr[0]    ""
+msgstr[1]    ""
+
+msgid        "There is %d derived series, returned in '$derived'\n"
+msgid_plural "There are %d derived series, returned in '$derived'\n"
+msgstr[0]    ""
+msgstr[1]    ""

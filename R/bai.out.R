@@ -2,11 +2,10 @@ bai.out <- function(rwl, diam = NULL) {
 
     if(!is.null(diam)) {
         if(ncol(rwl) != nrow(diam))
-            stop("dimension problem: ncol(rw) != nrow(diam)")
+            stop("dimension problem: ", "'ncol(rw)' != 'nrow(diam)'")
         if(!all(diam[, 1] %in% colnames(rwl)))
             stop("series ids in 'diam' and 'rwl' do not match")
         diam <- diam[, 2]
-
     }
 
     out <- rwl

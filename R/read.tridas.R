@@ -365,16 +365,15 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                 ids.old <- rbind(ids.in.site,
                                  res.undated$ids[undated.in.site, ,
                                                  drop=FALSE])
-                converted.ids <- ids.old
                 n.dated.in.site <- nrow(titles.in.site)
                 n.all <- n.dated.in.site + nrow(titles.in.undated)
                 if(ids.from.titles)
                     converted.ids <-
                         title.based.ids(rbind(titles.in.site,
                                               titles.in.undated))
+                else
+                    converted.ids <- ids.old
                 if(ids.from.identifiers){
-                    temp.identifiers <- rep(as.character(NA), n.all)
-                    temp.domains <- rep(as.character(NA), n.all)
                     md.in.site <- which(identifier.project.id == idx.project)
                     if(length(md.in.site) > 0)
                         md.in.site <-
@@ -395,114 +394,126 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                   all(x ==
                                                       idx.object[1:object.level])
                                               })]
-                    for(md.idx in md.in.site){
-                        this.idvec <- c(identifier.tree.id[md.idx],
-                                        identifier.core.id[md.idx],
-                                        identifier.radius.id[md.idx],
-                                        identifier.measurement.id[md.idx])
-                        if(all(!is.na(this.idvec))){
-                            this.match <-
-                                row.match(ids.old[, ID.ORDER, drop=FALSE],
-                                          this.idvec)
-                            temp.identifiers[this.match] <-
-                                identifier.text[md.idx]
-                            temp.domains[this.match] <-
-                                identifier.domain[md.idx]
-                        }
-                    }
-                    converted.ids <-
-                        identifier.based.ids(converted.ids,
-                                             temp.identifiers,
-                                             temp.domains)
-                }
-                ids.in.site <<-
-                    converted.ids[inc(1, n.dated.in.site), , drop=FALSE]
-                res.undated$ids[undated.in.site, ] <<-
-                    converted.ids[inc(n.dated.in.site + 1, n.all), ,
-                                  drop=FALSE]
-                metadata.names <- c("comments", "identifier", "preferred",
-                                    "altitude", "type")
-                metadata.levels <- c(4, 4, 1, 1, 2)
-                for(k in 1:length(metadata.names)){
-                    md.name <- metadata.names[k]
-                    md.level <- metadata.levels[k]
-                    md.project.id <- get(paste(md.name, ".project.id", sep=""))
-                    md.site.id <- get(paste(md.name, ".site.id", sep=""))
-                    md.tree.id <- get(paste(md.name, ".tree.id", sep=""))
-                    if(md.level >= 2){
-                        md.core.id <- get(paste(md.name, ".core.id", sep=""))
-                        if(md.level >= 3){
-                            md.radius.id <-
-                                get(paste(md.name, ".radius.id", sep=""))
-                            if(md.level >= 4){
-                                md.measurement.id <-
-                                    get(paste(md.name,
-                                              ".measurement.id", sep=""))
+                    if(length(md.in.site) > 0){
+                        temp.identifiers <- rep(as.character(NA), n.all)
+                        temp.domains <- rep(as.character(NA), n.all)
+                        for(md.idx in md.in.site){
+                            this.idvec <- c(identifier.tree.id[md.idx],
+                                            identifier.core.id[md.idx],
+                                            identifier.radius.id[md.idx],
+                                            identifier.measurement.id[md.idx])
+                            if(all(!is.na(this.idvec))){
+                                this.match <-
+                                    row.match(ids.old[, ID.ORDER, drop=FALSE],
+                                              this.idvec)
+                                temp.identifiers[this.match] <-
+                                    identifier.text[md.idx]
+                                temp.domains[this.match] <-
+                                    identifier.domain[md.idx]
                             }
                         }
+                        converted.ids <-
+                            identifier.based.ids(converted.ids,
+                                                 temp.identifiers,
+                                                 temp.domains)
                     }
-                    md.in.site <- which(md.project.id == idx.project)
-                    if(length(md.in.site) > 0)
-                        md.in.site <-
-                            md.in.site[!is.na(md.tree.id[md.in.site])]
-                    if(length(md.in.site) > 0)
-                        md.in.site <-
-                            md.in.site[sapply(md.site.id[md.in.site],
-                                              function(x){
-                                                  if(is.na(x[1])){
-                                                      -1
-                                                  } else{
-                                                      length(x)
-                                                  }
-                                              }) == object.level]
-                    if(length(md.in.site) > 0)
-                        md.in.site <-
-                            md.in.site[sapply(md.site.id[md.in.site],
-                                              function(x){
-                                                  all(x == idx.object[1:object.level])
-                                              })]
-
-                    for(md.idx in md.in.site){
-                        this.idvec <- md.tree.id[md.idx]
+                }
+                ## Only need to remap ids in metadata if ids in data change
+                if(ids.from.titles || length(md.in.site) > 0){
+                    ids.in.site <<-
+                        converted.ids[inc(1, n.dated.in.site), , drop=FALSE]
+                    res.undated$ids[undated.in.site, ] <<-
+                        converted.ids[inc(n.dated.in.site + 1, n.all), ,
+                                      drop=FALSE]
+                    metadata.names <- c("comments", "identifier", "preferred",
+                                        "altitude", "type")
+                    metadata.levels <- c(4, 4, 1, 1, 2)
+                    for(k in 1:length(metadata.names)){
+                        md.name <- metadata.names[k]
+                        md.level <- metadata.levels[k]
+                        md.project.id <-
+                            get(paste(md.name, ".project.id", sep=""))
+                        md.site.id <- get(paste(md.name, ".site.id", sep=""))
+                        md.tree.id <- get(paste(md.name, ".tree.id", sep=""))
                         if(md.level >= 2){
-                            this.idvec <- c(this.idvec, md.core.id[md.idx])
+                            md.core.id <-
+                                get(paste(md.name, ".core.id", sep=""))
                             if(md.level >= 3){
-                                this.idvec <-
-                                    c(this.idvec, md.radius.id[md.idx])
+                                md.radius.id <-
+                                    get(paste(md.name, ".radius.id", sep=""))
                                 if(md.level >= 4){
-                                    this.idvec <- c(this.idvec,
-                                                    md.measurement.id[md.idx])
+                                    md.measurement.id <-
+                                        get(paste(md.name,
+                                                  ".measurement.id", sep=""))
                                 }
                             }
                         }
-                        idx.notna <- which(!is.na(this.idvec))
-                        this.idvec <- this.idvec[idx.notna]
-                        this.match <-
-                            row.match(ids.old[, ID.ORDER[idx.notna],
-                                              drop=FALSE],
-                                      this.idvec)
-                        match.vec <- converted.ids[this.match[1], ]
-                        md.tree.id[md.idx] <- match.vec["tree"]
-                        assign(paste(md.name, ".tree.id", sep=""),
-                               md.tree.id,
-                               inherits=TRUE)
-                        if(md.level >= 2){
-                            md.core.id[md.idx] <- match.vec["core"]
-                            assign(paste(md.name, ".core.id", sep=""),
-                                   md.core.id,
+                        md.in.site <- which(md.project.id == idx.project)
+                        if(length(md.in.site) > 0)
+                            md.in.site <-
+                                md.in.site[!is.na(md.tree.id[md.in.site])]
+                        if(length(md.in.site) > 0)
+                            md.in.site <-
+                                md.in.site[sapply(md.site.id[md.in.site],
+                                                  function(x){
+                                                      if(is.na(x[1])){
+                                                          -1
+                                                      } else{
+                                                          length(x)
+                                                      }
+                                                  }) == object.level]
+                        if(length(md.in.site) > 0)
+                            md.in.site <-
+                                md.in.site[sapply(md.site.id[md.in.site],
+                                                  function(x){
+                                                      all(x == idx.object[1:object.level])
+                                                  })]
+
+                        for(md.idx in md.in.site){
+                            this.idvec <- md.tree.id[md.idx]
+                            if(md.level >= 2){
+                                this.idvec <- c(this.idvec, md.core.id[md.idx])
+                                if(md.level >= 3){
+                                    this.idvec <-
+                                        c(this.idvec, md.radius.id[md.idx])
+                                    if(md.level >= 4){
+                                        this.idvec <-
+                                            c(this.idvec,
+                                              md.measurement.id[md.idx])
+                                    }
+                                }
+                            }
+                            idx.notna <- which(!is.na(this.idvec))
+                            this.idvec <- this.idvec[idx.notna]
+                            this.match <-
+                                row.match(ids.old[, ID.ORDER[idx.notna],
+                                                  drop=FALSE],
+                                          this.idvec)
+                            match.vec <- converted.ids[this.match[1], ]
+                            md.tree.id[md.idx] <- match.vec["tree"]
+                            assign(paste(md.name, ".tree.id", sep=""),
+                                   md.tree.id,
                                    inherits=TRUE)
-                            if(md.level >= 3){
-                                md.radius.id[md.idx] <- match.vec["radius"]
-                                assign(paste(md.name, ".radius.id", sep=""),
-                                       md.radius.id,
+                            if(md.level >= 2){
+                                md.core.id[md.idx] <- match.vec["core"]
+                                assign(paste(md.name, ".core.id", sep=""),
+                                       md.core.id,
                                        inherits=TRUE)
-                                if(md.level >= 4){
-                                    md.measurement.id[md.idx] <-
-                                        match.vec["measurement"]
-                                    assign(paste(md.name, ".measurement.id",
+                                if(md.level >= 3){
+                                    md.radius.id[md.idx] <- match.vec["radius"]
+                                    assign(paste(md.name, ".radius.id",
                                                  sep=""),
-                                           md.measurement.id,
+                                           md.radius.id,
                                            inherits=TRUE)
+                                    if(md.level >= 4){
+                                        md.measurement.id[md.idx] <-
+                                            match.vec["measurement"]
+                                        assign(paste(md.name,
+                                                     ".measurement.id",
+                                                     sep=""),
+                                               md.measurement.id,
+                                               inherits=TRUE)
+                                    }
                                 }
                             }
                         }
@@ -1022,13 +1033,15 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          count.vector <<- double(length=1000)
                      }
                  } else if(last.dplr < first.dplr){
-                     stop("lastYear < firstYear in project ", idx.project,
-                          ", object ", paste(idx.object[1:object.level],
-                                             collapse="."),
-                          ", element ", idx.element,
-                          ", sample ", idx.sample,
-                          ", radius ", idx.radius,
-                          ", series ", idx.series)
+                     stop(gettextf("in project %d, object %s, element %d, sample %d, radius %d, series %d: ",
+                                   idx.project,
+                                   paste(idx.object[1:object.level],
+                                         collapse="."),
+                                   idx.element,
+                                   idx.sample,
+                                   idx.radius,
+                                   idx.series),
+                          "lastYear < firstYear")
                  } else{
                      value.vector <<-
                          rep(as.numeric(NA),times=last.dplr-first.dplr+1)
@@ -1078,14 +1091,14 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  if(entity.type == "Internal_General"){
                      entities[name] <<- content
                  } else if(grep("^External", entity.type)){
-                     warning("external entities are not supported: ", name)
+                     warning(gettextf("external entities are not supported: %s",
+                                      name))
                  }
              },
              ## ... and used
              .getEntity = function(name, ...){
-                 if(is.na(ent <- entities[name])){
-                     warning("unknown entity: ", name)
-                 }
+                 if(is.na(ent <- entities[name]))
+                     warning(gettextf("unknown entity: %s", name))
                  ent
              },
 ### Handlers for end tags
@@ -1351,7 +1364,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              "/missingHeartwoodRingsToPith" = function(...){
                  val <- as.integer(text.buffer)
                  if(val < 0)
-                     stop("Negative missingHeartwoodRingsToPith")
+                     stop("negative missingHeartwoodRingsToPith")
                  greatgrandparent.element <- tag.stack[stack.pointer-3]
                  if(greatgrandparent.element == "measurementSeries"){
                      n.missing.heartwood[2] <<- val
@@ -1372,7 +1385,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              "/missingSapwoodRingsToBark" = function(...){
                  val <- as.integer(text.buffer)
                  if(val < 0)
-                     stop("Negative missingSapwoodRingsToPith")
+                     stop("negative missingSapwoodRingsToPith")
                  greatgrandparent.element <- tag.stack[stack.pointer-3]
                  if(greatgrandparent.element == "measurementSeries"){
                      n.missing.sapwood[2] <<- val
@@ -1397,7 +1410,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              "/nrOfSapwoodRings" = function(...){
                  val <- as.integer(text.buffer)
                  if(val < 0)
-                     stop("Negative nrOfSapwoodRings")
+                     stop("negative nrOfSapwoodRings")
                  greatgrandparent.element <- tag.stack[stack.pointer-3]
                  if(greatgrandparent.element == "measurementSeries"){
                      n.sapwood[2] <<- val
@@ -1409,7 +1422,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              "/nrOfUnmeasuredInnerRings" = function(...){
                  val <- as.integer(text.buffer)
                  if(val < 0)
-                     stop("Negative nrOfUnmeasuredInnerRings")
+                     stop("negative nrOfUnmeasuredInnerRings")
                  grandparent.element <- tag.stack[stack.pointer-2]
                  if(grandparent.element == "measurementSeries"){
                      n.unmeasured.inner[2] <<- val
@@ -1421,7 +1434,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              "/nrOfUnmeasuredOuterRings" = function(...){
                  val <- as.integer(text.buffer)
                  if(val < 0)
-                     stop("Negative nrOfUnmeasuredInnerRings")
+                     stop("negative nrOfUnmeasuredInnerRings")
                  grandparent.element <- tag.stack[stack.pointer-2]
                  if(grandparent.element == "measurementSeries"){
                      n.unmeasured.outer[2] <<- val
@@ -1850,20 +1863,19 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              if(length(idx.negative) > 0){
                                  value.vector[idx.negative] <<- MISSING.VALUE
                                  if(in.derived.values)
-                                     warning("Negative values interpreted",
-                                             " as missing in project ",
-                                             idx.project, ", derived series ",
-                                             idx.derived)
+                                     warning(gettextf("in project %d, derived series %d: ",
+                                                      idx.project, idx.derived),
+                                             "negative values interpreted as missing")
                                  else
-                                     warning("Negative values interpreted",
-                                             " as missing in project ",
-                                             idx.project, ", object ",
-                                             paste(idx.object[1:object.level],
-                                                   collapse="."),
-                                             ", element ", idx.element,
-                                             ", sample ", idx.sample,
-                                             ", radius ", idx.radius,
-                                             ", series ", idx.series)
+                                     warning(gettextf("in project %d, object %s, element %d, sample %d, radius %d, series %d: ",
+                                                      idx.project,
+                                                      paste(idx.object[1:object.level],
+                                                            collapse="."),
+                                                      idx.element,
+                                                      idx.sample,
+                                                      idx.radius,
+                                                      idx.series),
+                                             "negative values interpreted as missing")
                              }
                          }
                      }
@@ -1879,36 +1891,32 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              is.dated <- TRUE
                              if(!is.na(last.dplr)){
                                  if(last.computed > last.dplr){
-                                     warning("Too many values (expected ",
-                                             idx.value +
-                                             (last.dplr-last.computed),
-                                             ", got ",
-                                             idx.value,
-                                             ") in project ", idx.project,
-                                             ", object ",
-                                             paste(idx.object[1:object.level],
-                                                   collapse="."),
-                                             ", element ", idx.element,
-                                             ", sample ", idx.sample,
-                                             ", radius ", idx.radius,
-                                             ", series ", idx.series)
+                                     warning(gettextf("in project %d, object %s, element %d, sample %d, radius %d, series %d: ",
+                                                      idx.project,
+                                                      paste(idx.object[1:object.level],
+                                                            collapse="."),
+                                                      idx.element,
+                                                      idx.sample,
+                                                      idx.radius,
+                                                      idx.series),
+                                             gettextf("too many values (expected %d, got %d)",
+                                                      idx.value + (last.dplr-last.computed),
+                                                      idx.value))
                                  } else if(last.computed < last.dplr){
                                      if(is.na(this.sapwood) ||
                                         this.sapwood >= idx.value ||
                                         this.sapwood == 0){
-                                         warning("Too few values (expected ",
-                                                 idx.value +
-                                                 (last.dplr-last.computed),
-                                                 ", got ",
-                                                 idx.value,
-                                                 ") in project ", idx.project,
-                                                 ", object ",
-                                                 paste(idx.object[1:object.level],
-                                                       collapse="."),
-                                                 ", element ", idx.element,
-                                                 ", sample ", idx.sample,
-                                                 ", radius ", idx.radius,
-                                                 ", series ", idx.series)
+                                         warning(gettextf("in project %d, object %s, element %d, sample %d, radius %d, series %d: ",
+                                                          idx.project,
+                                                          paste(idx.object[1:object.level],
+                                                                collapse="."),
+                                                          idx.element,
+                                                          idx.sample,
+                                                          idx.radius,
+                                                          idx.series),
+                                                 gettextf("too few values (expected %d, got %d)",
+                                                          idx.value + (last.dplr-last.computed),
+                                                          idx.value))
                                      } else{
                                          ## We quietly assume that
                                          ## rings are missing at the
@@ -2004,12 +2012,14 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                  this.unit <- unit
                              if(warn.units && this.unit != "millimetres"){
                                  if(this.unit == "unitless")
-                                     warning("In undated series ", new.length,
-                                             ": Unitless measurements present")
+                                     warning(gettextf("in undated series %d: ",
+                                                      new.length),
+                                             "unitless measurements present")
                                  else
-                                     warning("In undated series ", new.length,
-                                             ": Strange unit ",
-                                             dQuote(this.unit))
+                                     warning(gettextf("in undated series %d: ",
+                                                      new.length),
+                                             gettextf("strange unit \"%s\"",
+                                                      this.unit))
                              }
                              res.undated$unit <<- c(res.undated$unit, this.unit)
 
@@ -2041,28 +2051,28 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              which(count.vector[1:length(value.vector)] < 0)
                          if(length(idx.negative) > 0){
                              count.vector[idx.negative] <<- NA
-                             warning("Negative counts interpreted",
-                                     " as missing in project ", idx.project,
-                                     ", derived series ", idx.derived)
+                             warning(gettextf("in project %d, derived series %d: ",
+                                              idx.project, idx.derived),
+                                     "negative counts interpreted as missing")
                          }
                          if(!is.na(first.dplr)){
                              this.last.year <- first.dplr + idx.value - 1
                              this.first.year <- first.dplr
                              if(!is.na(last.dplr)){
                                  if(this.last.year > last.dplr){
-                                     warning("Too many values (expected ",
-                                             idx.value +
-                                             (last.dplr-this.last.year),
-                                             ", got ", idx.value,
-                                             ") in project ", idx.project,
-                                             ", derived series ", idx.derived)
+                                     warning(gettextf("in project %d, derived series %d: ",
+                                                      idx.project,
+                                                      idx.derived),
+                                             gettextf("too many values (expected %d, got %d)",
+                                                      idx.value + (last.dplr-this.last.year),
+                                                      idx.value))
                                  } else if(this.last.year < last.dplr){
-                                     warning("Too few values (expected ",
-                                             idx.value +
-                                             (last.dplr-this.last.year),
-                                             ", got ", idx.value,
-                                             ") in project ", idx.project,
-                                             ", derived series ", idx.series)
+                                     warning(gettextf("in project %d, derived series %d: ",
+                                                      idx.project,
+                                                      idx.derived),
+                                             gettextf("too few values (expected %d, got %d)",
+                                                      idx.value + (last.dplr-this.last.year),
+                                                      idx.value))
                                  }
                              }
                              is.dated <- TRUE
@@ -2080,8 +2090,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              rownames(series.frame) <-
                                  as.character(this.first.year:this.last.year)
                              if(this.last.year > year.now)
-                                 warning("In derived series ", idx.derived,
-                                         ": Data from the future")
+                                 warning(gettextf("in derived series %d: ",
+                                                  idx.derived),
+                                         "data from the future")
                          }
                          res.derived$data[[length(res.derived$data)+1]] <<-
                              series.frame
@@ -2169,10 +2180,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
 
                      ## Print a summary of each data frame
                      if(df.size == 1)
-                         cat("$measurements is a data.frame\n")
+                         cat(gettext("'$measurements' is a data.frame\n",
+                                     domain="R-dplR"))
                      else
-                         cat("There are ", df.size,
-                             " data.frames in the $measurements list\n", sep="")
+                         cat(gettextf("there are %d data.frames in the '$measurements' list\n",
+                                      df.size, domain="R-dplR"))
                      for(i in 1:df.size){
                          this.df <- res.df[[i]]
                          nseries <- ncol(this.df)
@@ -2181,41 +2193,44 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          min.year <- as.numeric(rnames[1])
                          max.year <- as.numeric(rnames[nrow(this.df)])
                          if(max.year > year.now)
-                             warning("In data.frame ", i,
-                                     ": Data from the future")
+                             warning(gettextf("in data.frame %d: ", i),
+                                     "data from the future")
                          not.na <- lapply(this.df, function(x) which(!is.na(x)))
                          series.min <- sapply(not.na, min) + (min.year - 1)
                          series.max <- sapply(not.na, max) + (min.year - 1)
                          not.na.title <- which(!is.na(res.all$site.title[i, ]))
                          title.level <-
                              max(not.na.title[length(not.na.title)], 1)
-                         cat("\nData.frame #", i, "\n", sep="")
+                         cat(gettextf("\ndata.frame #%d\n", i,
+                                      domain="R-dplR"))
                          ## Note: all known units are converted to millimetres
                          this.unit <- res.all$unit[i]
                          if(warn.units && this.unit != "millimetres"){
                              if(this.unit == "unitless")
-                                 warning("In data.frame ", i,
-                                         ": Unitless measurements present")
+                                 warning(gettextf("in data.frame %d: ", i),
+                                         "unitless measurements present")
                              else
-                                 warning("In data.frame ", i,
-                                         ": Strange unit ", dQuote(this.unit))
+                                 warning(gettextf("in data.frame %d: ", i),
+                                         gettextf("strange unit \"%s\"",
+                                                  this.unit))
                          }
-                         cat("* site: ",
+                         cat(gettext("* site: ", domain="R-dplR"),
                              paste(as.matrix(res.all$site.title[i,
                                                                 1:title.level]),
                                    collapse=" / "),
                              "\n", sep="")
-                         cat("* taxon: ")
+                         cat(gettext("* taxon: ", domain="R-dplR"))
                          cat("\n\t", row.print(res.all$taxon[i, , drop=FALSE],
                                                collapse="\n\t"), "\n", sep="")
-                         cat("* variable: ")
+                         cat(gettext("* variable: ", domain="R-dplR"))
                          cat("\n\t",
                              row.print(res.all$variable[i, , drop=FALSE],
                                        collapse="\n\t"), "\n", sep="")
-                         if(nseries == 1)
-                             cat("There is 1 series\n")
-                         else
-                             cat("There are ", nseries, " series\n", sep="")
+                         cat(sprintf(ngettext(nseries,
+                                              "There is %d series\n",
+                                              "There are %d series\n",
+                                              domain="R-dplR"),
+                                     nseries))
                          cat(paste(1:nseries, "\t",
                                    series.ids, "\t",
                                    series.min, "\t",
@@ -2225,15 +2240,14 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  ## Undated data in <measurementSeries>
                  undated.size <- length(res.undated$data)
                  if(undated.size > 0){
-                     if(undated.size == 1){
-                         cat("\nThere is 1 undated series, ",
-                             "returned in $undated.\n", sep="")
-                         ## Say no to lists of length 1
+                     ## Say no to lists of length 1
+                     if(undated.size == 1)
                          res.undated$data <<- res.undated$data[[1]]
-                     } else{
-                         cat("\nThere are ", undated.size,
-                             " undated series, returned in $undated.\n", sep="")
-                     }
+                     cat(sprintf(ngettext(undated.size,
+                                          "There is %d undated series, returned in '$undated'\n",
+                                          "There are %d undated series, returned in '$undated'\n",
+                                          domain="R-dplR"),
+                                 undated.size))
                      res.undated$ids <<- data.frame(res.undated$ids)
                      res.undated$titles <<- data.frame(res.undated$titles)
                      res.undated$site.id <<-
@@ -2293,14 +2307,13 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  ## Number of <values> within <derivedSeries>
                  derived.nvalues <- length(res.derived$data)
                  if(derived.nvalues > 0){
-                     if(derived.nvalues == 1){
-                         cat("\nThere is 1 derived series, ",
-                             "returned in $derived.\n", sep="")
+                     if(derived.nvalues == 1)
                          res.derived$data <<- res.derived$data[[1]]
-                     } else{
-                         cat("\nThere are ", undated.size,
-                             " derived series, returned in $derived.\n", sep="")
-                     }
+                     cat(sprintf(ngettext(derived.nvalues,
+                                          "There is %d derived series, returned in '$derived'\n",
+                                          "There are %d derived series, returned in '$derived'\n",
+                                          domain="R-dplR"),
+                                 derived.nvalues))
                      if(all(sapply(res.derived$link, is.na))){
                          ## If there was no content in any of the linkSeries,
                          ## res.derived$link is removed

@@ -12,14 +12,18 @@ read.compact <- function(fname)
     rownames(rw.mat) <- min.year:max.year
     nseries <- ncol(rw.mat)
 
-    cat("There are ", nseries, " series\n", sep="")
+    cat(sprintf(ngettext(nseries,
+                         "There is %d series\n",
+                         "There are %d series\n",
+                         domain="R-dplR"),
+                nseries))
     cat(paste(1:nseries, "\t",
               series.ids, "\t",
               series.min, "\t",
               series.max, "\t",
               series.mplier, "\n", sep=""), sep="")
     if(length(project.comments) > 0)
-        cat("Comments:",
+        cat(gettext("Comments:", domain="R-dplR"),
             paste(project.comments, collapse="\n"), sep="\n")
 
     rw.df <- as.data.frame(rw.mat)
