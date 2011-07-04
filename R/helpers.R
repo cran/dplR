@@ -62,7 +62,8 @@ dec <- function(from, to){
 }
 
 ### AR function for chron, normalize1, normalize.xdate, ...
-ar.func <- function(y){
+ar.func <- function(x){
+    y <- x
     idx.goody <- !is.na(y)
     ar1 <- ar(y[idx.goody])
     y[idx.goody] <- ar1$resid+ar1$x.mean
@@ -84,23 +85,24 @@ sortByIndex <- function(x){
 ### Well, kind of: we count up to and including base (not base-1), and
 ### the smallest digit is one. Basically, we have a shift of one because
 ### of array indices starting from 1 instead of 0.  In case another
-### digit is needed in the front, vector x grows.
+### digit is needed in the front, the result vector y grows.
 count.base <- function(x, base){
     n.x <- length(x)
     pos <- n.x
-    x[pos] <- x[pos] + 1
-    while (x[pos] == base + 1){
-        x[pos] <- 1
+    y <- x
+    y[pos] <- y[pos] + 1
+    while (y[pos] == base + 1){
+        y[pos] <- 1
         if (pos == 1){
             temp <- vector(mode="integer", length=n.x+1)
-            temp[-1] <- x
+            temp[-1] <- y
             pos <- 2
-            x <- temp
+            y <- temp
         }
         pos <- pos - 1
-        x[pos] <- x[pos] + 1
+        y[pos] <- y[pos] + 1
     }
-    x
+    y
 }
 
 ### Compose a new name by attaching a suffix, which may partially

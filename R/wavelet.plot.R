@@ -27,12 +27,12 @@ wavelet.plot <-
     Signif <- Power/Signif
 
     ## Period is in years, period2 is in powers of 2
-    period2 <- log(period)/log(2)
+    period2 <- log2(period)
     ytick <- unique(trunc(period2)) # Unique integer powers of 2
     ytickv <- 2^(ytick) # Labels are in years
 
     ## coi is in years, coi2 in powers of 2
-    coi2 <- log(coi)/log(2)
+    coi2 <- log2(coi)
     coi2[coi2 < 0] <- 0
     coi2.yy <- c(coi2, rep(max(period2, na.rm=TRUE), length(coi2)))
     coi2.yy[is.na(coi2.yy)] <- coi[2]
@@ -107,8 +107,11 @@ wavelet.plot <-
         if(add.spline){
             spl <- y
             tmp <- na.omit(spl)
-            if(is.null(nyrs)) nyrs <- length(tmp) * 0.33
-            tmp <- ffcsaps(y = tmp, x = 1:length(tmp), nyrs = nyrs, f = f)
+            if(is.null(nyrs))
+                nyrs2 <- length(tmp) * 0.33
+            else
+                nyrs2 <- nyrs
+            tmp <- ffcsaps(y = tmp, x = 1:length(tmp), nyrs = nyrs2, f = f)
             spl[!is.na(spl)] <- tmp
             lines(x, spl, col = "red", lwd = 2)
         }
@@ -168,8 +171,11 @@ wavelet.plot <-
         if(add.spline){
             spl <- y
             tmp <- na.omit(spl)
-            if(is.null(nyrs)) nyrs <- length(tmp) * 0.33
-            tmp <- ffcsaps(y = tmp, x = 1:length(tmp), nyrs = nyrs, f = f)
+            if(is.null(nyrs))
+                nyrs2 <- length(tmp) * 0.33
+            else
+                nyrs2 <- nyrs
+            tmp <- ffcsaps(y = tmp, x = 1:length(tmp), nyrs = nyrs2, f = f)
             spl[!is.na(spl)] <- tmp
             lines(x, spl, col = "red", lwd = 2)
         }
