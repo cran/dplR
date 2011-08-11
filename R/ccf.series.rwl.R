@@ -2,7 +2,8 @@ ccf.series.rwl <- function(rwl, series,
                            series.yrs = as.numeric(names(series)),
                            seg.length = 50, bin.floor = 100, n = NULL,
                            prewhiten = TRUE, biweight = TRUE,
-                           pcrit = 0.05, lag.max = 5, make.plot = TRUE, ...){
+                           pcrit = 0.05, lag.max = 5, make.plot = TRUE,
+                           floor.plus1 = FALSE, ...){
 
     ## run error checks
     qa.xdate(rwl, seg.length, n, bin.floor)
@@ -36,9 +37,14 @@ ccf.series.rwl <- function(rwl, series,
     master <- master[yrs %in% series.yrs2]
     yrs <- as.numeric(names(master))
 
-    if(is.null(bin.floor) || bin.floor == 0) min.bin <- min(series.yrs2)
-    else min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor
-    to <- max(series.yrs2) - seg.length - seg.length
+    if(is.null(bin.floor) || bin.floor == 0) {
+        min.bin <- min(series.yrs2)
+    } else if(floor.plus1) {
+        min.bin <- ceiling((min(series.yrs2) - 1) / bin.floor) * bin.floor + 1
+    } else {
+        min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor
+    }
+    to <- max(series.yrs2) - seg.length - seg.lag + 1
     if(min.bin > to){
         cat(gettextf("maximum year in (filtered) series: %d\n",
                      max(series.yrs2), domain="R-dplR"))
@@ -47,8 +53,8 @@ ccf.series.rwl <- function(rwl, series,
                     domain="R-dplR"))
         stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
-    bins <- seq(from=min.bin, to=to + seg.length, by=seg.lag)
-    bins <- cbind(bins, bins + seg.length)
+    bins <- seq(from=min.bin, to=to + seg.lag, by=seg.lag)
+    bins <- cbind(bins, bins + (seg.length - 1))
     nbins <- nrow(bins)
     bin.names <- paste(bins[, 1], ".", bins[, 2], sep="")
 
@@ -59,7 +65,7 @@ ccf.series.rwl <- function(rwl, series,
     colnames(res.cor) <- bin.names
 
     ## loop through bins
-    for(j in 1:nbins){
+    for(j in seq_len(nbins)){
         mask <- yrs%in%seq(from=bins[j, 1], to=bins[j, 2])
         ## cor is NA if there is not complete overlap
         if(!any(mask) ||
