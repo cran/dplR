@@ -1,7 +1,7 @@
 series.rwl.plot <-
     function(rwl, series, series.yrs=as.numeric(names(series)),
              seg.length=100, bin.floor=100, n=NULL, prewhiten = TRUE,
-             biweight=TRUE){
+             biweight=TRUE, floor.plus1 = FALSE){
 
     ## run error checks
     qa.xdate(rwl, seg.length, n, bin.floor)
@@ -43,9 +43,14 @@ series.rwl.plot <-
     master <- master[yrs %in% series.yrs2]
     yrs <- as.numeric(names(master))
 
-    if(is.null(bin.floor) || bin.floor == 0) min.bin <- min(series.yrs2)
-    else min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor
-    to <- max(series.yrs2) - seg.length - seg.length
+    if(is.null(bin.floor) || bin.floor == 0) {
+        min.bin <- min(series.yrs2)
+    } else if(floor.plus1) {
+        min.bin <- ceiling((min(series.yrs2) - 1) / bin.floor) * bin.floor + 1
+    } else {
+        min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor
+    }
+    to <- max(series.yrs2) - seg.length - seg.lag + 1
     if(min.bin > to){
         cat(gettextf("maximum year in (filtered) series: %d\n",
                      max(series.yrs2)))
@@ -53,8 +58,8 @@ series.rwl.plot <-
         cat(gettext("cannot fit two segments (not enough years in the series)\n"))
         stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
-    bins <- seq(from=min.bin, to=to + seg.length, by=seg.lag)
-    bins <- cbind(bins, bins + seg.length)
+    bins <- seq(from=min.bin, to=to + seg.lag, by=seg.lag)
+    bins <- cbind(bins, bins + (seg.length - 1))
     nbins <- nrow(bins)
 
     op <- par(no.readonly=TRUE)
@@ -67,10 +72,15 @@ series.rwl.plot <-
     plot(yrs, series2, type="n", ylim=c(0, max(series2, master, na.rm=T)),
          ylab=gettext("RWI", domain="R-dplR"),
          xlab=gettext("Year", domain="R-dplR"), axes=FALSE)
-    abline(v=bins, col="grey", lty="dotted")
+    all.ticks <- c(bins[, 1], bins[c(nbins - 1, nbins), 2] + 1)
+    abline(v=all.ticks, col="grey", lty="dotted")
     abline(h=1)
-    axis(1, at=bins[seq(from=1, to=nbins, by=2), ])
-    axis(3, at=bins[seq(from=2, to=nbins, by=2), ])
+    odd.seq <- seq(from=1, to=nbins, by=2)
+    even.seq <- seq(from=2, to=nbins, by=2)
+    odd.ticks <- c(bins[odd.seq, 1], bins[odd.seq[length(odd.seq)], 2] + 1)
+    even.ticks <- c(bins[even.seq, 1], bins[even.seq[length(even.seq)], 2] + 1)
+    axis(1, at=odd.ticks)
+    axis(3, at=even.ticks)
     axis(2)
     box()
     lines(yrs, series2, lwd=1.5, col=col.pal[1])
@@ -93,10 +103,10 @@ series.rwl.plot <-
          xlab=gettext("Year", domain="R-dplR"),
          sub=gettextf("Segments: length=%d,lag=%d,bin.floor=%d",
          seg.length, seg.lag, bin.floor, domain="R-dplR"), axes=FALSE)
-    abline(v=bins, col="grey", lty="dotted")
+    abline(v=all.ticks, col="grey", lty="dotted")
     abline(h=0)
-    axis(1, at=bins[seq(from=1, to=nbins, by=2), ])
-    axis(3, at=bins[seq(from=2, to=nbins, by=2), ])
+    axis(1, at=odd.ticks)
+    axis(3, at=even.ticks)
     box()
     for(i in seq(1, nbins, by=2)){
         xx <- bins[i, ]
