@@ -1,5 +1,5 @@
-fc2ddfc36c52821cbc298bb375cb3a23 *ChangeLog
-3c3ed425ac6acae25699be1bd110f59d *DESCRIPTION
+0a07581b95c8ffe307081c2174fcc2ae *ChangeLog
+04e0a45e4002871408b12dddbbe483c7 *DESCRIPTION
 bfc80f4fde7c3208e424aec2e90769df *NAMESPACE
 3b195e250c2adab138fe028307d0e085 *R/bai.in.R
 8aa3e6e86d44e364b0b3b662232dafc3 *R/bai.out.R
@@ -7,8 +7,8 @@ bfc80f4fde7c3208e424aec2e90769df *NAMESPACE
 ba9b0393183138733a2e02d668a1d55f *R/chron.R
 a5b8f39089502122792a14a9d2aa8bdf *R/cms.R
 f1fadb0ff65893dbfc29498c7550ebd8 *R/combine.rwl.R
-52209920b500b41d078793f5ff6ffe97 *R/corr.rwl.seg.R
-3a45ac521fcebdde0e3e90e105f7790d *R/corr.series.seg.R
+009c504bc6430161f219f68da93f2448 *R/corr.rwl.seg.R
+42f3d55d9d3fbfef6947bf133732030b *R/corr.series.seg.R
 768d8c36cff14abd42d4ca1cbaf72b3e *R/crn.plot.R
 cdf94fc156f3e40be192a157b615c00f *R/detrend.R
 7f6e54f196b0aa6eee3f3856f3831245 *R/detrend.series.R
@@ -65,7 +65,7 @@ b198814de37c351b2fd1913c77502281 *inst/po/fi/LC_MESSAGES/R-dplR.mo
 bbdf51f9f00b4db74d9b33067a970623 *inst/po/fi/LC_MESSAGES/dplR.mo
 938ff8bd1dea2fa48755472ee6d828c0 *inst/unitTests/Makefile
 9f2f95de63a7f8012b9a97e41bce8469 *inst/unitTests/runit.chron.R
-c821fc2852482851ada244b9f7aeb93e *inst/unitTests/runit.dplR.R
+1a617078d19d49b8d390d2710c55ca56 *inst/unitTests/runit.dplR.R
 3f0a552c20ce3a086e479b2ab4b88037 *man/bai.in.Rd
 79777171e52cd833e6357d00e31745f9 *man/bai.out.Rd
 c83e5e62de484aaa0a66f10291352f6e *man/ca533.Rd
