@@ -99,6 +99,337 @@ test.ccf.series.rwl <- function() {
               msg="Largest positive correlation is at lag 0")
 }
 
+test.combine.rwl <- function() {
+    ## Setup
+    v.1 <- 1 + runif(300)
+    range.1 <- 51:400
+    rnames.1 <- as.character(range.1)
+    range.2 <- range.1 + 150
+    rnames.2 <- as.character(range.2)
+    range.3 <- range.1 + 350
+    rnames.3 <- as.character(range.3)
+    range.4 <- range.1 + 450
+    rnames.4 <- as.character(range.4)
+    df.1 <- data.frame(col1 = c(v.1, rep(NA, 50)),
+                       col2 = c(rep(NA, 25), v.1, rep(NA, 25)),
+                       col3 = c(rep(NA, 50), v.1),
+                       row.names = rnames.1)
+    df.2 <- df.1
+    rownames(df.2) <- rnames.2
+    df.3 <- df.1
+    rownames(df.3) <- rnames.3
+    df.4 <- df.1
+    rownames(df.4) <- rnames.4
+    res.3 <- combine.rwl(list(df.1))
+    res.4 <- combine.rwl(list(df.1, df.2, df.3, df.4))
+    res.5 <- combine.rwl(df.1, df.1)
+    res.6 <- combine.rwl(df.1, df.2)
+    res.7 <- combine.rwl(df.1, df.3)
+    res.8 <- combine.rwl(df.1, df.4)
+    ## Test
+    ## 1. x is an empty list (error)
+    checkException(combine.rwl(list()),
+                   msg="Nothing to combine in an empty list")
+    ## 2. x is a data.frame, y is not given (error)
+    checkException(combine.rwl(df.1),
+                   msg="Nothing to combine in a single data.frame")
+    ## 3. x is a list with one data.frame
+    checkEquals(df.1, res.3,
+                msg="Result is correct (test 3)")
+    ## 4. x is a list with four data.frames
+    checkEquals(12, ncol(res.4), msg="Result has 12 columns (test 4)")
+    checkEquals(df.1, res.4[1:350, 1:3],
+                msg="1st part of result is correct (test 4)")
+    checkEquals(df.2, res.4[150+(1:350), 4:6],
+                msg="2nd part of result is correct (test 4)")
+    checkEquals(df.3, res.4[350+(1:350), 7:9],
+                msg="3rd part of result is correct (test 4)")
+    checkEquals(df.4, res.4[450+(1:350), 10:12],
+                msg="4th part of result is correct (test 4)")
+    ## x and y are data.frames that...
+    ## 5. ...are identical
+    checkEquals(6, ncol(res.5), msg="Result has 6 columns (test 5)")
+    checkEquals(df.1, res.5[1:3],
+                msg="1st part of result is correct (test 5)")
+    checkEquals(df.1, res.5[4:6],
+                msg="2nd part of result is correct (test 5)")
+    ## 6. ...have partially overlapping years
+    checkEquals(6, ncol(res.6), msg="Result has 6 columns (test 6)")
+    checkEquals(500, nrow(res.6), msg="Result has 500 rows (test 6)")
+    checkEquals(df.1, res.6[1:350, 1:3],
+                msg="1st part of result is correct (test 6)")
+    checkEquals(df.2, res.6[150+(1:350), 4:6],
+                msg="2nd part of result is correct (test 6)")
+    ## 7. ...have separate sets of years so that the result is continuous
+    ## (y starts where x ends)
+    checkEquals(6, ncol(res.7), msg="Result has 6 columns (test 7)")
+    checkEquals(700, nrow(res.7), msg="Result has 700 rows (test 7)")
+    checkEquals(df.1, res.7[1:350, 1:3],
+                msg="1st part of result is correct (test 7)")
+    checkEquals(df.3, res.7[350+(1:350), 4:6],
+                msg="2nd part of result is correct (test 7)")
+    ## 8. ...have separate sets of years so that the result is discontinuous
+    checkEquals(6, ncol(res.8), msg="Result has 6 columns (test 8)")
+    checkEquals(800, nrow(res.8), msg="Result has 800 rows (test 8)")
+    checkEquals(df.1, res.8[1:350, 1:3],
+                msg="1st part of result is correct (test 8)")
+    checkEquals(df.4, res.8[450+(1:350), 4:6],
+                msg="2nd part of result is correct (test 8)")
+}
+
+test.corr.rwl.seg <- function() {
+    ## Setup
+    srs1 <- rep(seq(from=0.5, to=1.5, length.out=50), 10)
+    srs2 <- rev(srs1)
+    srs3 <- srs1
+    srs3[26:75] <- rev(srs3[26:75])
+    srs4 <- srs1
+    srs4[126:175] <- rev(srs4[126:175])
+    srs4[326:425] <- rev(srs4[326:425])
+    names(srs1) <- seq_along(srs1)
+    dat1 <- data.frame(a=srs1, b=srs1, c=srs1, d=srs1, e=srs1, f=srs1, g=srs1)
+    dat2 <- dat1
+    dat2[1] <- srs2
+    dat3 <- dat1
+    dat3[1] <- srs3
+    dat3[2] <- srs4
+    res1 <- corr.rwl.seg(dat1, seg.length=50, bin.floor=100, make.plot=FALSE)
+    res2 <- corr.rwl.seg(dat2, seg.length=50, bin.floor=100, make.plot=FALSE)
+    res3 <- corr.rwl.seg(dat3, seg.length=100, bin.floor=100, pcrit=0.05,
+                         make.plot=FALSE)
+    res4 <- corr.rwl.seg(dat3, seg.length=100, bin.floor=100, pcrit=0.05,
+                         prewhiten=FALSE, floor.plus1=TRUE, make.plot=FALSE)
+    expected.cnames1 <- paste(res1$bins[, 1], res1$bins[, 2], sep=".")
+    expected.cnames3 <- paste(res3$bins[, 1], res3$bins[, 2], sep=".")
+    expected.cnames4 <- paste(res4$bins[, 1], res4$bins[, 2], sep=".")
+    expected.rnames <- c("a", "b", "c", "d", "e", "f", "g")
+    expected.corr1 <- array(1, dim(res1$spearman.rho),
+                            dimnames=list(expected.rnames, expected.cnames1))
+    expected.corr2 <- expected.corr1
+    expected.corr2[1, ] <- -1
+    expected.overall1 <- array(data=c(rep(1, 7), rep(0, 7)), dim=c(7,2),
+                               dimnames=list(expected.rnames,
+                               c("rho", "p-val")))
+    expected.overall2 <- expected.overall1
+    expected.overall2["a", "rho"] <- -1
+    expected.overall2["a", "p-val"] <- 1
+    seg.names1 <- paste(seq(from=100, to=450, by=25),
+                        seq(from=149, to=499, by=25), sep=".")
+    expected.avg1 <- rep(1, length(seg.names1))
+    names(expected.avg1) <- seg.names1
+    expected.avg2 <- rep(5/7, length(seg.names1))
+    names(expected.avg2) <- seg.names1
+    expected.flags1 <- array(0, dim(res1$p.val),
+                             dimnames=list(expected.rnames, expected.cnames1))
+    expected.flags2 <- expected.flags1
+    expected.flags3 <- array(0, dim(res3$p.val),
+                             dimnames=list(expected.rnames, expected.cnames3))
+    expected.flags4 <- array(0, dim(res4$p.val),
+                             dimnames=list(expected.rnames, expected.cnames4))
+    expected.flags2[1, ] <- 1
+    expected.flags3[2, c("100.199", "300.399", "350.449")] <- 1
+    expected.flags4[1, "1.100"] <- 1
+    expected.flags4[2, c("101.200", "301.400", "351.450")] <- 1
+    res1.flags <- array(0, dim(res1$p.val), dimnames=dimnames(res1$p.val))
+    res1.flags[res1$p.val >= 0.05] <- 1
+    res2.flags <- array(0, dim(res2$p.val), dimnames=dimnames(res2$p.val))
+    res2.flags[res2$p.val >= 0.05] <- 1
+    res3.flags <- array(0, dim(res3$p.val), dimnames=dimnames(res3$p.val))
+    res3.flags[res3$p.val >= 0.05] <- 1
+    res4.flags <- array(0, dim(res4$p.val), dimnames=dimnames(res4$p.val))
+    res4.flags[res4$p.val >= 0.05] <- 1
+
+    ## Test
+    checkTrue(all(res1$bins[, 2] - res1$bins[, 1] + 1 == 50),
+              msg="Bins have correct length(test 1)")
+    checkEqualsNumeric(100, res1$bins[1, 1],
+                       msg="First bin is in correct position (test 1)")
+    checkTrue(all(diff(res1$bins[, 1]) == 25),
+              msg="Bins have correct overlap (test 1)")
+    checkEqualsNumeric(450, res1$bins[nrow(res1$bins), 1],
+                       msg="Last bin is in correct position (test 1)")
+
+    checkEquals(res1$bins, res2$bins, msg="Bins are equal (tests 1 and 2)")
+
+    checkTrue(all(res3$bins[, 2] - res3$bins[, 1] + 1 == 100),
+              msg="Bins have correct length(test 3)")
+    checkEqualsNumeric(100, res3$bins[1, 1],
+                       msg="First bin is in correct position (test 3)")
+    checkTrue(all(diff(res3$bins[, 1]) == 50),
+              msg="Bins have correct overlap (test 3)")
+    checkEqualsNumeric(400, res3$bins[nrow(res3$bins), 1],
+                       msg="Last bin is in correct position (test 3)")
+
+    checkTrue(all(res4$bins[, 2] - res4$bins[, 1] + 1 == 100),
+              msg="Bins have correct length(test 4)")
+    checkEqualsNumeric(1, res4$bins[1, 1],
+                       msg="First bin is in correct position (test 4)")
+    checkTrue(all(diff(res4$bins[, 1]) == 50),
+              msg="Bins have correct overlap (test 4)")
+    checkEqualsNumeric(401, res4$bins[nrow(res4$bins), 1],
+                       msg="Last bin is in correct position (test 4)")
+
+    checkEquals(expected.corr1, res1$spearman.rho,
+                msg="Correlations are as expected (test 1)")
+    checkEquals(expected.corr2, res2$spearman.rho,
+                msg="Correlations are as expected (test 2)")
+
+    checkEquals(expected.overall1, res1$overall,
+                msg="Overall correlations are as expected (test 1)")
+    checkEquals(expected.overall2, res2$overall,
+                msg="Overall correlations are as expected (test 2)")
+
+    checkEquals(expected.avg1, res1$avg.seg.rho,
+                msg="Average correlations are as expected (test 1)")
+    checkEquals(expected.avg2, res2$avg.seg.rho,
+                msg="Average correlations are as expected (test 2)")
+
+    checkEquals(expected.flags1, res1.flags,
+                msg="P-values are as expected (test 1)")
+    checkEquals(expected.flags2, res2.flags,
+                msg="P-values are as expected (test 2)")
+    checkEquals(expected.flags3, res3.flags,
+                msg="P-values are as expected (test 3)")
+    checkEquals(expected.flags4, res4.flags,
+                msg="P-values are as expected (test 4)")
+
+    checkEqualsNumeric(0, length(res1$flags),
+                       msg="$flags is empty (test 1)")
+    checkEqualsNumeric(1, length(res2$flags),
+                       msg="$flags is one string (test 2)")
+    checkEqualsNumeric(1, length(res3$flags),
+                       msg="$flags is one string (test 3)")
+    checkEqualsNumeric(2, length(res4$flags),
+                       msg="$flags is two strings (test 4)")
+
+    checkEquals(paste(seg.names1, collapse=", "), res2$flags["a"],
+                msg="$flags[\"a\"] is correct (test2)", checkNames = FALSE)
+    checkEquals("100.199, 300.399, 350.449", res3$flags["b"],
+                msg="$flags[\"b\"] is correct (test3)", checkNames = FALSE)
+    checkEquals("1.100", res4$flags["a"],
+                msg="$flags[\"a\"] is correct (test4)", checkNames = FALSE)
+    checkEquals("101.200, 301.400, 351.450", res4$flags["b"],
+                msg="$flags[\"b\"] is correct (test4)", checkNames = FALSE)
+}
+
+test.corr.series.seg <- function() {
+    ## Setup
+    srs1 <- rep(seq(from=0.5, to=1.5, length.out=50), 10)
+    srs2 <- rev(srs1)
+    srs3 <- srs1
+    srs3[26:75] <- rev(srs3[26:75])
+    srs3[326:425] <- rev(srs3[326:425])
+    names(srs1) <- seq_along(srs1)
+    names(srs2) <- seq_along(srs2)
+    names(srs3) <- seq_along(srs3)
+    dat <- data.frame(a=srs1, b=srs1, c=srs1, d=srs1, e=srs1, f=srs1, g=srs1)
+    res1 <- corr.series.seg(rwl=dat, series=srs1, seg.length=50,
+                            bin.floor=100, make.plot=FALSE)
+    res2 <- corr.series.seg(rwl=dat, series=srs2, seg.length=50,
+                            bin.floor=100, make.plot=FALSE)
+    res3 <- corr.series.seg(rwl=dat, series=srs3, seg.length=100,
+                            bin.floor=100, make.plot=FALSE)
+    res4 <- corr.series.seg(rwl=dat, series=srs3, seg.length=100,
+                            prewhiten=FALSE, bin.floor=100,
+                            make.plot=FALSE, floor.plus1=TRUE)
+
+    expected.cnames1 <- paste(res1$bins[, 1], res1$bins[, 2], sep=".")
+    expected.cnames3 <- paste(res3$bins[, 1], res3$bins[, 2], sep=".")
+    expected.cnames4 <- paste(res4$bins[, 1], res4$bins[, 2], sep=".")
+    expected.corr1 <- rep(1, length(res1$spearman.rho))
+    names(expected.corr1) <- expected.cnames1
+    expected.corr2 <- rep(-1, length(res2$spearman.rho))
+    names(expected.corr2) <- expected.cnames1
+    expected.overall1 <- c(1, 0)
+    names(expected.overall1) <- c("rho", "p-val")
+    expected.overall2 <- c(-1, 1)
+    names(expected.overall2) <- c("rho", "p-val")
+    expected.flags1 <- rep(0, length(res1$p.val))
+    names(expected.flags1) <- names(res1$p.val)
+    expected.flags2 <- rep(1, length(res2$p.val))
+    names(expected.flags2) <- names(res2$p.val)
+    expected.flags3 <- rep(0, length(res3$p.val))
+    names(expected.flags3) <- names(res3$p.val)
+    expected.flags4 <- rep(0, length(res4$p.val))
+    names(expected.flags4) <- names(res4$p.val)
+    expected.flags3[c("300.399", "350.449")] <- 1
+    expected.flags4[c("1.100", "301.400", "351.450")] <- 1
+    res1.flags <- rep(0, length(res1$p.val))
+    names(res1.flags) <- names(res1$p.val)
+    res1.flags[res1$p.val >= 0.05] <- 1
+    res2.flags <- rep(0, length(res2$p.val))
+    names(res2.flags) <- names(res2$p.val)
+    res2.flags[res2$p.val >= 0.05] <- 1
+    res3.flags <- rep(0, length(res3$p.val))
+    names(res3.flags) <- names(res3$p.val)
+    res3.flags[res3$p.val >= 0.05] <- 1
+    res4.flags <- rep(0, length(res4$p.val))
+    names(res4.flags) <- names(res4$p.val)
+    res4.flags[res4$p.val >= 0.05] <- 1
+    range.moving.3 <- range(res3$moving.rho[, "rho"], na.rm=TRUE)
+    range.3 <- range(res3$spearman.rho)
+
+    ## Test
+    checkTrue(all(res1$bins[, 2] - res1$bins[, 1] + 1 == 50),
+              msg="Bins have correct length(test 1)")
+    checkEqualsNumeric(100, res1$bins[1, 1],
+                       msg="First bin is in correct position (test 1)")
+    checkTrue(all(diff(res1$bins[, 1]) == 25),
+              msg="Bins have correct overlap (test 1)")
+    checkEqualsNumeric(450, res1$bins[nrow(res1$bins), 1],
+                       msg="Last bin is in correct position (test 1)")
+
+    checkEquals(res1$bins, res2$bins, msg="Bins are equal (tests 1 and 2)")
+
+    checkTrue(all(res3$bins[, 2] - res3$bins[, 1] + 1 == 100),
+              msg="Bins have correct length(test 3)")
+    checkEqualsNumeric(100, res3$bins[1, 1],
+                       msg="First bin is in correct position (test 3)")
+    checkTrue(all(diff(res3$bins[, 1]) == 50),
+              msg="Bins have correct overlap (test 3)")
+    checkEqualsNumeric(400, res3$bins[nrow(res3$bins), 1],
+                       msg="Last bin is in correct position (test 3)")
+
+    checkTrue(all(res4$bins[, 2] - res4$bins[, 1] + 1 == 100),
+              msg="Bins have correct length(test 4)")
+    checkEqualsNumeric(1, res4$bins[1, 1],
+                       msg="First bin is in correct position (test 4)")
+    checkTrue(all(diff(res4$bins[, 1]) == 50),
+              msg="Bins have correct overlap (test 4)")
+    checkEqualsNumeric(401, res4$bins[nrow(res4$bins), 1],
+                       msg="Last bin is in correct position (test 4)")
+
+    checkEquals(expected.corr1, res1$spearman.rho,
+                msg="Correlations are as expected (test 1)")
+    checkEquals(expected.corr2, res2$spearman.rho,
+                msg="Correlations are as expected (test 2)")
+
+    checkEquals(expected.overall1, res1$overall,
+                msg="Overall correlations are as expected (test 1)")
+    checkEquals(expected.overall2, res2$overall,
+                msg="Overall correlations are as expected (test 2)")
+
+    checkEquals(expected.flags1, res1.flags,
+                msg="P-values are as expected (test 1)")
+    checkEquals(expected.flags2, res2.flags,
+                msg="P-values are as expected (test 2)")
+    checkEquals(expected.flags3, res3.flags,
+                msg="P-values are as expected (test 3)")
+    checkEquals(expected.flags4, res4.flags,
+                msg="P-values are as expected (test 4)")
+
+    checkEquals(c(1, 1), range(res1$moving.rho[, "rho"], na.rm=TRUE),
+                msg="Moving correlations are as expected (test 1)")
+    checkEquals(c(-1, -1), range(res2$moving.rho[, "rho"], na.rm=TRUE),
+                msg="Moving correlations are as expected (test 2)")
+    checkEquals(range.moving.3,
+                c(min(range.moving.3[1], range.3[1]),
+                  max(range.moving.3[2], range.3[2])),
+                msg="Moving correlations are as expected (test 3)")
+    checkEquals(c(-1, 1), range(res4$moving.rho[, "rho"], na.rm=TRUE),
+                msg="Moving correlations are as expected (test 4)")
+}
+
 test.gini.coef <- function() {
     ## Setup
     SAMP.SIZE <- 1000
