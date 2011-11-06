@@ -1,5 +1,6 @@
 #include "dplR.h"
 #include <Rinternals.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -110,11 +111,13 @@ char *fgets_eol(char *s, int *n_noteol, int size, FILE *stream){
  */
 SEXP rcompact(SEXP filename){
     char field_id, line[LINE_LENGTH], mplier_str[MPLIER_LENGTH], *found1,
-	*found2, *found_leftpar, *found_dot, *found_rightpar, *id_start,
-	*old_point, *point, *endp, *tmp_name, *tmp_comment;
-    int i, j, n, first_yr, last_yr, n_found, id_length, exponent,
+        *found2, *found_leftpar, *found_dot, *found_rightpar, *found_tilde,
+        *id_start, *old_point, *point, *point2, *endp, *tmp_name,
+        *tmp_comment;
+    int i, j, n, first_yr, last_yr, id_length, exponent,
 	n_repeats, field_width, precision, n_x_w, n_lines, remainder, idx,
-	this_last, divide, *i_first, *i_last;
+	this_last, *i_first, *i_last;
+    Rboolean n_found, divide;
     long long int read_int;
     double read_double, mplier, *r_mplier, *r_data;
     FILE *f;
@@ -130,7 +133,7 @@ SEXP rcompact(SEXP filename){
     /* Open the file for reading */
     const char *fname = CHAR(STRING_ELT(filename, 0));
     f = fopen(fname, "r");
-    if(!f)
+    if(f == NULL)
 	error(_("Could not open file %s for reading"), fname);
 
     this = &first;      /* current rwlnode */
@@ -142,12 +145,12 @@ SEXP rcompact(SEXP filename){
     /* Each round of the loop reads a header line,
      * then the data lines of the corresponding series
      */
-    while(fgets_eol(line, &n_content, LINE_LENGTH, f)){
+    while(fgets_eol(line, &n_content, LINE_LENGTH, f) != NULL){
 	/* In the beginning of the file, if no ~ is found, we assume
 	 * the line is a comment. This is the same approach as in the
 	 * TRiCYCLE program.
 	 */
-	while(!strchr(line, '~')){
+	while(strchr(line, '~') == NULL){
 	    if(n_content > 0){ /* Skip empty lines */
 		++n_comments;
 		tmp_comment = (char *) R_alloc(n_content+1, sizeof(char));
@@ -158,12 +161,12 @@ SEXP rcompact(SEXP filename){
 		    (commentnode *) R_alloc(1, sizeof(commentnode));
 		comment_this = comment_this->next;
 	    }
-	    if(!fgets_eol(line, &n_content, LINE_LENGTH, f)){
+	    if(fgets_eol(line, &n_content, LINE_LENGTH, f) == NULL){
 		early_eof = TRUE;
 		break;
 	    }
 	}
-	if(early_eof)
+	if(early_eof == TRUE)
 	    break;
 
 	/* A simple check to point out too long header
@@ -179,12 +182,12 @@ SEXP rcompact(SEXP filename){
 	    error(_("Series %d: Header line is too long (max length %d)"),
 		  n+1, CONTENT_LENGTH);
 	}
-	n_found = 0;
+	n_found = FALSE;
 
 	/* Find the first '=' character (N or I field) */
 	found1 = strchr(line, '=');
 	/* Not a header line, not a valid file */
-	if(!found1){
+	if(found1 == NULL){
 	    fclose(f);
 	    error(_("Series %d: No '=' found when header line was expected"),
 		  n+1);
@@ -210,7 +213,7 @@ SEXP rcompact(SEXP filename){
 	field_id = toupper((unsigned char)(*(found1+1)));
 	/* We allow N (n) and I (i) fields in either order */
 	if(field_id == 'N'){
-	    n_found = 1;
+	    n_found = TRUE;
 	    if(read_int <= 0){
 		fclose(f);
 		error(_("Series %d: Length of series must be at least one (%ld seen)"),
@@ -232,7 +235,7 @@ SEXP rcompact(SEXP filename){
 
 	/* Find the second '=' character (I or N field) */
 	found2 = strchr(found1+3, '=');
-	if(!found2){
+	if(found2 == NULL){
 	    fclose(f);
 	    error(_("Series %d: Second '=' missing"), n+1);
 	}
@@ -252,7 +255,7 @@ SEXP rcompact(SEXP filename){
 		  n+1, read_int);
 	}
 	field_id = toupper((unsigned char)(*(found2+1)));
-	if(n_found && field_id == 'I'){
+	if(n_found == TRUE && field_id == 'I'){
 	    this->first_yr = (int) read_int;
 	} else if(field_id == 'N'){
 	    if(read_int <= 0){
@@ -287,12 +290,31 @@ SEXP rcompact(SEXP filename){
 	while(*point == ' ')
 	    ++point;
 
+	/* Find last character of series id */
+	found_tilde = strchr(point+1, '~');
+	if(found_tilde == NULL || found_tilde < point + 2){
+	    error(_("Series %d (%s): '~' not found in expected location"),
+		  n+1, this->id);
+	    fclose(f);
+	}
+	point2 = found_tilde - 1;
+	while(*point2 != ' ' && point2 > point + 1)
+	    --point2;
+	--point2;
+	while(*point2 == ' ')
+	    --point2;
+	
 	/* Read series id */
 	if(isalnum((unsigned char)(*point))){
 	    id_start = point;
 	    ++point;
-	    while(isalnum((unsigned char)(*point)))
-		++point;
+	    while(point < point2 + 1){
+	        if(!isalnum((unsigned char)(*point)) && *point != ' '){
+		    fclose(f);
+		    error(_("Series %d: Invalid character in series ID"), n+1);
+	        }
+	        ++point;
+	    }
 	    id_length = (int)(point - id_start);
 	    tmp_name = (char *) R_alloc(id_length+1, sizeof(char));
 	    strncpy(tmp_name, id_start, id_length);
@@ -320,9 +342,9 @@ SEXP rcompact(SEXP filename){
 	}
 	if(exponent < 0){
 	    exponent = -exponent;
-	    divide = 1;
+	    divide = TRUE;
 	} else{
-	    divide = 0;
+	    divide = FALSE;
 	}
 	if(snprintf(mplier_str, MPLIER_LENGTH, "1e%d", exponent) >=
 	   MPLIER_LENGTH){
@@ -337,23 +359,18 @@ SEXP rcompact(SEXP filename){
 	}
 	found_leftpar = endp;
 	found_dot = strchr(found_leftpar+1, '.');
-	if(!found_dot){
+	if(found_dot == NULL){
 	    fclose(f);
 	    error(_("Series %d (%s): No dot found in number format description"),
 		  n+1, this->id);
 	}
 	found_rightpar = strchr(found_dot+1, ')');
-	if(!found_rightpar){
+	if(found_rightpar == NULL){
 	    fclose(f);
 	    error(_("Series %d (%s): No closing parenthesis found"),
 		  n+1, this->id);
 	}
-	if(*(found_rightpar+1) != '~'){
-	    fclose(f);
-	    error(_("Series %d (%s): '~' not found in expected location"),
-		  n+1, this->id);
-	}
-	if(divide){
+	if(divide == TRUE){
 	    divisor = strtod(mplier_str, NULL);
 	    mplier = 1 / divisor; /* Only for information purpose */
 	} else{
@@ -433,7 +450,7 @@ SEXP rcompact(SEXP filename){
 	/* Read the data (full lines) */
 	idx = -n_repeats;
 	for(i=0; i<n_lines; i++){
-	    if(!fgets_eol(line, &n_content, LINE_LENGTH, f)){
+	    if(fgets_eol(line, &n_content, LINE_LENGTH, f) == NULL){
 		fclose(f);
 		error(_("Series %d (%s): Unexpected end of file (%d data lines read)"),
 		      n+1, this->id, i);
@@ -452,7 +469,7 @@ SEXP rcompact(SEXP filename){
 		old_point = point;
 		point -= field_width; /* pick a piece of field_width characters */
 		read_double = strtod(point, &endp);
-		if(endp!=old_point){ /* numbers must be right aligned */
+		if(endp != old_point){ /* numbers must be right aligned */
 		    fclose(f);
 		    error(_("Series %d (%s): Could not read number (data row %d, field %d).\nMalformed number or previous line too long."),
 			  n+1, this->id, i+1, n_repeats-j);
@@ -464,7 +481,7 @@ SEXP rcompact(SEXP filename){
 		 * > length(which(foo/100!=foo*0.01))
 		 * [1] 10
 		 */
-		if(divide)
+		if(divide == TRUE)
 		    this->data[--idx] = read_double / divisor;
 		else
 		    this->data[--idx] = read_double * mplier;
@@ -473,7 +490,7 @@ SEXP rcompact(SEXP filename){
 
 	/* Read the data (possibly remaining shorter line) */
 	if(remainder > 0){
-	    if(!fgets_eol(line, &n_content, LINE_LENGTH, f)){
+	    if(fgets_eol(line, &n_content, LINE_LENGTH, f) == NULL){
 		fclose(f);
 		error(_("Series %d (%s): Unexpected end of file (%d data lines read)"),
 		      n+1, this->id, n_lines);
@@ -490,12 +507,12 @@ SEXP rcompact(SEXP filename){
 		old_point = point;
 		point -= field_width;
 		read_double = strtod(point, &endp);
-		if(endp!=old_point){
+		if(endp != old_point){
 		    fclose(f);
 		    error(_("Series %d (%s): Could not read number (data row %d, field %d).\nMalformed number or previous line too long."),
 			  n+1, this->id, n_lines+1, remainder-j);
 		}
-		if(divide)
+		if(divide == TRUE)
 		    this->data[--idx] = read_double / divisor;
 		else
 		    this->data[--idx] = read_double * mplier;

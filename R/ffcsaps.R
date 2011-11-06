@@ -1,38 +1,43 @@
 ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
 ### support functions
-    ffppual <- function(breaks, c, k, x, left){
-        if (any(diff(x) < 0)){
-            tosort <- TRUE
-            tsort <- sort(x, method="shell", index.return=TRUE)
-            x2 <- tsort$x
-            ix <- tsort$ix
+    ffppual <- function(breaks, c1, c2, c3, c4, x, left){
+        if (left){
+            ix <- order(x)
+            x2 <- x[ix]
         } else{
             x2 <- x
-            tosort <- FALSE
         }
 
         n.breaks <- length(breaks)
-        if (left == 2)
+        if (left) {
+            ## index[i] is maximum of a and b:
+            ## a) number of elements in 'breaks[-n.breaks]' that are
+            ##    less than or equal to x2[i],
+            ## b) 1
             index <- pmax(ffsorted(breaks[-n.breaks], x2), 1)
-        else
-            index <-
-                rev(pmax(n.breaks - ffsorted(-breaks[n.breaks:2], -x2), 1))
+        } else {
+            ## index[i] is:
+            ## 1 + number of elements in 'breaks[-1]' that are
+            ## less than x2[i]
+            index <- ffsorted2(breaks[-1], x2)
+        }
 
         x2 <- x2 - breaks[index]
-        v <- c[index, 1]
+        v <- x2 * (x2 * (x2 * c1[index] + c2[index]) + c3[index]) + c4[index]
 
-        for(i in 2:k)
-            v <- x2 * v + c[index, i]
-
-        if (tosort)
+        if (left)
             v[ix] <- v
         v
     }
 
     ffsorted <- function(meshsites, sites) {
-        index <- sort(c(meshsites, sites),
-                      method="shell", index.return=TRUE)$ix
-        seq_along(index)[index > length(meshsites)] - seq_along(sites)
+        index <- order(c(meshsites, sites))
+        which(index > length(meshsites)) - seq_along(sites)
+    }
+
+    ffsorted2 <- function(meshsites, sites) {
+        index <- order(c(sites, meshsites))
+        which(index <= length(sites)) - seq(from=0, to=length(sites)-1)
     }
 
     ## Creates a sparse matrix A of size n x n.
@@ -42,18 +47,25 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     ## above, negative is below the main diagonal).
     ## A value on column j in A comes from row j in B.
     ## This is similar in function to spdiags(B, d, n, n) in MATLAB.
-    spdiags <- function(B, d, n){
-        a <- matrix(0, 1, 3)
-        for(k in seq_along(d)){
+    spdiags <- function(B, d, n) {
+        n.d <- length(d)
+        A <- matrix(0, n.d * n, 3)
+        count <- 0
+        for(k in seq_len(n.d)){
             this.diag <- d[k]
             i <- inc(max(1, 1 - this.diag), min(n, n - this.diag)) # row
-            if(length(i) > 0){
+            n.i <- length(i)
+            if(n.i > 0){
                 j <- i + this.diag                                 # column
-                a <- rbind(a, cbind(i, j, B[j, k]))
+                row.idx <- seq(from=count+1, by=1, length.out=n.i)
+                A[row.idx, 1] <- i
+                A[row.idx, 2] <- j
+                A[row.idx, 3] <- B[j, k]
+                count <- count + n.i
             }
         }
-        test <- subset(a, a[, 3] != 0)
-        test[order(test[, 2], test[, 1]), , drop=FALSE]
+        A <- A[A[, 3] != 0, , drop=FALSE]
+        A[order(A[, 2], A[, 1]), , drop=FALSE]
     }
 
 ### start main function
@@ -67,10 +79,14 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     n <- length(x2)
     ## quick error check
     if (n < 3) stop("there must be at least 3 data points")
+    if(!is.numeric(f) || length(f) != 1 || f < 0 || f > 1)
+        stop("'f' must be a number between 0 and 1")
+    if(!is.numeric(nyrs) || length(nyrs) != 1 || nyrs <= 1)
+        stop("'nyrs' must be a number greater than 1")
 
-    thesort <- sort(x2, method="shell", index.return=TRUE)
+    ix <- order(x2)
     zz1 <- n - 1
-    xi <- thesort$x
+    xi <- x2[ix]
     zz2 <- n - 2
     diff.xi <- diff(xi)
 
@@ -102,7 +118,7 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     ## accurate across a wide range of f and nyrs
     p.inv <- (1 - f) * (cos(2 * pi / nyrs) + 2) /
         (12 * (cos(2 * pi / nyrs) - 1) ^ 2) / f + 1
-    yi <- y2[thesort$ix]
+    yi <- y2[ix]
     p <- 1 / p.inv
     mplier <- 6 - 6 / p.inv # slightly more accurate than 6*(1-1/p.inv)
     ## forR*p is faster than forR/p.inv, and a quick test didn't
@@ -113,21 +129,23 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     test0 <- xi[-c(1, n)]
     c3 <- c(0, u / p.inv, 0)
     x3 <- c(test0, seq(from=xi[1], to=xi[n], length = 101))
-    ccc <- cbind(diff(c3) / diff.xi,
-                 3 * c3[-n],
-                 diff(yi) / diff.xi - diff.xi * (2 * c3[-n] + c3[-1]),
-                 yi[-n])
-    finalsort <- sort(c(test0, x3), method="shell", index.return=TRUE)
+    cc.1 <- diff(c3) / diff.xi
+    cc.2 <- 3 * c3[-n]
+    cc.3 <- diff(yi) / diff.xi - diff.xi * (2 * c3[-n] + c3[-1])
+    cc.4 <- yi[-n]
+    to.sort <- c(test0, x3)
+    ix.final <- order(to.sort)
+    sorted.final <- to.sort[ix.final]
     tmp <-
-        unique(data.frame(cbind(finalsort$x,
-                                c(ffppual(xi, ccc, 4, test0, 3),
-                                  ffppual(xi, ccc, 4, x3, 2))[finalsort$ix])))
+        unique(data.frame(sorted.final,
+                          c(ffppual(xi, cc.1,cc.2,cc.3,cc.4, test0, FALSE),
+                            ffppual(xi, cc.1,cc.2,cc.3,cc.4, x3, TRUE))[ix.final]))
     ## get spline on the right timescale - kludgy
     tmp2 <- tmp
-    tmp2[, 1] <- round(tmp2[, 1], 5) # tries to deal with identical() issues
-    res <- tmp2[tmp2[, 1] %in% x2, 2]
+    tmp2[[1]] <- round(tmp2[[1]], 5) # tries to deal with identical() issues
+    res <- tmp2[[2]][tmp2[[1]] %in% x2]
     ## deals with identical() issues via linear approx
     if(length(res) != n)
-        res <- approx(x=tmp[, 1], y=tmp[, 2], xout=x2)$y
+        res <- approx(x=tmp[[1]], y=tmp[[2]], xout=x2)$y
     res
 }
