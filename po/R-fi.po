@@ -4,10 +4,10 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.7\n"
-"Report-Msgid-Bugs-To: bugs@r-project.org\n"
-"POT-Creation-Date: 2011-09-14 11:29+0300\n"
-"PO-Revision-Date: 2011-09-14 11:29+0300\n"
+"Project-Id-Version: dplR 1.4.8\n"
+"Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
+"POT-Creation-Date: 2011-11-01 19:30+0200\n"
+"PO-Revision-Date: 2011-11-01 19:32+0200\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -15,6 +15,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "'rwl' must be a data.frame"
+msgstr "’rwl’:n täytyy olla data.frame"
 
 msgid "dimension problem:"
 msgstr "dimensio-ongelma:"
@@ -54,6 +57,9 @@ msgstr "Korrelaatio"
 
 msgid "'prefix' must be a character string with less than 4 characters"
 msgstr "’prefix’in täytyy olla alle 4-merkkinen merkkijono"
+
+msgid "'po' must be a data.frame"
+msgstr "’po’:n täytyy olla data.frame"
 
 msgid "'ncol(rw)' != 'nrow(po)'"
 msgstr "’ncol(rw)’ ≠ ’nrow(po)’"
@@ -115,6 +121,12 @@ msgstr "’y’:n täytyy olla vektori"
 
 msgid "there must be at least 3 data points"
 msgstr "täytyy olla vähintään 3 datapistettä"
+
+msgid "'f' must be a number between 0 and 1"
+msgstr "’f’:n täytyy olla numero väliltä 0–1"
+
+msgid "'nyrs' must be a number greater than 1"
+msgstr "’nyrs’:n täytyy olla numero ja suurempi kuin 1"
 
 msgid "the data abscissae must be distinct"
 msgstr "datan abskissojen täytyy olla erilliset"
@@ -367,7 +379,8 @@ msgid "'ids' must be a data.frame with columns 'tree' and 'core'"
 msgstr "’ids’:n täytyy olla data.frame, jossa on sarakkeet ’tree’ ja ’core’"
 
 msgid "Series with matching tree/core IDs have been averaged"
-msgstr "Samoilla ’tree’/’core’-tunnisteilla varustetut sarjat on keskiarvoistettu"
+msgstr ""
+"Samoilla ’tree’/’core’-tunnisteilla varustetut sarjat on keskiarvoistettu"
 
 msgid "'window.length' is larger than the number of years in 'rwi'"
 msgstr "’window.length’ on suurempi kuin vuosien määrä ’rwi’:ssä"
@@ -460,6 +473,9 @@ msgstr "Aika"
 
 msgid "Period"
 msgstr "Jakso"
+
+msgid "'rwl.df' must be a data.frame"
+msgstr "’rwl.df’:n täytyy olla data.frame"
 
 msgid "'prec' must equal 0.01 or 0.001"
 msgstr "’prec’in täytyy olla 0.01 tai 0.002"
