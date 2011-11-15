@@ -1,5 +1,5 @@
-d12c1cf426c6636e79b3ce30204d0474 *ChangeLog
-f5269b3274a0541015108467d17ee574 *DESCRIPTION
+264c55b3bc8b2fb08b5b28d1250cc6f2 *ChangeLog
+78a6d53e2c79d5853e9c8ee13c47fa12 *DESCRIPTION
 3885fe129bbd55fe716d39a970e3cd34 *NAMESPACE
 7d628159308ab84edcb960b6a8570ac4 *R/bai.in.R
 f6e0371a9c9c449a4bd3bd2f21511a5a *R/bai.out.R
@@ -130,7 +130,7 @@ a5f332402745cee8a79b551c74ce7fac *src/exactmean.c
 f704ac643ecd8b16a02c5ca794b3d472 *src/exactsum.c
 196f6e3847a95e56ba9fba412b55eea0 *src/exactsum.h
 15171cb8aaf374df1e26e45755cbe5df *src/gini.c
-2c0e7929b99774f8b35220a9cca96cf4 *src/rcompact.c
+3404bf2b2c0658f2abf3b02b6b1d9b68 *src/rcompact.c
 c9a0148ebc472fda0304fdda481f727e *src/readloop.c
 222523eaa935672dd2a4ab8fc71bfe0e *src/sens.c
 81bcd6671f4df98cdcf004d7ed082aad *src/tbrm.c
