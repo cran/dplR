@@ -1,3 +1,55 @@
+2011-11-23 Mikko Korpela
+* CHANGES IN dplR VERSION 1.5.0
+
+Various .R files:
+-----------------
+
+- Use TRUE instead of T
+- sapply() replaced with vapply() or vectorized operations
+
+File: detrend.series.R
+----------------------
+
+- Checks that there are no NAs in the middle of the series.  Series from
+  dplR rwl data.frames don't have mid-series NAs (unless manipulated by
+  the user), but other data might.
+
+File: read.crn.R
+----------------
+
+- Calls to read.fwf() now set the colClasses parameter. This gives
+  more predictable behavior when the input file contains non-integer
+  data where integers are expected. That is,.the function stops with
+  a clear error message, whereas previously, the resulting data.frame
+  would have contained seemingly random zeros.
+- Some optimizations (vectorization, less copying, etc.)
+- In the non-standard situation of multiple series per file, the previous
+  versions assumed the same range of years for all series. This rule,
+  breaking of which would give strange results, no longer applies.
+
+File: read.fh.R
+---------------
+
+- Replaced read.csv() with readLines()
+- Unnecessary captures removed from regular expressions
+- Small optimizations (e.g., positions() was replaced with a more
+  efficient solutions)
+- The possibly dangerous removal of zeros, even from the middle of
+  series, was rewritten
+- Gives a clear error message when a data series has unexpected length
+- Handles empty files / files with zero records better
+
+File: read.tucson.R
+-------------------
+
+- Calls to read.fwf() now set the colClasses parameter (see explanation
+  above)
+
+File: rwi.stats.running.R
+-------------------------
+
+- Fixes a bug where the function would not work if 'ids' was NULL
+
 2011-11-14 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.9
 
