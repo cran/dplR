@@ -4,9 +4,9 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.8\n"
+"Project-Id-Version: dplR 1.5.0\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-11-01 19:30+0200\n"
+"POT-Creation-Date: 2011-11-23 17:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,6 +91,12 @@ msgid "RWI"
 msgstr ""
 
 msgid "Sample Depth"
+msgstr ""
+
+msgid "all values are 'NA'"
+msgstr ""
+
+msgid "'NA's are not allowed in the middle of the series"
 msgstr ""
 
 msgid "Age (Yrs)"
@@ -234,6 +240,15 @@ msgstr ""
 msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
 msgstr ""
 
+msgid "in series %s:"
+msgstr ""
+
+msgid "too few values (expected %d, got %d)"
+msgstr ""
+
+msgid "too many values (expected %d, got %d)"
+msgstr ""
+
 msgid "Site-Tree-Core mask is larger than 8"
 msgstr ""
 
@@ -283,12 +298,6 @@ msgid "in project %d, derived series %d:"
 msgstr ""
 
 msgid "negative values interpreted as missing"
-msgstr ""
-
-msgid "too many values (expected %d, got %d)"
-msgstr ""
-
-msgid "too few values (expected %d, got %d)"
 msgstr ""
 
 msgid "in undated series %d:"
