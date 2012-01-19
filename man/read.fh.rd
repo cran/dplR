@@ -5,13 +5,14 @@
   This function reads in a Heidelberg (block or column) format file of ring widths (.fh).
 }
 \usage{
-  read.fh(fname)
+read.fh(fname)
 }
 \arguments{
-  \item{fname}{ a character vector giving the file name of the fh file. }
+  \item{fname}{ a \code{character} vector giving the file name of the fh
+    file. }
 }
 \details{
-  This reads in a fh-file with ring-widths in blocks (decadal format) or in columns (as with comment flags e.g.) as used by TSAP program. Chronologies or half-chronos in fh-format are not supported.
+  This reads in a fh-file with ring widths in blocks (decadal format) or in columns (e.g., as with comment flags) as used by TSAP program. Chronologies or half-chronos in fh-format are not supported.
 }
 \value{
   A \code{data.frame} with the series in columns and the years as rows. The
@@ -19,6 +20,6 @@
  }
 \author{ Christian Zang.  Patched by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}} }
-\references{ Rinn, F. (2003) \emph{TSAP-Win User Reference Manual.} Rinntech, Heidelberg \url{http://www.rinntech.com}
+\references{ Rinn, F. (2003) \emph{TSAP-Win User Reference Manual.} Rinntech, Heidelberg \url{http://www.rinntech.com/}
 }
 \keyword{ IO }
