@@ -92,7 +92,14 @@ ar.func <- function(x) {
 
 ### Range of years. Used in cms, rcs, rwl.stats, seg.plot, spag.plot, ...
 yr.range <- function(x, yr.vec = as.numeric(names(x))) {
-    range(yr.vec[!is.na(x)])
+    na.flag <- is.na(x)
+    if (all(na.flag)) {
+        res <- rep(NA, 2)
+        mode(res) <- mode(yr.vec)
+        res
+    } else {
+        range(yr.vec[!na.flag])
+    }
 }
 
 ### Multiple ranges of years.
@@ -182,7 +189,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         idx.bad <- grep(bad.chars, x.cut, perl=TRUE)
         if (length(idx.bad) > 0) {
             warning("characters outside a-z, A-Z, 0-9 present: renaming series")
-            if (nchar(mapping.fname) > 0) {
+            if (nzchar(mapping.fname)) {
                 write.map <- TRUE
             }
             rename.flag[idx.bad] <- TRUE
@@ -194,7 +201,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         over.limit <- nchar(x.cut) > limit
         if (any(over.limit)) {
             warning("some names are too long: renaming series")
-            if (nchar(mapping.fname) > 0) {
+            if (nzchar(mapping.fname)) {
                 write.map <- TRUE
             }
             rename.flag[over.limit] <- TRUE
@@ -210,7 +217,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         y <- x.cut
     } else {
         warning("duplicate names present: renaming series")
-        if (nchar(mapping.fname) > 0) {
+        if (nzchar(mapping.fname)) {
             write.map <- TRUE
         }
 
@@ -249,7 +256,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
                     suffix.count <- count.base(suffix.count, n.an)
                     proposed <-
                         compose.name(unique.cut[i],alphanumeric,suffix.count,limit)
-                    if (nchar(proposed) == 0) {
+                    if (nzchar(proposed)) {
                         warning("could not remap a name: some series will be missing")
                         still.looking <- FALSE
                         ## F for Fail...

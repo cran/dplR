@@ -1,3 +1,116 @@
+* CHANGES IN dplR VERSION 1.5.5
+
+File: NAMESPACE
+---------------
+
+- Exporting new functions
+
+Various .R files:
+-----------------
+
+- Use 'nzchar(x)' instead of 'nchar(x) > 0'
+
+File: rwi.stats.running.R
+-------------------------
+
+- Added prewhitening option to rwi.stats.running() and by extension rwi.stats().
+  There are two new arguments prewhiten and n that are passed to normalize1()
+  as in the xdating functions e.g., corr.rwl.seg(). Help file changed.
+
+Files: corr.rwl.seg.R, seg.plot.R, rwl.stats.R, spag.plot.R
+-----------------------------------------------------------
+
+- Support for input of length 1
+
+
+File: corr.rwl.seg.R
+--------------------
+
+- Fixed 'ylim' in plot()
+- Fixed "no guides" case
+- stops with a clear error message if 'rwl' has too few rows for the given
+  'seg.length' and 'bin.floor' combination
+
+File: fill.internal.NA.R
+------------------------
+
+- New function fill.internal.NA() fills NA values internal to a series.
+  Written by Andy Bunn and Mikko Korpela. Help page added as well.
+
+File: pointer.R
+---------------
+
+- New function pointer() calculates pointer years from a group of
+  ring-width series.  Written by Pierre Mérian, adapted for dplR and
+  improved by Andy Bunn and Mikko Korpela. Help page added as well.
+
+File: rcs.R
+-----------
+
+- Graceful handling of empty input
+
+File: read.compact.R
+--------------------
+
+- Pretty printing of summary output, no more ragged lines
+
+File: read.fh.R
+---------------
+
+- Pretty printing of summary output, no more ragged lines
+- More robust detection of block and single column data representations
+- Data block, when using block representation, is interpreted as fixed
+  width fields (10*6)). Reference: TRiCYCLE Users Manual, Version 0.2.6.
+- Different units are supported. Default is 1/100 mm.
+- Each data block is mapped to the correct header block. Previously, there
+  was a risk of using the wrong header if the file contained data in
+  formats other than "Tree" or "Single". Also, the end position
+  of any data block could be off if data with different formats was
+  present in the file. Presumably the function would have failed with an
+  obscure error message.
+- Added support for site, tree, core, etc. metadata. Results are given as
+  an attribute of the return value, named "ids".
+- Added support for MissingRingsBefore (pith offset) metadata. Results are
+  given as an attribute named "po".
+
+File: read.tucson.R
+-------------------
+
+- Fixed trimming of all-NA rows
+- Fixed a bug that could crash R if the fided-width columns of the input
+  file did not follow the (loose) specifications of the Tucson format
+- AB: Note to dplR developers that this is a result of a poor standard in
+  the Tucson format but this fix is needed to work with files that are
+  on the ITRDB. Interestingly, dpl and ARSTAN are more robust to these
+  kinds of inconsistencies. Mikko's note: always check that your
+  assumptions a piece of input are correct before using the said input
+  to compute array indices, particularly in C code.
+- Can deal with CR CR LF newlines by reading the whole file into memory
+  at first and stripping empty lines
+- Can read non-standard files where one or more of the stop markers is
+  the 11th data column of its row
+- Can read non-standard files where columns don't have their proper
+  widths, including tab-delimited files
+- Can read non-standard files where missing data is marked with
+  non-numeric characters
+- Printed summary is justified, no more ragged lines
+- Interprets lines containing "#" characters (in positions 1-78) as
+  comments. For now, comments are ignored.
+- Fixed a bug that could cause mixing of values from two or more
+  measurement series sharing the same ID. Now it is an error if the input
+  file contains more than one measurement for any year, ID pair.
+- Accommodate mid-series upper and lower case differences: If a series
+  does not end with a stop marker, see if the series ID of the next row
+  after the last belonging to the series without a stop marker matches
+  when case differences are ignored. If so, interpret these as the same
+  series.
+
+File: write.tucson.R
+--------------------
+
+- Instead of always using 1000, 999 is now randomly converted to either
+  998 or 1000 (prec == 0.01) => no bias (even if small)
+
 * CHANGES IN dplR VERSION 1.5.4
 
 File: DESCRIPTION
