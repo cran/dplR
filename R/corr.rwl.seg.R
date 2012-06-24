@@ -94,7 +94,11 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     } else {
         min.bin <- ceiling(min.yr / bin.floor) * bin.floor
     }
-    bins <- seq(from=min.bin, to=max.yr - seg.length + 1, by=seg.lag)
+    max.bin <- max.yr - seg.length + 1
+    if (max.bin < min.bin) {
+        stop("shorten 'seg.length' or adjust 'bin.floor'")
+    }
+    bins <- seq(from=min.bin, to=max.bin, by=seg.lag)
     bins <- cbind(bins, bins + (seg.length - 1))
     nbins <- nrow(bins)
     bin.names <- paste0(bins[, 1], ".", bins[, 2])
@@ -178,7 +182,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     ## plot
     if (make.plot) {
         segs <- rwi
-        extreme.year <- apply(segs, 2, yr.range, yr.vec=yrs)
+        extreme.year <- as.matrix(apply(segs, 2, yr.range, yr.vec=yrs))
         rsult <- sort.int(extreme.year[1, ], decreasing=FALSE,
                           index.return=TRUE)
         neworder <- rsult$ix
@@ -190,7 +194,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         on.exit(par(op), add=TRUE)
         col.pal <- c("#E41A1C", "#377EB8", "#4DAF4A")
         par(mar=c(4, 5, 4, 5) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)
-        plot(yrs, segs[, 1], type="n", ylim=c(0, nsegs),
+        plot(yrs, segs[, 1], type="n", ylim=c(0.5, nsegs + 0.5),
              axes=FALSE, ylab="", xlab=gettext("Year"),
              sub=gettextf("Segments: length=%d,lag=%d", seg.length, seg.lag,
              domain="R-dplR"),
@@ -259,7 +263,9 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                 ## guides
                 guides.x <- guides.x.base[guides.x.base >= segs.mat[i, 1]]
                 guides.x <- guides.x[guides.x <= segs.mat[i, 2]]
-                segments(guides.x, i, guides.x, y.deviation, col="white")
+                if (length(guides.x) > 0) {
+                    segments(guides.x, i, guides.x, y.deviation, col="white")
+                }
             }
         }
 

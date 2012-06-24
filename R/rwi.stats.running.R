@@ -52,6 +52,7 @@ rwi.stats <- function(rwi, ids=NULL, period=c("max", "common"), ...) {
 
 ### Main function, exported to user
 rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
+                              prewhiten=FALSE,n=NULL,
                               running.window=TRUE,
                               window.length=min(50, nrow(rwi)),
                               window.overlap=floor(window.length / 2),
@@ -74,7 +75,14 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             stop("'window.length' is smaller than 'min.corr.overlap'")
         }
     }
-
+    tmp <- normalize1(rwi, n, prewhiten)
+    if(!all(tmp$idx.good)) {
+        warning("after prewhitening, 'rwi' contains column(s) without at least four observations",
+                call.=FALSE)
+        cat(gettext("note that there is no error checking on column lengths if filtering is not performed\n",
+                    domain="R-dplR"))
+    }
+    rwi <- tmp$master
     rwi2 <- as.matrix(rwi)
     n.cores <- ncol(rwi2)
 

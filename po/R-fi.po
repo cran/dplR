@@ -4,10 +4,10 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.4\n"
+"Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-04-26 19:31+0300\n"
-"PO-Revision-Date: 2012-04-26 19:37+0300\n"
+"POT-Creation-Date: 2012-06-15 18:41+0300\n"
+"PO-Revision-Date: 2012-06-15 18:46+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -181,6 +181,21 @@ msgstr "luku alueen ulkopuolella tai ei kokonaisluku"
 msgid "'x1' and 'y1' lengths differ"
 msgstr "’x1’:n ja ’y1’:n pituudet eroavat"
 
+msgid "'rgv.thresh' must range from 0 to 100"
+msgstr "’rgv.thresh’in täytyy olla välillä 0–100"
+
+msgid "'nseries.thresh' must range from 0 to 100"
+msgstr "’nseries.thresh’in täytyy olla välillä 0–100"
+
+msgid "'rwl' must be coercible to a matrix"
+msgstr "’rwl’:n täytyy olla muunnettavissa matrix-muotoon"
+
+msgid "'rwl' must have explicit row names"
+msgstr "’rwl’:ssä pitää olla eksplisiittiset rivinimet"
+
+msgid "'rwl' must have at least 2 rows"
+msgstr "’rwl’:ssä pitää olla vähintään 2 riviä"
+
 msgid "'seg.length' can be at most 1/2 the number of years in 'rwl'"
 msgstr "’seg.length’ voi olla enintään puolet ’rwl’:n vuosien määrästä"
 
@@ -253,17 +268,51 @@ msgid "All embedded sample depths are one...Dumping from matrix"
 msgstr ""
 "Kaikki sisäänrakennetut näytemäärät ovat yksi...Jätetään pois matriisista"
 
-msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
-msgstr "jokaisella sarjalla täytyy olla ’DateBegin’‐ ja ’DateEnd’‐merkinnät"
+msgid "file has no data in \"Tree\" or \"Single\" formats"
+msgstr "tiedostossa ei ole \"Tree\"- tai \"Single\"-muotoista dataa"
+
+msgid "invalid file: HEADER and DATA don't match"
+msgstr "epäkelpo tiedosto: HEADER- ja DATA-osat eivät sovi yhteen"
+
+msgid "more HEADER blocks than DATA blocks in supported formats"
+msgstr "enemmän HEADER-osia kuin tuettuja DATA-osia"
+
+msgid "number of \"KeyCode\" lines is not 1"
+msgstr "\"KeyCode\"-rivien lukumäärä ei ole 1"
 
 msgid "in series %s:"
 msgstr "sarjassa %s:"
+
+msgid "number of \"DateBegin\" lines is not 1"
+msgstr "\"DateBegin\"-rivien lukumäärä ei ole 1"
+
+msgid "number of \"DateEnd\" lines is not 1"
+msgstr "\"DateEnd\"-rivien lukumäärä ei ole 1"
+
+msgid "cannot interpret \"Unit\" line"
+msgstr "\"Unit\"-riviä ei voida tulkita"
+
+msgid "number of \"Unit\" lines is > 1"
+msgstr "\"Unit\"-rivien lukumäärä on > 1"
 
 msgid "too few values (expected %d, got %d)"
 msgstr "liian vähän arvoja (odotettiin %d, saatiin %d)"
 
 msgid "too many values (expected %d, got %d)"
 msgstr "liian monta arvoa (odotettiin %d, saatiin %d)"
+
+msgid "Tree and core IDs were found. See attribute \"ids\"."
+msgstr "Puu- ja näytetunnisteet löydettiin. Katso attribuutti \"ids\"."
+
+msgid "Pith offsets were found (some missing values). See attribute \"po\"."
+msgstr ""
+"Sarjojen alusta puuttuvien renkaiden määriä löydettiin. Katso attribuutti "
+"\"po\"."
+
+msgid "Pith offsets were found (no missing values). See attribute \"po\"."
+msgstr ""
+"Sarjojen alusta puuttuvien renkaiden määrät löydettiin. Katso attribuutti "
+"\"po\"."
 
 msgid "Site-Tree-Core mask must only contain integral values"
 msgstr "Paikka–Puu–Näyte‐maskissa täytyy olla pelkkiä kokonaislukuja"
@@ -384,6 +433,12 @@ msgstr "* laji:"
 msgid "* variable:"
 msgstr "* muuttuja:"
 
+msgid "all rows (last rows excluded) have too few values"
+msgstr "kaikki rivit (paitsi sarjojen viimeiset) sisältävät liian vähän arvoja"
+
+msgid "file format problems (or data from the future)"
+msgstr "ongelmia tiedostomuodossa (tai dataa tulevaisuudesta)"
+
 msgid "first line in rwl file ends before col 12"
 msgstr "tiedoston ensimmäinen rivi päättyy ennen saraketta 12"
 
@@ -393,8 +448,36 @@ msgstr "Tiedostossa näyttää olevan otsake"
 msgid "There does not appear to be a header in the rwl file"
 msgstr "Tiedostossa ei näytä olevan otsaketta"
 
-msgid "precision unknown in series %s"
-msgstr "tuntematon tarkkuus sarjassa %s"
+msgid "file has no data"
+msgstr "tiedostossa ei ole dataa"
+
+msgid "non-integral numbers found"
+msgstr "löydettiin ei‐kokonaislukuja"
+
+msgid "tabs used, assuming non-standard, tab-delimited file"
+msgstr "sarkaimia käytetty, oletetaan epästandardi, sarkainerotettu tiedosto"
+
+msgid "fixed width failed, trying variable width columns"
+msgstr "kiinteä sarakeleveys epäonnistui, kokeillaan säätyvää leveyttä"
+
+msgid "trying fixed width names, years, variable width data"
+msgstr ""
+"kokeillaan kiinteän sarakeleveyden nimiä ja vuosia, säätyvän leveyden dataa"
+
+msgid "failed to read rwl file"
+msgstr "tiedoston luku epäonnistui"
+
+msgid "bad location of stop marker in series %s"
+msgstr "epäkelpo loppumerkin sijainti sarjassa %s"
+
+msgid "precision unknown in all series"
+msgstr "tuntematon tarkkuus kaikissa sarjoissa"
+
+msgid "combining series %s and %s"
+msgstr "yhdistetään sarjat %s ja %s"
+
+msgid "file has no good data"
+msgstr "tiedostossa ei ole kelvollista dataa"
 
 msgid "'ncol(rwi)' != 'nrow(ids)'"
 msgstr "’ncol(rwi)’ ≠ ’nrow(ids)’"
@@ -414,6 +497,20 @@ msgstr "’window.overlap’ on liian suuri, maksimiarvo on ’window.length’�
 msgid "'window.length' is smaller than 'min.corr.overlap'"
 msgstr "’window.length’ on pienempi kuin ’min.corr.overlap’"
 
+msgid ""
+"after prewhitening, 'rwi' contains column(s) without at least four "
+"observations"
+msgstr ""
+"valkaisun jälkeen ’rwi’ sisältää ainakin yhden sarakkeen, jossa on\n"
+"vähemmän kuin 4 havaintoa"
+
+msgid ""
+"note that there is no error checking on column lengths if filtering is not "
+"performed"
+msgstr ""
+"huomaa että sarakkeiden pituuksia ei tarkisteta, jos suodatus jätetään\n"
+"pois"
+
 msgid "There are zeros in the data. Consider the option 'zero.is.missing'."
 msgstr "Datassa on nollia. Harkitse asetusta ’zero.is.missing’."
 
@@ -422,7 +519,7 @@ msgstr "’ids’:n täytyy olla data.frame, jossa on sarakkeet ’tree’ ja �
 
 msgid "Series with matching tree/core IDs have been averaged"
 msgstr ""
-"Samoilla ’tree’/’core’-tunnisteilla varustetut sarjat on keskiarvoistettu"
+"Samoilla puu- ja näytetunnisteilla varustetut sarjat on keskiarvoistettu"
 
 msgid "'window.length' is larger than the number of years in 'rwi'"
 msgstr "’window.length’ on suurempi kuin vuosien määrä ’rwi’:ssä"
@@ -663,3 +760,18 @@ msgid "There is %d derived series, returned in '$derived'\n"
 msgid_plural "There are %d derived series, returned in '$derived'\n"
 msgstr[0] "On %d johdannaissarja, joka palautetaan muuttujassa ’$derived’\n"
 msgstr[1] "On %d johdannaissarjaa, jotka palautetaan muuttujassa ’$derived’\n"
+
+msgid "%d row has too many values (ID, decade %s)"
+msgid_plural "%d rows have too many values (IDs, decades %s)"
+msgstr[0] "%d rivissä on liian monta arvoa (ID, vuosikymmen %s)"
+msgstr[1] "%d rivissä on liian monta arvoa (IDt, vuosikymmenet %s)"
+
+msgid "overlap in %d pair of ID, year: %s"
+msgid_plural "overlap in %d pairs of ID, year: %s"
+msgstr[0] "päällekkäisyyttä %d ID, vuosi -parissa: %s"
+msgstr[1] "päällekkäisyyttä %d ID, vuosi -parissa: %s"
+
+msgid "precision unknown in series %s"
+msgid_plural "precision unknown in series %s"
+msgstr[0] "tuntematon tarkkuus sarjassa %s"
+msgstr[1] "tuntematon tarkkuus sarjoissa %s"

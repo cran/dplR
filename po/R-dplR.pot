@@ -4,9 +4,9 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.4\n"
+"Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-04-26 19:31+0300\n"
+"POT-Creation-Date: 2012-06-15 18:41+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -174,6 +174,21 @@ msgstr ""
 msgid "'x1' and 'y1' lengths differ"
 msgstr ""
 
+msgid "'rgv.thresh' must range from 0 to 100"
+msgstr ""
+
+msgid "'nseries.thresh' must range from 0 to 100"
+msgstr ""
+
+msgid "'rwl' must be coercible to a matrix"
+msgstr ""
+
+msgid "'rwl' must have explicit row names"
+msgstr ""
+
+msgid "'rwl' must have at least 2 rows"
+msgstr ""
+
 msgid "'seg.length' can be at most 1/2 the number of years in 'rwl'"
 msgstr ""
 
@@ -243,16 +258,46 @@ msgstr ""
 msgid "All embedded sample depths are one...Dumping from matrix"
 msgstr ""
 
-msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
+msgid "file has no data in \"Tree\" or \"Single\" formats"
+msgstr ""
+
+msgid "invalid file: HEADER and DATA don't match"
+msgstr ""
+
+msgid "more HEADER blocks than DATA blocks in supported formats"
+msgstr ""
+
+msgid "number of \"KeyCode\" lines is not 1"
 msgstr ""
 
 msgid "in series %s:"
+msgstr ""
+
+msgid "number of \"DateBegin\" lines is not 1"
+msgstr ""
+
+msgid "number of \"DateEnd\" lines is not 1"
+msgstr ""
+
+msgid "cannot interpret \"Unit\" line"
+msgstr ""
+
+msgid "number of \"Unit\" lines is > 1"
 msgstr ""
 
 msgid "too few values (expected %d, got %d)"
 msgstr ""
 
 msgid "too many values (expected %d, got %d)"
+msgstr ""
+
+msgid "Tree and core IDs were found. See attribute \"ids\"."
+msgstr ""
+
+msgid "Pith offsets were found (some missing values). See attribute \"po\"."
+msgstr ""
+
+msgid "Pith offsets were found (no missing values). See attribute \"po\"."
 msgstr ""
 
 msgid "Site-Tree-Core mask must only contain integral values"
@@ -372,6 +417,12 @@ msgstr ""
 msgid "* variable:"
 msgstr ""
 
+msgid "all rows (last rows excluded) have too few values"
+msgstr ""
+
+msgid "file format problems (or data from the future)"
+msgstr ""
+
 msgid "first line in rwl file ends before col 12"
 msgstr ""
 
@@ -381,7 +432,34 @@ msgstr ""
 msgid "There does not appear to be a header in the rwl file"
 msgstr ""
 
-msgid "precision unknown in series %s"
+msgid "file has no data"
+msgstr ""
+
+msgid "non-integral numbers found"
+msgstr ""
+
+msgid "tabs used, assuming non-standard, tab-delimited file"
+msgstr ""
+
+msgid "fixed width failed, trying variable width columns"
+msgstr ""
+
+msgid "trying fixed width names, years, variable width data"
+msgstr ""
+
+msgid "failed to read rwl file"
+msgstr ""
+
+msgid "bad location of stop marker in series %s"
+msgstr ""
+
+msgid "precision unknown in all series"
+msgstr ""
+
+msgid "combining series %s and %s"
+msgstr ""
+
+msgid "file has no good data"
 msgstr ""
 
 msgid "'ncol(rwi)' != 'nrow(ids)'"
@@ -400,6 +478,12 @@ msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
 msgstr ""
 
 msgid "'window.length' is smaller than 'min.corr.overlap'"
+msgstr ""
+
+msgid "after prewhitening, 'rwi' contains column(s) without at least four observations"
+msgstr ""
+
+msgid "note that there is no error checking on column lengths if filtering is not performed"
 msgstr ""
 
 msgid "There are zeros in the data. Consider the option 'zero.is.missing'."
@@ -627,5 +711,20 @@ msgstr[1]    ""
 
 msgid        "There is %d derived series, returned in '$derived'\n"
 msgid_plural "There are %d derived series, returned in '$derived'\n"
+msgstr[0]    ""
+msgstr[1]    ""
+
+msgid        "%d row has too many values (ID, decade %s)"
+msgid_plural "%d rows have too many values (IDs, decades %s)"
+msgstr[0]    ""
+msgstr[1]    ""
+
+msgid        "overlap in %d pair of ID, year: %s"
+msgid_plural "overlap in %d pairs of ID, year: %s"
+msgstr[0]    ""
+msgstr[1]    ""
+
+msgid        "precision unknown in series %s"
+msgid_plural "precision unknown in series %s"
 msgstr[0]    ""
 msgstr[1]    ""
