@@ -1,3 +1,34 @@
+* CHANGES IN dplR VERSION 1.5.6
+
+File: write.tucson.R
+------------------------
+
+- Changed series IDs to justify left instead of right. I'm not sure why
+  they ever wanted to be justified left. Silly. (AGB)
+
+File: NAMESPACE
+---------------
+- Exporting new function common.interval()
+
+File: common.interval.R
+------------------------
+
+- New function common.interval() trims a rwl object to a common interval
+  using one of three methods. Contributed by a user Filipe Campelo (fcampelo@ci.uc.pt).
+  This is his first contribution. Added to author list in DESCRIPTION.
+
+File: corr.rwl.seg.R
+--------------------
+
+- Bug fix: series names were not shown (numbers were shown instead)
+- Bug fix: there were off-by-one errors in the length of the bars
+
+File: DESCRIPTION
+---------------
+- Changed author and maintainer to Andy Bunn from Andrew G. Bunn to keep parity between 
+  the names and the email address AGB uses to submit to CRAN. This was made at the
+  request of Kurt Hornik at CRAN
+
 * CHANGES IN dplR VERSION 1.5.5
 
 File: NAMESPACE
