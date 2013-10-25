@@ -1,3 +1,67 @@
+* CHANGES IN dplR VERSION 1.5.7
+
+File: DESCRIPTION
+-----------------
+
+- Import gmp (>= 0.5-2)
+
+File: NAMESPACE
+---------------
+
+- New imports from gmp and utils
+- Export redfit() and runcrit()
+
+Various .R files
+----------------
+
+- Check that length of vector does not overflow integer datatype
+  before use of .C()
+- Avoid possible name clashes when using foreach with parallel backends
+
+File: common.interval.R
+-----------------------
+
+- Optimizations (for example, less subsetting of the 'rwl' data.frame)
+- Better handling of corner cases (zero dimensions etc.)
+- In the plot (make.plot = TRUE), length of lines was adjusted:
+  First year a, last year b is 'b - a + 1' years, not 'b - a' years
+
+File: corr.rwl.seg.R
+--------------------
+
+- New feature: allow the master series to be built from a second set of
+  tree ring series by using a data.frame 'master' argument
+- Replaced some for loops with cleaner vectorized operations or apply().
+
+File: helpers.R
+---------------
+
+- Fixed a bug in fix.names(), related to creating unique short names.
+  The bug affected read.tridas(), write.compact(), write.tridas() and
+  write.tucson() but probably manifested itself quite rarely.
+
+File: rwi.stats.running.R
+-------------------------
+
+- Speedup by using rep.int() instead of rep()
+
+File: sea.R
+-----------
+
+- Extra input checks (e.g. x must have explicit, non-automatic row-names)
+- Some matrices now have the correct type (numeric instead of logical)
+  right from the beginning
+- Small optimization: a temporary matrix is completely overwritten on
+  every round of a loop, so no need to reinitialize
+- Braces always used in if (else) constructs
+
+Files: redfit.R, redfit.c
+-------------------------
+
+- New function redfit() based on REDFIT by Schulz and Mudelsee.  Also
+  another exported function runcrit().
+
+
 * CHANGES IN dplR VERSION 1.5.6
 
 File: write.tucson.R
@@ -24,8 +88,8 @@ File: corr.rwl.seg.R
 - Bug fix: there were off-by-one errors in the length of the bars
 
 File: DESCRIPTION
----------------
-- Changed author and maintainer to Andy Bunn from Andrew G. Bunn to keep parity between 
+-----------------
+- Changed author and maintainer to Andy Bunn from Andrew G. Bunn to keep parity between
   the names and the email address AGB uses to submit to CRAN. This was made at the
   request of Kurt Hornik at CRAN
 
