@@ -179,10 +179,10 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
 
   Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
     Dendrochronology: Applications in the Environmental Sciences}.
-  Springer.  \acronym{ISBN-13}: 978-0792305866.
+  Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 
   Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
-  \acronym{ISBN-13}: 978-1930665392.
+  \acronym{ISBN-13}: 978-1-930665-39-2.
   
 }
 \note{
@@ -203,6 +203,7 @@ rwi.stats.running(ca533.rwi, ca533.ids)
 rwi.stats(ca533.rwi, ca533.ids)        # i.e. running.window = FALSE
 rwi.stats.legacy(ca533.rwi, ca533.ids) # rwi.stats prior to dplR 1.5.3
 \dontrun{
+library(graphics)
 ## Plot the chronology showing a potential cutoff year based on eps
 ca533.rwi <- detrend(rwl = ca533, method = "Spline") # detrend again
 ca533.crn <- chron(ca533.rwi)
