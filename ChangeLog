@@ -1,3 +1,66 @@
+* CHANGES IN dplR VERSION 1.5.8
+
+File: tbrm.Rd
+---------------
+- Improved (slightly) the trbm() examples.
+
+Files: exactmean.R, gini.coef.R, sens1.R, sens2.R, tbrm.R
+---------------------------------------------------------
+
+- Changed calls to .C (where we use DUP = FALSE) so that the
+  binding of NaN will not change, fixing multiple instances of a bug
+  in dplR code revealed by changes in recent R development versions.
+  We were accidentally breaking CRAN's "malicious or anti-social"
+  policy. Thanks to Professor Brian D. Ripley for reporting.
+
+  Now R CMD check --as-cran passes fine.
+
+File: DESCRIPTION
+
+- Added Jacob Cecile as a contributor
+
+File: detrend.R
+---------------
+
+- Adjusted for the changes in detrend.series(),
+  i.e. added the argument constrain.modnegexp.
+
+File: detrend.series.R
+----------------------
+
+- Fixed a bug where RWI could go negative. Thanks to Jacob Cecile for
+  reporting the bug and contributing a proposed solution.
+- A new argument: constrain.modnegexp.  It is now possible to constrain
+  the modified negative exponential function to non-negative values at
+  infinity.
+- Warn if fit is not all positive (backup methods will be used)
+- Use simpler but equivalent rules for checking validity of ModNegExp fit
+- Small optimizations (rep.int; save and reuse length of input)
+
+File: redfit.c
+--------------
+
+- Avoid possibly buggy behavior in the unlikely case that cbind()
+  or length() have been redefined by the user
+
+File: redfit.R
+--------------
+
+- Use slightly faster .rowSums() instead of rowSums()
+- Simplified arithmetic expressions in getdof(): no multiplying by 2
+- Precomputed squared numbers in getdof()
+- Fixed Welch, Hanning, Triangular and Blackman-Harris windows to
+  be DFT-even
+- Computed more precise values for the 6 dB bandwidths of each window,
+  also for short windows.  Uniform sampling was assumed.
+- Two internal functions moved to top level, previously inside
+  print.redfit()
+
+File: tbrm.R
+------------
+
+- Check that C has length 1
+
 * CHANGES IN dplR VERSION 1.5.7
 
 File: DESCRIPTION
