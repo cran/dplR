@@ -335,7 +335,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
 }
 
-\value{ None. Invoked for side effect (file is written).  }
+\value{ \code{\var{fname}} }
 
 \references{ TRiDaS \enc{–}{--} The Tree Ring Data Standard,
   \url{http://www.tridas.org/} }
@@ -351,23 +351,29 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
 \examples{## Write raw ring widths
 data(co021)
-write.tridas(rwl.df = co021, fname = "tmp1.xml", prec = 0.01,
+fname1 <- write.tridas(rwl.df = co021,
+    fname = tempfile(fileext=".xml"), prec = 0.01,
     site.info = list(title = "Schulman old tree no. 1, Mesa Verde",
                      type = "unknown"),
     taxon = "Pseudotsuga menziesii var. menziesii (Mirb.) Franco",
     project.info = list(investigator = "E. Schulman",
                         title = "", category = "",
                         period = "", type = "unknown"))
+print(fname1) # tempfile used for output
 
 ## Write mean value chronology of detrended ring widths
 data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
-write.tridas(crn = ca533.crn, fname = "tmp2.xml",
+fname2 <- write.tridas(crn = ca533.crn,
+    fname = tempfile(fileext=".xml"),
     taxon = "Pinus longaeva D.K. Bailey",
     project.info =
         list(investigator = "Donald A. Graybill, V.C. LaMarche, Jr.",
              title = "Campito Mountain", category = "",
              period = "", type = "unknown"))
+print(fname2) # tempfile used for output
+
+unlink(c(fname1, fname2)) # remove the files
 }
 \keyword{ IO }

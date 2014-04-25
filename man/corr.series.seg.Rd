@@ -8,16 +8,23 @@
 \usage{
 corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
                 seg.length = 50, bin.floor = 100, n = NULL,
-                prewhiten = TRUE, biweight = TRUE, pcrit = 0.05,
+                prewhiten = TRUE, biweight = TRUE, 
+                method = c("spearman", "pearson","kendall"),
+                pcrit = 0.05,
                 make.plot = TRUE, floor.plus1 = FALSE, \dots)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
     rows such as that produced by \code{\link{read.rwl}}. }
-  \item{series}{ a \code{numeric} vector. Usually a tree-ring series. }
+  \item{series}{ a \code{numeric} or \code{character} vector.  Usually a
+    tree-ring series.  If the length of the value is 1, the
+    corresponding column of \code{\var{rwl}} is selected (by name or
+    position) as the series and ignored when building the master
+    chronology.  Otherwise, the value must be \code{numeric}. }
   \item{series.yrs}{ a \code{numeric} vector giving the years of
     \code{\var{series}}.  Defaults to
-    \code{as.numeric(names(\var{series}))}. }
+    \code{as.numeric(names(\var{series}))}.  Ignored if
+    \code{\var{series}} is an index to a column of \code{\var{rwl}}. }
   \item{seg.length}{ an even integral value giving length of segments in
     years (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a non-negative integral value giving the base for
@@ -30,6 +37,9 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
     whitened using \code{\link{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
+  \item{method}{Can either "pearson", "kendall", or "spearman" which indicates
+    the correlation coefficient is to be used. Defaults to "spearman." See 
+    \code{\link{cor.test}}. }
   \item{pcrit}{ a number between 0 and 1 giving the critical value for
     the correlation test. }
   \item{make.plot}{ \code{logical} flag indicating whether to make a
@@ -75,5 +85,18 @@ names(flagged) <- rownames(dat)
 dat$"641143" <- NULL
 seg.100 <- corr.series.seg(rwl = dat, series = flagged,
                            seg.length = 100, biweight = FALSE)
+\dontrun{
+flagged2 <- co021$"641143"
+names(flagged2) <- rownames(dat)
+seg.100.1 <- corr.series.seg(rwl=dat, seg.length=100, biweight=FALSE,
+                             series = flagged2)
+## Select series by name or column position
+seg.100.2 <- corr.series.seg(rwl=co021, seg.length=100, biweight=FALSE,
+                             series = "641143")
+seg.100.3 <- corr.series.seg(rwl=co021, seg.length=100, biweight=FALSE,
+                             series = which(colnames(co021) == "641143"))
+identical(seg.100.1, seg.100.2) # TRUE
+identical(seg.100.2, seg.100.3) # TRUE
+}
 }
 \keyword{ manip }

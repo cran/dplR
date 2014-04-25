@@ -1,25 +1,40 @@
 \name{rwl.stats}
 \alias{rwl.stats}
-\title{ Calculate Descriptive Statistics on Ring-Width Series }
+\alias{summary.rwl}
+\title{ Calculate Descriptive Summary Statistics on Ring-Width Series }
 \description{
-  This function calculates descriptive statistics on a \code{data.frame}
+  This function calculates descriptive statistics on a \code{rwl} object
   of raw or detrended ring-width series.
 }
 \usage{
 rwl.stats(rwl)
+
+\method{summary}{rwl}(object, ...)
+
 }
 \arguments{
-  \item{rwl}{ a \code{data.frame} with (usually) raw ring-width series
+
+  \item{rwl, object}{ a \code{rwl} object with (usually) raw ring-width series
   as columns and years as rows such as that produced by
   \code{\link{read.rwl}}.  It is sometimes desirable to run this on
-  detrended (e.g., rwi) data particularly for the sensitivity measures
-  (\code{\link{sens1}}, \code{\link{sens2}}, \code{\link{gini.coef}}). }
+  detrended (e.g., rwi) data. }
+
+  \item{\dots}{ Additional arguments from the generic function.  These
+    are silently ignored. }
+
 }
+
 \details{
+
   This calculates a variety of descriptive statistics commonly used in
   dendrochronology (see below). Users unfamiliar with these should see
   Cook and Kairiukstis (1990) and Fritts (2001) for further details.
+
+  The \code{\link{summary}} method for class \code{"rwl"} is a wrapper
+  for \code{rwl.stats}.
+  
 }
+
 \value{
   A \code{data.frame} containing descriptive stats on each
   \code{"series"}. These are the first and last year of the series as
@@ -29,8 +44,15 @@ rwl.stats(rwl)
   two measures of sensitivity, the Gini coefficient, and first order
   autocorrelation (\code{"skew"}, \code{"\link{sens1}"},
   \code{"\link{sens2}"}, \code{"\link{gini.coef}"}, \code{"ar1"}).
+  
+  Note that that mean sensitivity is not a robust statitic that should rarely,
+  if ever, be used (Bunn et al. 2013).
 }
 \references{
+
+  Bunn. A.G., Jansma E., Korpela M., Westfall R.D., and Baldwin J. (2013) 
+  Using simulations and data to evaluate mean sensitivity (zeta) as a useful 
+  statistic in dendrochronology Dendrochronologia 31 250–4.
 
   Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences}.
@@ -44,5 +66,6 @@ rwl.stats(rwl)
 \seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }
 \examples{data(ca533)
 rwl.stats(ca533)
+summary(ca533)
 }
 \keyword{ misc }

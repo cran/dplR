@@ -1,5 +1,6 @@
 corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                          prewhiten = TRUE, pcrit=0.05, biweight=TRUE,
+                         method = c("spearman", "pearson", "kendall"),
                          make.plot = TRUE, label.cex=1,
                          floor.plus1 = FALSE, master = NULL,
                          master.yrs = as.numeric(if (is.null(dim(master))) {
@@ -8,16 +9,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                              rownames(master)
                          }),
                          ...) {
-
-    ## helper function
-    yr.range <- function(x, yr.vec=as.numeric(names(x))) {
-        if (any(mask <- !is.na(x))) {
-            range(yr.vec[mask])
-        } else {
-            c(NA, NA)
-        }
-    }
-
+    method <- match.arg(method)
     ## run error checks
     qa.xdate(rwl, seg.length, n, bin.floor)
 
@@ -184,7 +176,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                 bin.pval <- NA
             } else {
                 tmp <- cor.test(series[mask], master2[mask],
-                                method = "spearman", alternative = "greater")
+                                method = method, alternative = "greater")
                 bin.cor <- tmp$estimate
                 bin.pval <- tmp$p.val
             }
@@ -193,7 +185,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         }
         ## overall correlation
         tmp <- cor.test(series, master2,
-                        method = "spearman", alternative = "greater")
+                        method = method, alternative = "greater")
         overall.cor[i, 1] <- tmp$estimate
         overall.cor[i, 2] <- tmp$p.val
     }

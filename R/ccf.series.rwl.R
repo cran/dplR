@@ -5,17 +5,20 @@ ccf.series.rwl <- function(rwl, series,
                            pcrit = 0.05, lag.max = 5, make.plot = TRUE,
                            floor.plus1 = FALSE, ...) {
 
+    ## Handle different types of 'series'
+    tmp <- pick.rwl.series(rwl, series, series.yrs)
+    rwl2 <- tmp[[1]]
+    series2 <- tmp[[2]]
+
     ## run error checks
-    qa.xdate(rwl, seg.length, n, bin.floor)
+    qa.xdate(rwl2, seg.length, n, bin.floor)
     if (lag.max > seg.length) {
         stop("'lag.max' > 'seg.length'")
     }
     seg.lag <- seg.length / 2
 
     ## Normalize.
-    series2 <- series
-    names(series2) <- series.yrs
-    tmp <- normalize.xdate(rwl, series2, n, prewhiten, biweight)
+    tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
     master <- tmp$master
 
     ## trim master so there are no NaN like dividing when only one
@@ -76,7 +79,8 @@ ccf.series.rwl <- function(rwl, series,
             bin.ccf <- NA
         }
         else {
-            tmp <- ccf(master[mask], series2[mask], lag.max=lag.max, plot=FALSE)
+            tmp <- ccf(series2[mask], master[mask], lag.max=lag.max,
+                       plot=FALSE)
             bin.ccf <- as.vector(tmp$acf)
         }
         res.cor[, j] <- bin.ccf
@@ -113,10 +117,16 @@ ccf.series.rwl <- function(rwl, series,
                        panel.abline(v=lag.vec, lty="solid", col="gray")
                        panel.abline(h=0, v=0, lwd=2)
                        panel.abline(h=sig, lwd=2, lty="dashed")
-                       col <- ifelse(y > 0, "#E41A1C", "#377EB8")
+                       #col <- ifelse(y > 0, "#E41A1C", "#377EB8")
+                       col <- ifelse(y > 0, "darkred", "darkblue")
+                       bg <- ifelse(y > 0, "lightsalmon", "lightblue")
                        ## segments, dots for all r
-                       panel.segments(x1=x, y1=0, x2=x, y2=y, col=col, lwd=2)
-                       panel.dotplot(x, y, col = col, ...)
+                       #panel.segments(x1=x, y1=0, x2=x, y2=y, col=col, lwd=2)
+                       #panel.dotplot(x, y, col = col, ...)
+                       panel.segments(x1=x, y1=0, x2=x, y2=y, 
+                                      col=col, lwd=2)
+                       panel.dotplot(x, y, col = col, fill=bg,
+                                     pch=21,...)
                    }, ...)
         trellis.par.set(strip.background = list(col = "transparent"),
                         warn = FALSE)

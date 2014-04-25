@@ -1,11 +1,19 @@
 corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
                             seg.length=50, bin.floor=100, n=NULL,
                             prewhiten = TRUE, biweight=TRUE,
+                            method = c("spearman", "pearson", "kendall"),
                             pcrit=0.05, make.plot = TRUE,
                             floor.plus1 = FALSE, ...) {
 
+    method <- match.arg(method)
+
+    ## Handle different types of 'series'
+    tmp <- pick.rwl.series(rwl, series, series.yrs)
+    rwl2 <- tmp[[1]]
+    series2 <- tmp[[2]]
+
     ## run error checks
-    qa.xdate(rwl, seg.length, n, bin.floor)
+    qa.xdate(rwl2, seg.length, n, bin.floor)
 
     ## turn off warnings for this function
     ## The sig test for spearman's rho often produces warnings.
@@ -16,9 +24,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     seg.lag <- seg.length / 2
 
     ## Normalize.
-    series2 <- series
-    names(series2) <- series.yrs
-    tmp <- normalize.xdate(rwl, series2, n, prewhiten, biweight)
+    tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
     master <- tmp$master
 
     ## trim master so there are no NaN like dividing when
@@ -92,7 +98,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
             bin.cor <- NA
             bin.pval <- NA
         } else {
-            tmp <- cor.test(series2[mask], master[mask], method = "spearman",
+            tmp <- cor.test(series2[mask], master[mask], method = method,
                             alternative = "greater")
             bin.cor <- tmp$estimate
             bin.pval <- tmp$p.val
@@ -101,7 +107,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         res.pval[j] <- bin.pval
     }
     ## overall correlation
-    tmp <- cor.test(series2, master, method = "spearman",
+    tmp <- cor.test(series2, master, method = method,
                     alternative = "greater")
     overall.cor[1] <- tmp$estimate
     overall.cor[2] <- tmp$p.val

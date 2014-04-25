@@ -15,10 +15,15 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
     such as that produced by \code{\link{read.rwl}}. }
-  \item{series}{ a \code{numeric} vector. Usually a tree-ring series. }
+  \item{series}{ a \code{numeric} or \code{character} vector.  Usually a
+    tree-ring series.  If the length of the value is 1, the
+    corresponding column of \code{\var{rwl}} is selected (by name or
+    position) as the series and ignored when building the master
+    chronology.  Otherwise, the value must be \code{numeric}. }
   \item{series.yrs}{ a \code{numeric} vector giving the years of
     \code{\var{series}}.  Defaults to
-    \code{as.numeric(names(\var{series}))}. }
+    \code{as.numeric(names(\var{series}))}.  Ignored if
+    \code{\var{series}} is an index to a column of \code{\var{rwl}}. }
   \item{seg.length}{ an even integral value giving length of segments in
     years (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a non-negative integral value giving the base for
@@ -49,8 +54,16 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   \code{\link{ccf}} at overlapping segments set by
   \code{\var{seg.length}}. For instance, with \code{\var{lag.max}} set
   to 5, cross-correlations would be calculated at for each segment with
-  the master lagged at \code{\var{k} = -5:5} years.  The function is
-  typically invoked to produce a plot.
+  the master lagged at \code{\var{k} = -5:5} years.  
+  
+  The cross correlations are calculated calling
+  \code{\link{ccf}} as 
+  \code{ccf(x=series, y=master, lag.max=lag.max, plot=FALSE)}. Note that
+  prior to dplR version 1.60, the \code{master} was set as \code{x} and 
+  the \code{series} as \code{y}. This was changed to be more in line with 
+  user expectations so that a missing ring in a series produces a positive
+  lag in the plot rather than a negative lag. This structure of this call
+  does put the plots at odds with Figure 3 in Bunn (2010) which is unfortunate.
 
   Correlations are calculated for the first segment, then the
   second segment and so on. Correlations are only calculated for segments with
@@ -83,6 +96,9 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
 \seealso{ \code{\link{corr.rwl.seg}}, \code{\link{corr.series.seg}},
   \code{\link{skel.plot}}, \code{\link{series.rwl.plot}}
 }
+\references{ Bunn AG (2010). Statistical and visual crossdating 
+  in R using the dplR library. Dendrochronologia, 28(4): 251-258.
+}
 \examples{
 data(co021)
 dat <- co021
@@ -92,5 +108,18 @@ flagged <- c(NA, flagged[-325])
 names(flagged) <- rownames(dat)
 dat$"641143" <- NULL
 ccf.100 <- ccf.series.rwl(rwl = dat, series = flagged, seg.length = 100)
+\dontrun{
+flagged2 <- co021$"641143"
+names(flagged2) <- rownames(dat)
+ccf.100.1 <- ccf.series.rwl(rwl = dat, seg.length = 100,
+                            series = flagged2)
+## Select series by name or column position
+ccf.100.2 <- ccf.series.rwl(rwl = co021, seg.length = 100,
+                            series = "641143")
+ccf.100.3 <- ccf.series.rwl(rwl = co021, seg.length = 100,
+                            series = which(colnames(co021) == "641143"))
+identical(ccf.100.1, ccf.100.2) # TRUE
+identical(ccf.100.2, ccf.100.3) # TRUE
+}
 }
 \keyword{ manip }

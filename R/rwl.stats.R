@@ -1,3 +1,5 @@
+`summary.rwl` <- function(object,...){ rwl.stats(rwl=object) }
+
 `rwl.stats` <-
     function(rwl)
 {

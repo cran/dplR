@@ -12,6 +12,7 @@
 }
 \usage{
 rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
+                  method = c("spearman", "pearson","kendall"),
                   prewhiten=FALSE,n=NULL,
                   running.window = TRUE,
                   window.length = min(50, nrow(rwi)),
@@ -21,7 +22,8 @@ rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
                   round.decimals = 3,
                   zero.is.missing = TRUE)
 
-rwi.stats(rwi, ids=NULL, period=c("max", "common"), \dots)
+rwi.stats(rwi, ids=NULL, period=c("max", "common"), 
+          method = c("spearman", "pearson","kendall"), \dots)
 
 rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
 }
@@ -42,6 +44,9 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
     complete observations over the period common to all cores (i.e. rows
     common to all samples) or the maximum pairwise overlap. Defaults
     to \code{"max"}. }
+  \item{method}{Can either "pearson", "kendall", or "spearman" which indicates
+    the correlation coefficient is to be used. Defaults to "spearman." See 
+    \code{\link{cor}}. }
   \item{n}{ \code{NULL} or an integral value giving the filter length
     for the \code{\link{hanning}} filter used for removal of low
     frequency variation. }
@@ -124,7 +129,9 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
   Some of the statistics are specific to dendrochronology (e.g., the
   effective number of cores or the expressed population signal).  Users
   unfamiliar with these should see Cook and Kairiukstis (1990) and
-  Fritts (2001) for further details.
+  Fritts (2001) for further details for computational details on the
+  output. The singal-to-noise ratio is calculated following Cook and 
+  Pederson (2011).
 
   If desired, the \code{\var{rwi}} can be filtered in the same manner
   as the family of cross-dating functions using \code{\var{prewhiten}} and
@@ -148,13 +155,24 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
     \code{running.window} is \code{FALSE} or called as
     \code{rwi.stats} or \code{rwi.stats.legacy}.}
 
-  \item{n.tot}{total number of correlations computed}
+  \item{n.cores}{the number of cores}
+
+  \item{n.trees}{the number of trees}
+  
+  \item{n}{the average number of trees (for each year, a tree needs at
+    least one non-\code{NA} core in order to be counted).  Not returned
+    in the results of \code{rwi.stats.legacy}}
+  
+  \item{n.tot}{total number of correlations calculated as \code{
+      \var{n.wt} + \var{n.bt}}. Equal to \code{\var{n.cores} * 
+      (\var{n.cores}-1)/2} if there is overlap between all samples }
 
   \item{n.wt}{number of within-tree correlations computed}
 
   \item{n.bt}{number of between-tree correlations computed}
 
-  \item{rbar.tot}{the mean of all correlation between different cores}
+  \item{rbar.tot}{the mean of all the correlations between different 
+      cores}
 
   \item{rbar.wt}{the mean of the correlations between series from the
     same tree over all trees}
@@ -168,12 +186,12 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
   \item{rbar.eff}{the effective signal calculated as \code{
       \var{rbar.bt} / (\var{rbar.wt} + (1-\var{rbar.wt}) / \var{c.eff}) }}
 
-  \item{eps}{the expressed population signal}
+  \item{eps}{the expressed population signal calculated using the average
+      number of trees as \code{\var{n} * \var{rbar.eff} / ((\var{n} - 1) *
+      \var{rbar.eff} + 1)} }
 
-  \item{n}{the average number of trees (for each year, a tree needs at
-    least one non-\code{NA} core in order to be counted).  Not returned
-    in the results of \code{rwi.stats.legacy}.}
-  
+  \item{snr}{the signal to noise ratio calculated using the average
+      number of trees as \code{\var{n} * \var{rbar.eff} / (1-\var{rbar.eff})} }
 }
 \references{
 
@@ -181,8 +199,10 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
     Dendrochronology: Applications in the Environmental Sciences}.
   Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 
+  Cook, E. R. and Pederson, N. (2011) \emph{Uncertainty, Emergence, and Statistics in Dendrochronology} In M.K. Hughes, T.W. Swetnam, and H.F. Diaz (Eds.), \emph{Dendroclimatology}(77-112), \acronym{ISBN-13}: 978-1-4020-4010-8.
+
   Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
-  \acronym{ISBN-13}: 978-1-930665-39-2.
+    \acronym{ISBN-13}: 978-1-930665-39-2.
   
 }
 \note{
@@ -196,47 +216,63 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
 \seealso{ \code{\link{detrend}}, \code{\link{cor}},
   \code{\link{read.ids}}, \code{\link{rwi.stats}},
   \code{\link{corr.rwl.seg}}  } 
-\examples{data(ca533)
-ca533.rwi <- detrend(rwl = ca533, method = "Mean") # mean is fast
-ca533.ids <- read.ids(ca533, stc = c(3, 2, 3))
-rwi.stats.running(ca533.rwi, ca533.ids)
-rwi.stats(ca533.rwi, ca533.ids)        # i.e. running.window = FALSE
-rwi.stats.legacy(ca533.rwi, ca533.ids) # rwi.stats prior to dplR 1.5.3
-\dontrun{
-library(graphics)
-## Plot the chronology showing a potential cutoff year based on eps
-ca533.rwi <- detrend(rwl = ca533, method = "Spline") # detrend again
-ca533.crn <- chron(ca533.rwi)
-## Running stats on the rwi with an 80 yr window
-foo <- rwi.stats.running(ca533.rwi, ca533.ids, window.length = 80)
-yrs <- as.numeric(rownames(ca533.crn))
-bar <- data.frame(yrs = c(min(yrs), foo$mid.year, max(yrs)),
-                  eps = c(NA, foo$eps, NA))
-par(mar = c(3, 3, 3, 3), mgp = c(1.25, 0.25, 0), tcl = 0.25,
-    mfcol = c(2, 1))
-plot(yrs, ca533.crn[, 1], type = "n", xlab = "Years", ylab = "RWI")
-xx <- c(500, 500, max(bar$yrs[bar$eps < 0.8], na.rm = TRUE),
-        max(bar$yrs[bar$eps < 0.8], na.rm = TRUE))
-yy <- c(-1, 3, 3, -1)
-polygon(xx, yy, col = "grey80")
-abline(h = 1, lwd = 1.5)
-lines(yrs, ca533.crn[, 1], col = "grey50")
-lines(yrs, ffcsaps(ca533.crn[, 1], nyrs = 32), col = "red", lwd = 2)
-par(new = TRUE)
+\examples{data(gp.rwl)
+data(gp.po)
+gp.rwi <- cms(rwl = gp.rwl, po = gp.po)
+gp.ids <- read.ids(gp.rwl, stc = c(0, 2, 1))
+# On a running window
+rwi.stats.running(gp.rwi, gp.ids)
+## With no running window (i.e. running.window = FALSE)
+rwi.stats(gp.rwi, gp.ids)
+## Restrict to common overlap (in this case 1899 to 1987)
+rwi.stats(gp.rwi, gp.ids, period="common")
+rwi.stats.legacy(gp.rwi, gp.ids) # rwi.stats prior to dplR 1.5.3
 
-## Second plot is the chronology after the cut off only
-plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "", axes = FALSE,
-     pch = 20, col = "blue")
-axis(4, at = pretty(foo$eps))
-mtext("EPS", side = 4, line = 1.25)
-box()
-yr.mask <- yrs > max(bar$yrs[bar$eps<0.8], na.rm = TRUE)
-plot(yrs[yr.mask], ca533.crn[yr.mask, 1], type = "n",
-     xlab = "Years", ylab = "RWI")
-abline(h = 1, lwd = 1.5)
-lines(yrs[yr.mask], ca533.crn[yr.mask, 1], col = "grey50")
-lines(yrs[yr.mask], ffcsaps(ca533.crn[yr.mask, 1], nyrs = 32),
-      col = "red", lwd = 2)
+\dontrun{
+  library(graphics)
+  def.par <- par(no.readonly=TRUE)
+  ## Plot the chronology showing a potential cutoff year based on EPS
+  eps.cut <- 0.92 # An arbitrary EPS cutoff for demonstration
+  gp.crn <- chron(gp.rwi)
+  ## Running stats on the rwi with an window
+  foo <- rwi.stats.running(gp.rwi, gp.ids, window.length = 80)
+  yrs <- as.numeric(rownames(gp.crn))
+  bar <- data.frame(yrs = c(min(yrs), foo$mid.year, max(yrs)),
+                    eps = c(NA, foo$eps, NA))
+  par(mar = c(2, 2, 2, 2), mgp = c(1.1, 0.1, 0), tcl = 0.25,
+      mfcol = c(2, 1), xaxs='i')
+  plot(yrs, gp.crn[, 1], type = "n", xlab = "Year",
+       ylab = "RWI", axes=FALSE)
+  cutoff <- max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE)
+  xx <- c(500, 500, cutoff, cutoff)
+  yy <- c(-1, 3, 3, -1)
+  polygon(xx, yy, col = "grey80")
+  abline(h = 1, lwd = 1.5)
+  lines(yrs, gp.crn[, 1], col = "grey50")
+  lines(yrs, ffcsaps(gp.crn[, 1], nyrs = 32), col = "red", lwd = 2)
+  axis(1); axis(2); axis(3);
+  par(new = TRUE)
+  ## Add EPS
+  plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "",
+       axes = FALSE, pch = 20, col = "blue")
+  axis(4, at = pretty(foo$eps))
+  mtext("EPS", side = 4, line = 1.1)
+  box()
+  ## Second plot is the chronology after the cutoff only
+  ## Chronology is rebuilt using just years after cutoff but
+  ## that difference is essentially nil.
+  yr.mask <- yrs > cutoff
+  yrs2 <- yrs[yr.mask]
+  gp.crn2 <- chron(gp.rwi[yr.mask, ])
+  plot(yrs2, gp.crn2[, 1], type = "n",
+       xlab = "Year", ylab = "RWI", axes=FALSE)
+  abline(h = 1, lwd = 1.5)
+  lines(yrs2, gp.crn2[, 1], col = "grey50")
+  lines(yrs2, ffcsaps(gp.crn2[, 1], nyrs = 32),
+        col = "red", lwd = 2)
+  axis(1); axis(2); axis(3); axis(4)
+  box()
+  par(def.par)
 }
 }
 \keyword{ misc }

@@ -7,9 +7,10 @@
 }
 \usage{
 detrend.series(y, y.name = "", make.plot = TRUE,
-               method = c("Spline", "ModNegExp", "Mean"),
+               method = c("Spline", "ModNegExp", "Mean", "Ar"),
                nyrs = NULL, f = 0.5, pos.slope = FALSE,
-               constrain.modnegexp = c("never", "when.fail", "always"))
+               constrain.modnegexp = c("never", "when.fail", "always"),
+               verbose=FALSE, return.info=FALSE)
 }
 \arguments{
 
@@ -23,7 +24,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 
   \item{method}{ a \code{character} vector to determine the detrending
     methods. See details below. Possible values are all subsets of
-    \code{c("Spline", "ModNegExp", "Mean")}. Defaults to using all the
+    \code{c("Spline", "ModNegExp", "Mean", "Ar")}. Defaults to using all the
     available methods.}
 
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
@@ -46,6 +47,12 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     contains other than positive values, and \code{"always"}: return the
     constrained solution, even if the unconstrained one would have been
     valid.  See \sQuote{Details}. }
+  
+  \item{verbose}{ a \code{logical} flag.  Write out details? }
+
+  \item{return.info}{ a \code{logical} flag.  If \code{TRUE}, details
+    about models and data will be added to the return value.  See
+    \sQuote{Value}. }
   
 }
 \details{
@@ -92,6 +99,12 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   contains zeros or negative values, which would lead to invalid
   ring-width indices.
 
+  The \code{"Ar"} approach is also known as prewhitening where the detrended 
+  series is the residuals of an \code{\link{ar}} model divided by the
+  mean of those residuals to yield a series with white noise and a mean of one.
+  This method removes all but the high frequency variation in the series
+  and should only be used as such.
+  
   These methods are chosen because they are commonly used in
   dendrochronology. There is a rich literature on detrending
   and many researchers are particularly skeptical of the use of the 
@@ -102,9 +115,69 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   See the references below for further details on detrending. 
 }
 \value{
+
   If several methods are used, returns a \code{data.frame} containing
-  the detrended series (\code{\var{y}}) according to the methods
-  used. If only one method is selected, returns a vector.
+  the detrended series (\code{\var{y}}) according to the methods used.
+  The columns are named and ordered to match \code{\var{method}}. If
+  only one method is selected, returns a vector.
+
+  If \code{\var{return.info}} is \code{TRUE}, the return value is a
+  \code{list} with three parts:
+
+  \item{series}{ the main result described above (\code{data.frame} or
+    vector) }
+
+  \item{model.info}{ Information about the models corresponding to each
+    output series.  Whereas \code{\var{series}} may return a vector,
+    \code{\var{model.info}} is always a list where each top level
+    element corresponds to one selected method.  Also these elements are
+    named and arranged according to the methods selected.  Each element
+    is a list with some of the following sub-elements, depending on
+    which detrending method was actually used:
+
+    \describe{
+
+      \item{n.zeros}{ See \code{"data.info"} below.  Always present. }
+
+      \item{zero.years}{ See \code{"data.info"}.  Always present. }
+
+      \item{method}{ The method actually used for detrending.  One of
+	\code{"Mean"}, \code{"Line"}, \code{"ModNegExp"},
+	\code{"Spline"} or \code{"Ar"}.  Always present. }
+
+      \item{mean}{ Mean of the input series, missing values removed.
+	Only for method \code{"Mean"}. }
+
+      \item{coefs}{ Coefficients of the model.  Methods \code{"Line"}
+	and \code{"ModNegExp"}.}
+
+      \item{formula}{ The \code{"ModNegExp"} \code{\link{formula}}. }
+
+      \item{is.constrained}{ A \code{logical} flag indicating whether
+	the parameters of the \code{"ModNegExp"} model were
+	constrained. Only interesting when argument
+	\code{\var{constrain.modnegexp}} is set to \code{"when.fail"}. }
+
+      \item{nyrs}{ The value of \code{\var{nyrs}} used for
+	\code{\link{ffcsaps}}.  Only for method \code{"Spline"}. }
+
+      \item{order}{ The order of the autoregressive model, selected by
+	AIC (Akaike information criterion).  Only for method
+	\code{"Ar"}. }
+
+      \item{ar}{ The autoregressive coefficients used by method
+	\code{"Ar"}.  A \code{numeric} vector ordered by increasing
+	lag. }
+
+    }
+    
+  }
+
+  \item{data.info}{ Information about the input series: number
+    (\code{"n.zeros"}) and location (\code{"zero.years"}) of zero
+    values.  If the locations are in a \code{character} vector, they are
+    years.  Otherwise they are indices to the input series. }
+
 }
 \references{
   Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
@@ -120,13 +193,29 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 \examples{library(stats)
 ## Using a plausible representation of a tree-ring series
 gt <- 0.5 * exp (-0.05 * 1:200) + 0.2
-noise <- c(arima.sim(model = list(ar = 0.7), n = 200, mean = 1, sd = 0.5))
+noise <- c(arima.sim(model = list(ar = 0.7), n = 200, sd = 0.5))+2
 series <- gt * noise
-series.rwi <- detrend.series(y = series, y.name = "Foo")
-## Use series CAM011 from the Campito dataset
+series.rwi <- detrend.series(y = series, y.name = "Foo", verbose=TRUE)
+## Use series CAM011 from the Campito data set
 data(ca533)
 series <- ca533[, "CAM011"]
 names(series) <- rownames(ca533)
-series.rwi <- detrend.series(y = series, y.name = "CAM011")
+# defaults to all four methods
+series.rwi <- detrend.series(y = series, y.name = "CAM011", verbose=TRUE)
+# see plot with three methods
+series.rwi <- detrend.series(y = series, y.name = "CAM011",
+                             method=c("Spline", "ModNegExp","Mean"))
+# see plot with two methods
+# interesting to note difference from ~200 to 250 years 
+# in terms of what happens to low frequency growth
+series.rwi <- detrend.series(y = series, y.name = "CAM011",
+                             method=c("Spline", "ModNegExp"))
+# see plot with just one method
+series.rwi <- detrend.series(y = series, y.name = "CAM011",
+                             method="Spline")
+# note that method "Ar" doesn't get plotted in first panel
+# since this approach doesn't approximate a growth curve.
+series.rwi <- detrend.series(y = series, y.name = "CAM011",
+                             method="Ar")
 }
 \keyword{ manip }

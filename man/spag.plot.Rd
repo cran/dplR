@@ -15,7 +15,7 @@ spag.plot(rwl, zfac = 1, \dots)
   \item{\dots}{ arguments to be passed to \code{\link{lines}}. }
 }
 \details{
-  This makes a simple plot of each series in a tree-ring dataset. Each
+  This makes a simple plot of each series in a tree-ring data set. Each
   series is centered first by subtracting the column mean using
   \code{\link{scale}}. The plot can be grossly tuned with
   \code{\var{zfac}} which is a multiplier to \code{\var{rwl}} before
@@ -27,8 +27,8 @@ spag.plot(rwl, zfac = 1, \dots)
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{seg.plot}} }
-\examples{data(ca533)
-spag.plot(ca533, main = "Campito Mountain")
-spag.plot(ca533, zfac = 2, main = "Campito Mountain")
+\examples{data(co021)
+spag.plot(co021)
+spag.plot(co021, zfac = 2)
 }
 \keyword{ hplot }

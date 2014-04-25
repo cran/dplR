@@ -7,9 +7,10 @@
 }
 \usage{
 detrend(rwl, y.name = names(rwl), make.plot = FALSE,
-        method = c("Spline", "ModNegExp", "Mean"), nyrs = NULL,
+        method = c("Spline", "ModNegExp", "Mean", "Ar"), nyrs = NULL,
         f = 0.5, pos.slope = FALSE,
-        constrain.modnegexp = c("never", "when.fail", "always"))
+        constrain.modnegexp = c("never", "when.fail", "always"),
+        verbose = FALSE, return.info = FALSE)
 }
 \arguments{
 
@@ -25,7 +26,7 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   
   \item{method}{ a \code{character} vector to determine the detrending
     methods. See details below. Possible values are all subsets of
-    \code{c("Spline", "ModNegExp", "Mean")}. Defaults to using all the
+    \code{c("Spline", "ModNegExp", "Mean", "Ar")}. Defaults to using all the
     available methods.}
   
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
@@ -42,6 +43,12 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   \item{constrain.modnegexp}{ a \code{character} string which controls
     the constraints of the \code{"ModNegExp"} model. See 
     \code{\link{detrend.series}} for further details. }
+    
+  \item{verbose}{ logical. Write out details? }
+
+  \item{return.info}{ a \code{logical} flag.  If \code{TRUE}, details
+    about models and data will be added to the return value.  See
+    \sQuote{Value}. }
 
 }
 \details{
@@ -56,12 +63,29 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   dimensions of \code{\var{rwl}}. If more methods are used, a list with
   \code{ncol(\var{rwl})} elements each containing a \code{data.frame}
   with the detrended ring widths in each column.
+
+  If \code{\var{return.info}} is \code{TRUE}, the return value is a
+  \code{list} with three parts:
+
+  \item{series}{ the main result described above (\code{data.frame} or
+    list of data.frames) }
+
+  \item{model.info}{ Information about the models corresponding to each
+    output series.  A \code{list} with one element for each column of
+    \code{\var{rwl}}.  See \code{\link{detrend.series}} (\sQuote{Value},
+    \var{model.info}) for a description of the contents. }
+
+  \item{data.info}{ Information about the input series.  A \code{list}
+    with one element for each column of \code{\var{rwl}}.  See
+    \code{\link{detrend.series}} (\sQuote{Value}, \var{data.info}). }
+
 }
 \note{
   This function uses the \code{\link[foreach]{foreach}} looping
   construct with the \code{\link[foreach:foreach]{\%dopar\%}} operator.
   For parallel computing and a potential speedup, a parallel backend
-  must be registered before running the function.
+  must be registered before running the function.  If
+  \code{\var{verbose}} is \code{TRUE}, parallel computation is disabled.
 }
 \author{ Andy Bunn. Improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend.series}} }
@@ -74,10 +98,14 @@ library(grDevices)
 ## Detrend using all methods. Returns a list
 ca533.rwi <- detrend(rwl = ca533)
 ## Save a pdf of all series
-pdf("foo.pdf")
+fname <- tempfile(fileext=".pdf")
+print(fname) # tempfile used for output
+pdf(fname)
 ca533.rwi <- detrend(rwl = ca533, method = c("Spline", "ModNegExp"),
                      make.plot = TRUE)
 dev.off()
+
+unlink(fname) # remove the file
 }
 }
 \keyword{ manip }

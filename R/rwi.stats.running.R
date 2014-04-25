@@ -2,7 +2,7 @@
 
 ### Computes the correlation coefficients between columns of x and y.
 ### Requires "limit" overlapping values in each pair.
-cor.with.limit <- function(limit, x, y) {
+cor.with.limit <- function(limit, x, y, method) {
     n.x <- ncol(x) # caller makes sure that n.x
     n.y <- ncol(y) # and n.y >= 1
     r.mat <- matrix(NA_real_, n.x, n.y)
@@ -15,7 +15,8 @@ cor.with.limit <- function(limit, x, y) {
             good.both <- which(good.x & good.y)
             n.good <- length(good.both)
             if (n.good >= limit && n.good > 0) {
-                r.mat[i, j] <- cor(this.x[good.both], this.y[good.both])
+                r.mat[i, j] <- cor(this.x[good.both], this.y[good.both],
+                                   method = method)
             }
         }
     }
@@ -23,7 +24,7 @@ cor.with.limit <- function(limit, x, y) {
 }
 
 ### Computes the correlation coefficients between different columns of x.
-cor.with.limit.upper <- function(limit, x) {
+cor.with.limit.upper <- function(limit, x, method) {
     n.x <- ncol(x) # caller makes sure that n.x >= 2
     r.vec <- rep.int(NA_real_, n.x * (n.x - 1) / 2)
     good.x <- !is.na(x)
@@ -34,24 +35,29 @@ cor.with.limit.upper <- function(limit, x) {
             k <- k + 1
             good.both <- which(good.i & good.x[, j])
             if (length(good.both) >= limit) {
-                r.vec[k] <- cor(x[good.both, i], x[good.both, j])
+                r.vec[k] <- cor(x[good.both, i], x[good.both, j],
+                                method = method)
             }
         }
     }
     r.vec
 }
 
-rwi.stats <- function(rwi, ids=NULL, period=c("max", "common"), ...) {
+rwi.stats <- function(rwi, ids=NULL, period=c("max", "common"), 
+                      method = c("spearman", "pearson", "kendall"),
+                      ...) {
     args <- list(...)
     args[["rwi"]] <- rwi
     args[["ids"]] <- ids
     args[["period"]] <- period
+    args[["method"]] <- method
     args[["running.window"]] <- FALSE
     do.call(rwi.stats.running, args)
 }
 
 ### Main function, exported to user
 rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
+                              method = c("spearman", "pearson", "kendall"),
                               prewhiten=FALSE,n=NULL,
                               running.window=TRUE,
                               window.length=min(50, nrow(rwi)),
@@ -61,7 +67,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                               round.decimals=3,
                               zero.is.missing=TRUE) {
     period2 <- match.arg(period)
-
+    method <- match.arg(method)
     if (running.window) {
         if (window.length < 3) {
             stop("minimum 'window.length' is 3")
@@ -137,13 +143,15 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             rwi3 <- rwi2
         }
     }
+    rwiNotNA <- !is.na(rwi3)
 
     n.years <- nrow(rwi3)
     if (running.window && window.length > n.years) {
         stop("'window.length' is larger than the number of years in 'rwi'")
     }
 
-    unique.trees <- unique(ids3$tree)
+    treeIds <- ids3$tree
+    unique.trees <- unique(treeIds)
     n.trees <- length(unique.trees)
     if (n.trees < 2) {
         stop("at least 2 trees are needed")
@@ -151,7 +159,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     cores.of.tree <- list()
     seq.tree <- seq_len(n.trees)
     for (i in seq.tree) {
-        cores.of.tree[[i]] <- which(ids3$tree==unique.trees[i])
+        cores.of.tree[[i]] <- which(treeIds==unique.trees[i])
     }
 
     ## n.trees.by.year is recorded before setting rows with missing
@@ -159,21 +167,22 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     tree.any <- matrix(FALSE, n.years, n.trees)
     for (i in seq.tree) {
         tree.any[, i] <-
-            apply(!is.na(rwi3[, ids3$tree == unique.trees[i], drop=FALSE]),
-                  1, any)
+            apply(rwiNotNA[, treeIds == unique.trees[i], drop=FALSE], 1, any)
     }
     n.trees.by.year <- rowSums(tree.any)
-    good.rows <- which(n.trees.by.year > 1)
 
     ## Easy way to force complete overlap of data
     if (period2 == "common") {
-        bad.rows <- which(apply(is.na(rwi3), 1, any))
+        bad.rows <- !apply(rwiNotNA, 1, all)
         rwi3[bad.rows, ] <- NA
-        good.rows <- setdiff(good.rows, bad.rows)
+        rwiNotNA[bad.rows, ] <- FALSE
+        good.rows.flag <- !bad.rows
         period.common <- TRUE
     } else {
+        good.rows.flag <- n.trees.by.year > 1
         period.common <- FALSE
     }
+    good.rows <- which(good.rows.flag)
 
     if (length(good.rows) < min.corr.overlap) {
         stop("too few years with enough trees for correlation calculations")
@@ -205,8 +214,8 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                     (n.years - offset - window.length) %/% window.advance
                 max.idx <-
                     offset + window.length + n.windows.minusone * window.advance
-                n.data[i] <- sum(!is.na(rwi3[intersect(good.rows,
-                                                       (1 + offset):max.idx), ]))
+                rowIdx <- seq(1 + offset, max.idx)
+                n.data[i] <- sum(rwiNotNA[rowIdx[good.rows.flag[rowIdx]], ])
             }
             ## In case of a tie, choose large offset.
             ## In practice, this prefers recent years.
@@ -245,7 +254,8 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             i.data <- rwi3[year.idx, cores.of.tree[[i]], drop=FALSE]
             for (j in (i + 1):n.trees) {
                 j.data <- rwi3[year.idx, cores.of.tree[[j]], drop=FALSE]
-                bt.r.mat <- cor.with.limit(min.corr.overlap, i.data, j.data)
+                bt.r.mat <- cor.with.limit(min.corr.overlap, i.data, j.data,
+                                           method=method)
                 bt.r.mat <- bt.r.mat[!is.na(bt.r.mat)]
                 n.bt.temp <- length(bt.r.mat)
                 if (n.bt.temp > 0) {
@@ -267,7 +277,8 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                 n.cores.tree[i] <- 1
             } else {
                 these.data <- rwi3[year.idx, these.cores, drop=FALSE]
-                wt.r.vec <- cor.with.limit.upper(min.corr.overlap, these.data)
+                wt.r.vec <- cor.with.limit.upper(min.corr.overlap, these.data,
+                                                 method=method)
                 wt.r.vec <- wt.r.vec[!is.na(wt.r.vec)]
                 n.wt.temp <- length(wt.r.vec)
                 if (n.wt.temp > 0) {
@@ -294,42 +305,64 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             rbar.bt <- rsum.bt / n.bt
         }
 
+        coresPresent <-
+            which(apply(rwiNotNA[year.idx, , drop = FALSE], 2, any))
+        treesPresent <- unique(treeIds[coresPresent])
+        nCores <- length(coresPresent)
+        nTrees <- length(treesPresent)
         if (period.common) {
             ## If period is "common", we are only looking at the rows
-            ## with no missing values.
-            n <- n.trees
+            ## with no missing values (if any, so all or nothing).
+            n <- nTrees
         } else {
             ## Number of trees averaged over the years in the window.
             ## We keep this number separate of the correlation
             ## estimates, i.e. the data from some tree / year may
             ## contribute to n without taking part in the correlation
             ## estimates.
-            n <- mean(n.trees.by.year[year.idx], na.rm=TRUE)
+            n <- mean(n.trees.by.year[year.idx])
         }
 
         ## Expressed population signal
         if (n.wt == 0) {
-            c.eff <- 1
+            if (n.bt > 0) {
+                c.eff <- 1
+            } else {
+                c.eff <- 0
+            }
             rbar.eff <- rbar.bt
         } else {
-            c.eff.rproc <- mean(1 / n.cores.tree, na.rm=TRUE)
-            c.eff <- 1 / c.eff.rproc # bookkeeping only
-            rbar.eff <- rbar.bt / (rbar.wt + (1 - rbar.wt) * c.eff.rproc)
+            nCoresTree <- na.omit(n.cores.tree)
+            uniqueNC <- unique(nCoresTree)
+            ## The branches are equivalent but optimized for numerical
+            ## precision in each situation
+            if (length(uniqueNC) == 1) {
+                c.eff <- uniqueNC
+                rbar.eff <- rbar.bt / (rbar.wt + (1 - rbar.wt) / c.eff)
+            } else {
+                c.eff.rproc <- mean(1 / nCoresTree)
+                c.eff <- 1 / c.eff.rproc # bookkeeping only
+                rbar.eff <- rbar.bt / (rbar.wt + (1 - rbar.wt) * c.eff.rproc)
+            }
         }
         ## EPS is on page 146 of C&K.
         ## In our interpretation of EPS, we use the average number of trees.
         eps <- n * rbar.eff / ((n - 1) * rbar.eff + 1)
+        ## SNR is on page 109 of Cook and Pederson (2011).
+        ## See help file for ref.
+        snr <- n * rbar.eff / (1-rbar.eff)
 
         if (running.window) {
-            c(start.year = start.year, mid.year = mid.year, end.year = end.year,
-              n.tot = n.tot, n.wt = n.wt, n.bt = n.bt, rbar.tot = rbar.tot,
-              rbar.wt = rbar.wt, rbar.bt = rbar.bt, c.eff = c.eff,
-              rbar.eff = rbar.eff, eps = eps, n = n)
+            out <-  c(start.year = start.year,
+                      mid.year = mid.year, end.year = end.year)
         } else {
-            c(n.tot = n.tot, n.wt = n.wt, n.bt = n.bt, rbar.tot = rbar.tot,
-              rbar.wt = rbar.wt, rbar.bt = rbar.bt, c.eff = c.eff,
-              rbar.eff = rbar.eff, eps = eps, n = n)
+            out <- numeric(0)
         }
+        c(out,
+          n.cores = nCores, n.trees = nTrees, n = n,
+          n.tot = n.tot, n.wt = n.wt, n.bt = n.bt, rbar.tot = rbar.tot,
+          rbar.wt = rbar.wt, rbar.bt = rbar.bt, c.eff = c.eff,
+          rbar.eff = rbar.eff, eps = eps, snr = snr)
     }
 
     ## Iterate over all windows

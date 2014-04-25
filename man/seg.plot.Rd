@@ -14,7 +14,7 @@ seg.plot(rwl, \dots)
 }
 \details{
   This makes a simple plot of the length of each series in a tree-ring
-  dataset.
+  data set.
 }
 \value{
   None. This function is invoked for its side effect, which is to
@@ -22,7 +22,7 @@ seg.plot(rwl, \dots)
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{spag.plot}} }
-\examples{data(ca533)
-seg.plot(ca533, main = "Campito Mountain")
+\examples{data(co021)
+seg.plot(co021, main = "Campito Mountain")
 }
 \keyword{ hplot }

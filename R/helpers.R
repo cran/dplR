@@ -82,12 +82,16 @@ dec <- function(from, to) {
 }
 
 ### AR function for chron, normalize1, normalize.xdate, ...
-ar.func <- function(x) {
+ar.func <- function(x, model = FALSE) {
     y <- x
     idx.goody <- !is.na(y)
     ar1 <- ar(y[idx.goody])
     y[idx.goody] <- ar1$resid+ar1$x.mean
-    y
+    if (isTRUE(model)) {
+        structure(y, model = ar1)
+    } else {
+        y
+    }
 }
 
 ### Range of years. Used in cms, rcs, rwl.stats, seg.plot, spag.plot, ...
@@ -285,4 +289,71 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         close(map.file)
     }
     y
+}
+
+### Handle different types of 'series'.
+###
+### If series is a character or numeric vector of length 1, it is
+### interpreted as a column index to rwl.  In this case, the
+### corresponding column is also dropped from rwl.
+###
+### Returns list(rwl, series, series.yrs), where series is equipped
+### with names indicating years.
+###
+### Intended to be used by ccf.series.rwl(), corr.series.seg(), ...
+pick.rwl.series <- function(rwl, series, series.yrs) {
+    if (length(series) == 1) {
+        if (is.character(series)) {
+            seriesIdx <- logical(ncol(rwl))
+            seriesIdx[colnames(rwl) == series] <- TRUE
+            nMatch <- sum(seriesIdx)
+            if (nMatch == 0) {
+                stop("'series' not found in 'rwl'")
+            } else if (nMatch != 1) {
+                stop("duplicate column names, multiple matches")
+            }
+            rwl2 <- rwl[, !seriesIdx, drop = FALSE]
+            series2 <- rwl[, seriesIdx]
+        } else if (is.numeric(series) && is.finite(series) &&
+                   series >=1 && series < ncol(rwl) + 1) {
+            rwl2 <- rwl[, -series, drop = FALSE]
+            series2 <- rwl[, series]
+        } else {
+            stop("'series' of length 1 must be a column index to 'rwl'")
+        }
+        rNames <- rownames(rwl)
+        names(series2) <- rNames
+        series.yrs2 <- as.numeric(rNames)
+    } else {
+        rwl2 <- rwl
+        series2 <- series
+        names(series2) <- as.character(series.yrs)
+        series.yrs2 <- series.yrs
+    }
+    list(rwl = rwl2, series = series2, series.yrs = series.yrs2)
+}
+# does the skeleton calculation
+xskel.calc <- function(x,filt.weight=9,skel.thresh=3){
+  x.dt <- hanning(x, filt.weight)
+  n <- length(x)
+  y <- rep(NA, n)
+  ## calc rel growth
+  n.diff <- n - 1
+  idx <- 2:n.diff
+  temp.diff <- diff(x)
+  y[idx] <- rowMeans(cbind(temp.diff[-n.diff], -temp.diff[-1])) / x.dt[idx]
+  y[y > 0] <- NA
+  ## rescale from 0 to 10
+  na.flag <- is.na(y)
+  if(all(na.flag))
+    y.range <- c(NA, NA)
+  else
+    y.range <- range(y[!na.flag])
+  newrange <- c(10, 1)
+  mult.scalar <-
+    (newrange[2] - newrange[1]) / (y.range[2] - y.range[1])
+  y <- newrange[1] + (y - y.range[1]) * mult.scalar
+  y[y < skel.thresh] <- NA
+  y <- ceiling(y)
+  y
 }

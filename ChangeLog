@@ -1,3 +1,194 @@
+* CHANGES IN dplR VERSION 1.6.0
+
+File: TODO
+-------------------------
+- Added a TODO list that follows the todo.ell format.
+
+File: NAMESPACE
+-------------------------
+- Added chron.plot to export list.
+- Added interseries.cor to export list.
+- Added plot.rwl as an S3Method.
+- Added plot.crn as an S3Method.
+- Added summary.rwl as an S3Method.
+- Added insert and delete.ring functions.
+
+File: xskel.ccf.plot.R and xskel.plot.R and 
+---------------
+
+- New plotting functions to help crossdate with skeleton plot
+  and cross correlation plots.
+
+File: ccf.series.rwl.R
+---------------
+
+- Switched the order of x and y in the call to ccf(). This makes a great deal
+  more logical sense now as a missing ring shows up with a positive lag rather
+  than a negative lag.
+- Changed color scheme a bit to look less harsh
+
+Files: ccf.series.rwl.R, corr.series.seg.R, series.rwl.plot.R
+-------------------------------------------------------------
+
+- New convenience feature: if the length of 'series' is 1, it is
+  interpreted as a column index to 'rwl', and the corresponding
+  series is left out of the master chronology.
+
+File: ffcsaps.R
+---------------
+
+- Small optimization: using "usually slightly faster"
+  'tcrossprod(x)' instead of 'x %*% t(x)'
+
+File: insert.ring.R
+-------------------------
+- insert.ring and delete.ring functions for editing rw vectors. Very simple.
+
+File: crn.plot.R
+-------------------------
+- Added several new plotting options to give users more control of plot
+- Aliased crn.plot to plot.crn so it can be used as an S3 plot method.
+  Thus a user can now to bar <- chon(foo); plot(bar) 
+- Help revised considerably
+
+
+File: read.crn.R
+-------------------------
+- Added class "crn" to output object.
+
+File: cana157.rda
+-------------------------
+- Added class "crn" to object.
+
+File: detrend.R and detrend.series.R
+------------
+- Added an Ar detrend method. Revised plotting in detrend.series
+- Added a verbose option to print out parameters used in detrending
+- Added a return.info option to write a list of parameters used in detrending
+
+File: powt.R
+------------
+- Originally, the transformed series were rescaled to their
+  original mean and variance, which can lead to negative values for
+  the (supposedly) raw tree-ring data.  This is not necessary, and
+  has been removed now.
+
+File: rwl.stats
+-------------------------
+- Added an S3 summary method for rwl objects so that summary(foo.rwl)
+  calls rwl.stats(foo.rwl)
+
+Folder: vignettes
+-------------------------
+- Added a vignettes folder
+
+File: dplR.sty
+-------------------------
+- Very basic sty file
+
+File: dplR.bib
+-------------------------
+- Refs for vignettes
+
+File: intro-dplR.Rnw
+-------------------------
+- A vignette to introduce dplR
+
+File: xdate-dplR.Rnw
+-------------------------
+- A vignette for cross-dating
+
+File: timeseries-dplR.Rnw
+-------------------------
+- A vignette for time series stuff. Very basic!
+
+File: corr.series.seg.R
+--------------------
+- Added method argument to specify method for cor.test(). Defauts to
+  "spearman."
+
+File: corr.rwl.seg.R
+--------------------
+- Removed yr.range() function in favor of yr.range() in helpers.R.
+  They are identical for all practical purposes.
+- Added method argument to specify method for cor.test(). Defauts to
+  "spearman."
+File: interseries.cor.R
+-------------------------
+- New function interseries.cor.
+
+File: read.compact.R
+-------------------------
+- Added class "rwl" to output object.
+
+File: read.fh.R
+-------------------------
+- Added class "rwl" to output object.
+
+File: read.tridas.R
+-------------------------
+- Added class "rwl" to output object $results.
+
+File: read.tucson.R
+-------------------------
+- Added class "rwl" to output object.
+
+File: anos1.rda
+-------------------------
+- Added class "rwl" to object.
+
+File: ca533.rda
+-------------------------
+- Added class "rwl" to object.
+
+File: co021.rda
+-------------------------
+- Added class "rwl" to object.
+
+File: gp.rwl.rda
+-------------------------
+- Added class "rwl" to object.
+
+
+File: rwl.plot.R
+-------------------------
+- New wrapper to plot rwl objects.
+
+File: spag.plot.R
+-------------------------
+- Cosmetic changes to plot.
+
+File: seg.plot.R
+-------------------------
+- Cosmetic changes to plot.
+
+File: rwi.stats.running.R
+-------------------------
+
+- Added signal-to-noise ratio as an output. Followed pg 109 in
+  Cook's chapter in Hughes et al. 2011.
+- New outputs 'n.cores' and 'n.trees' show the total number of cores and
+  trees in the window, respectively.  At least one non-missing value is
+  required for a core and tree to be counted.
+- When using period = "common" in rwi.stats() or
+  rwi.stats.running(), the number of trees 'n' in the return value
+  is now 0 instead of the full number in case there are no complete
+  cases in the running window.
+- 'c.eff' in the return value is now 0 if no correlations were
+  computed
+- Added a method argument to change the type of correlation method performed.
+- Optimizations
+
+Files: write.compact.R, write.crn.R,
+write.rwl.R, write.tridas.R, write.tucson.R
+-------------------------------------------
+
+- The write.* functions now return the name of the output file.
+  Previously it was documented that there was no return value.
+- Examples in the corresponding .Rd files were modified to use
+  tempfile()s instead of writing to the working directory, which was
+  potentially harmful.
+
 * CHANGES IN dplR VERSION 1.5.9
 
 Files: dplR.h, rcompact.c, redfit.c
