@@ -34,8 +34,12 @@ morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95){
     ## global=NULL
 
     ## r = 0
-    if(length(x1) != length(y1)) stop("'x1' and 'y1' lengths differ")
     n <- length(y1)
+    stopifnot(is.numeric(dj), is.numeric(siglvl), length(dj) == 1,
+              length(siglvl) == 1, is.numeric(x1), is.numeric(y1),
+              is.null(p2) || (is.numeric(p2) && length(p2) == 1),
+              n > 0)
+    if(length(x1) != length(y1)) stop("'x1' and 'y1' lengths differ")
     n1 <- n
     base2 <- trunc(log2(n) + 0.4999)   # power of 2 nearest to N
     if(is.null(p2)) J <- trunc(log2(n * Dt / s0) / dj) # [Eqn(10)]
@@ -98,11 +102,12 @@ morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95){
     dof <- 2
     Signif <- fft_theor * qchisq(siglvl, dof) / dof   # [Eqn(18)]
 
-    Power <- abs(wave[seq_len(n1), , drop=FALSE])
+    wave2 <- wave[seq_len(n1), , drop=FALSE]
+    Power <- abs(wave2)
     Power <- Power * Power  # Compute wavelet power spectrum
 
     ## Done
-    list(y=y1, x=x1, wave = wave[seq_len(n1), , drop=FALSE], coi = coi,
+    list(y=y1, x=x1, wave = wave2, coi = coi,
          period = period, Scale = Scale, Signif = Signif, Power = Power,
          siglvl = siglvl)
 }

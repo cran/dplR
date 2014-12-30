@@ -2,33 +2,36 @@ Encoding: UTF-8
 Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
-Version: 1.6.0
-Date: 2014-04-24
+Version: 1.6.1
+Date: 2014-12-23
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
         role = c("aut", "cph")), person("Filipe", "Campelo", role = 
         c("aut", "cph")), person("Pierre", "Mérian", role = c("aut", 
-        "cph")), person("Manfred", "Mudelsee", role = "aut"),
-        person("Fares", "Qeadan", role = c("aut", "cph")),
-        person("Michael", "Schulz", role = "aut"), person("Christian",
-        "Zang", role = c("aut", "cph")), person("Jacob", "Cecile",
-        role = "ctb"))
-Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Manfred Mudelsee [aut], Fares Qeadan [aut, cph], Michael Schulz [aut], Christian Zang [aut, cph], Jacob Cecile [ctb]
+        "cph")), person("Fares", "Qeadan", role = c("aut", "cph")),
+        person("Christian", "Zang", role = c("aut", "cph")),
+        person("Allan", "Buras", role = "ctb"), person("Jacob",
+        "Cecile", role = "ctb"), person("Manfred", "Mudelsee", role =
+        "ctb"), person("Michael", "Schulz", role = "ctb"))
+Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph], Allan Buras [ctb], Jacob Cecile [ctb], Manfred Mudelsee [ctb], Michael Schulz [ctb]
 Copyright: Authors and Aalto University (for work of M. Korpela)
 Maintainer: Andy Bunn <andy.bunn@wwu.edu>
 Depends: R (>= 2.15.0)
 Imports: gmp (>= 0.5-2), graphics, grDevices, grid, stats, utils,
-        digest (>= 0.2.3), lattice (>= 0.13-6), stringr (>= 0.4), XML
-        (>= 2.1-0)
-Suggests: foreach, forecast, iterators, RUnit (>= 0.4.25), waveslim
+        digest (>= 0.2.3), lattice (>= 0.13-6), png (>= 0.1-1), stringi
+        (>= 0.2-2), stringr (>= 0.4), XML (>= 2.1-0)
+Suggests: Biobase, dichromat (>= 1.2-3), foreach, forecast, iterators,
+        knitr, RColorBrewer, RUnit (>= 0.4.25), tikzDevice, waveslim
 Description: This package contains functions for performing tree-ring
-        analyses, IO, and graphics.
+        analyses such as detrending, chronology building, and cross dating.
+        The package reads and writes standard file formats used in 
+        dendrochronology
 LazyData: no
 License: GPL (>= 2)
 URL: http://huxley.wwu.edu/trl/htrl-dplr,
         http://R-Forge.R-project.org/projects/dplr/
-Packaged: 2014-04-25 17:08:26 UTC; bunna
+Packaged: 2014-12-29 23:47:57 UTC; bunna
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2014-04-25 22:44:57
+Date/Publication: 2014-12-30 07:56:56

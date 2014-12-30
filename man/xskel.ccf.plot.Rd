@@ -5,10 +5,9 @@
   ...
 }
 \usage{
-xskel.ccf.plot(rwl,series,series.yrs = as.numeric(names(series)),
-                       win.start, win.width=50, n = NULL, prewhiten = TRUE, 
-                       biweight = TRUE)
-
+xskel.ccf.plot(rwl, series, series.yrs = as.numeric(names(series)),
+               win.start, win.width = 50, n = NULL,
+               prewhiten = TRUE, biweight = TRUE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -43,13 +42,13 @@ Similarly, the black lines are a skeleton plot for the master and
 series with the marker years annotated for the master on the bottom axis and 
 series on the top. The text at the top of the figure gives the
 correlation between the series and master (green bars) as well as the percentage 
-of agreement betwen the years of skeleton bars for the series and master. 
+of agreement between the years of skeleton bars for the series and master. 
 I.e., if all the black lines occur in the same years the percentage would be
 100\%. 
 
 The bottom panels show cross correlations for the first half (left) and second 
 half of the time series using function \code{\link{ccf}} as
-\code{ccf(x=series,y=master,lag.max=5}. 
+\code{ccf(x=series,y=master,lag.max=5)}. 
 
 The plot is built using the \code{\link[grid]{Grid}} package which allows for
 great flexibility in building complicated plots. However, these plots look best

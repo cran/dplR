@@ -2,7 +2,13 @@
 ### Encoding: UTF-8
 
 ###################################################
-### code chunk number 1: intro-dplR.Rnw:23-26
+### code chunk number 1: intro-dplR.Rnw:9-10
+###################################################
+library(dplR) # latexify(), latexDate()
+
+
+###################################################
+### code chunk number 2: intro-dplR.Rnw:26-29
 ###################################################
 options(width=62) # width of paper (number of characters)
 options(useFancyQuotes=FALSE) # fancy quotes not included in fixed-width font?
@@ -10,14 +16,14 @@ Sys.setenv(LANGUAGE="en") # no translations to languages other than English
 
 
 ###################################################
-### code chunk number 2: intro-dplR.Rnw:67-69
+### code chunk number 3: intro-dplR.Rnw:70-72
 ###################################################
 citation()
 citation("dplR")
 
 
 ###################################################
-### code chunk number 3: intro-dplR.Rnw:98-104
+### code chunk number 4: intro-dplR.Rnw:101-107
 ###################################################
 library(dplR)
 data(ca533) # the result of ca533 <- read.rwl('ca533.rwl')
@@ -28,19 +34,19 @@ class(ca533) # note "rwl" class as well as "data.frame"
 
 
 ###################################################
-### code chunk number 4: a
+### code chunk number 5: a
 ###################################################
 plot(ca533, plot.type="spag")
 
 
 ###################################################
-### code chunk number 5: intro-dplR.Rnw:169-170
+### code chunk number 6: intro-dplR.Rnw:172-173
 ###################################################
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 
 
 ###################################################
-### code chunk number 6: intro-dplR.Rnw:175-180
+### code chunk number 7: intro-dplR.Rnw:178-183
 ###################################################
 dim(ca533)
 dim(ca533.rwi)
@@ -50,7 +56,7 @@ colMeans(ca533.rwi, na.rm=TRUE)
 
 
 ###################################################
-### code chunk number 7: b
+### code chunk number 8: b
 ###################################################
 series <- ca533[, "CAM011"] # extract the series
 names(series) <- rownames(ca533) # give it years as rownames
@@ -59,20 +65,20 @@ series.rwi <- detrend.series(y = series, y.name = "CAM011",
 
 
 ###################################################
-### code chunk number 8: intro-dplR.Rnw:226-227
+### code chunk number 9: intro-dplR.Rnw:229-230
 ###################################################
-rwl.stats(ca533)[1:5, ]
+rwl.stats(ca533[1:5])
 
 
 ###################################################
-### code chunk number 9: intro-dplR.Rnw:247-249
+### code chunk number 10: intro-dplR.Rnw:250-252
 ###################################################
 ca533.ids <- read.ids(ca533, stc = c(3, 2, 3))
 rwi.stats(ca533.rwi, ca533.ids, prewhiten=TRUE)
 
 
 ###################################################
-### code chunk number 10: intro-dplR.Rnw:263-267
+### code chunk number 11: intro-dplR.Rnw:266-270
 ###################################################
 ca533.rho <- interseries.cor(ca533.rwi, prewhiten=TRUE,
                              method="spearman")
@@ -81,26 +87,26 @@ mean(ca533.rho[, 1])
 
 
 ###################################################
-### code chunk number 11: intro-dplR.Rnw:279-280
+### code chunk number 12: intro-dplR.Rnw:282-283
 ###################################################
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")
 
 
 ###################################################
-### code chunk number 12: intro-dplR.Rnw:285-287
+### code chunk number 13: intro-dplR.Rnw:288-290
 ###################################################
 dim(ca533.rwi)
 dim(ca533.crn)
 
 
 ###################################################
-### code chunk number 13: c
+### code chunk number 14: c
 ###################################################
 plot(ca533.crn, add.spline=TRUE, nyrs=20)
 
 
 ###################################################
-### code chunk number 14: d
+### code chunk number 15: d
 ###################################################
 def.par <- par(no.readonly=TRUE)
 eps.cut <- 0.85 # An arbitrary EPS cutoff for demonstration

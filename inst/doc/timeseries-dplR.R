@@ -2,7 +2,13 @@
 ### Encoding: UTF-8
 
 ###################################################
-### code chunk number 1: timeseries-dplR.Rnw:23-26
+### code chunk number 1: timeseries-dplR.Rnw:9-10
+###################################################
+library(dplR) # latexify(), latexDate()
+
+
+###################################################
+### code chunk number 2: timeseries-dplR.Rnw:26-29
 ###################################################
 options(width=62) # width of paper (number of characters)
 options(useFancyQuotes=FALSE) # fancy quotes not included in fixed-width font?
@@ -10,14 +16,14 @@ Sys.setenv(LANGUAGE="en") # no translations to languages other than English
 
 
 ###################################################
-### code chunk number 2: timeseries-dplR.Rnw:62-64
+### code chunk number 3: timeseries-dplR.Rnw:64-66
 ###################################################
 citation()
 citation("dplR")
 
 
 ###################################################
-### code chunk number 3: a
+### code chunk number 4: a
 ###################################################
 library(dplR)
 data(co021)
@@ -31,7 +37,7 @@ plot(co021, plot.type="spag")
 
 
 ###################################################
-### code chunk number 4: b
+### code chunk number 5: b
 ###################################################
 co021.rwi <- detrend(co021, method="Spline")
 co021.crn <- chron(co021.rwi, prefix="MES")
@@ -39,7 +45,7 @@ plot(co021.crn, add.spline=TRUE, nyrs=64)
 
 
 ###################################################
-### code chunk number 5: c
+### code chunk number 6: c
 ###################################################
 dat <- co021.crn[, 1]
 op <- par(no.readonly = TRUE) # Save to reset on exit
@@ -50,14 +56,14 @@ par(op)
 
 
 ###################################################
-### code chunk number 6: timeseries-dplR.Rnw:149-151
+### code chunk number 7: timeseries-dplR.Rnw:151-153
 ###################################################
 dat.ar <- ar(dat)
 dat.ar
 
 
 ###################################################
-### code chunk number 7: timeseries-dplR.Rnw:158-162
+### code chunk number 8: timeseries-dplR.Rnw:160-164
 ###################################################
 ## Test if forecast can be loaded
 if (require("forecast", character.only = TRUE)) {
@@ -66,7 +72,7 @@ if (require("forecast", character.only = TRUE)) {
 
 
 ###################################################
-### code chunk number 8: timeseries-dplR.Rnw:165-172
+### code chunk number 9: timeseries-dplR.Rnw:167-174
 ###################################################
 if (require("forecast", character.only = TRUE)) {
     dat.arima <- auto.arima(dat, ic="bic")
@@ -78,7 +84,7 @@ if (require("forecast", character.only = TRUE)) {
 
 
 ###################################################
-### code chunk number 9: d
+### code chunk number 10: d
 ###################################################
 
 redf.dat <- redfit(dat, nsim = 1000)
@@ -108,16 +114,16 @@ par(op)
 
 
 ###################################################
-### code chunk number 10: e
+### code chunk number 11: e
 ###################################################
 yrs <- as.numeric(rownames(co021.crn))
 out.wave <- morlet(y1 = dat, x1 = yrs, p2 = 8, dj = 0.1,
                    siglvl = 0.99)
-wavelet.plot(out.wave)
+wavelet.plot(out.wave, useRaster=NA)
 
 
 ###################################################
-### code chunk number 11: timeseries-dplR.Rnw:259-263
+### code chunk number 12: timeseries-dplR.Rnw:261-265
 ###################################################
 ## Test if waveslim can be loaded
 if (require("waveslim", character.only = TRUE)) {
@@ -126,7 +132,7 @@ if (require("waveslim", character.only = TRUE)) {
 
 
 ###################################################
-### code chunk number 12: f
+### code chunk number 13: f
 ###################################################
 if (require("waveslim", character.only = TRUE)) {
   nYrs <- length(yrs)
@@ -157,7 +163,7 @@ if (require("waveslim", character.only = TRUE)) {
 
 
 ###################################################
-### code chunk number 13: g
+### code chunk number 14: g
 ###################################################
 par(mar=rep(2.5,4),mgp=c(1.2,0.25,0),tcl=0.5,
     xaxs="i",yaxs="i")

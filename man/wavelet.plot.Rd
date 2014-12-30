@@ -8,14 +8,16 @@
 \usage{
 wavelet.plot(wave.list,
              wavelet.levels = quantile(wave.list$Power,
-                                       probs = seq(from=0, to=1, by=0.1)),
+                                       probs = (0:10)/10),
              add.coi = TRUE, add.sig = TRUE, x.lab = gettext("Time"),
              period.lab = gettext("Period"), crn.lab = gettext("RWI"),
              key.cols = rev(rainbow(length(wavelet.levels)-1)),
              key.lab = parse(text=paste0("\"", gettext("Power"), "\"^2")),
              add.spline = FALSE, f = 0.5, nyrs = NULL,
              crn.col = "black", crn.lwd = 1,coi.col='black',
-             crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE)
+             crn.ylim = range(wave.list$y) * c(0.95, 1.05),
+             side.by.side = FALSE,
+             useRaster = FALSE, res = 150, reverse.y = FALSE)
 }
 \arguments{
   \item{wave.list}{A \code{list}. Output from \code{\link{morlet}}.}
@@ -38,7 +40,24 @@ wavelet.plot(wave.list,
   \item{coi.col}{Color for the COI if \code{add.coi} is \code{TRUE}.}
   \item{crn.ylim}{Axis limits for the time-series plot.}
   \item{side.by.side}{A \code{logical} flag. Plots will be in one row if
-    \code{TRUE}. }
+    \code{TRUE}.}
+  \item{useRaster}{A \code{logical} flag.  If \code{TRUE}, the filled
+    contours are drawn as a raster image.  Other parts of the plot are
+    not affected.  \code{useRaster=TRUE} can be especially useful when a
+    \code{pdf} device is used: the size and complexity of the
+    \acronym{PDF} file will probably be greatly reduced.  Setting this
+    to \code{TRUE} has negative effects when used with a bitmap
+    device such as \code{png}.  If \code{NA}, plotting of a raster image
+    will be attempted if and only if the name of the graphics device is
+    \code{"pdf"} or \code{"postscript"}.  The default is \code{FALSE}:
+    draw directly to the graphics device without using an intermediate
+    raster image.  }
+  \item{res}{A \code{numeric} vector of length 1.  The resolution
+    (pixels per inch) of the filled contours when a raster image is
+    used.  See \code{useRaster}.}
+  \item{reverse.y}{A \code{logical} flag.  If \code{TRUE}, the Y-axis
+    will be reversed, i.e. period increasing towards the bottom.  The
+    default is \code{FALSE}. }
 }
 \details{
   This produces a plot of a continuous wavelet transform and plots the
@@ -70,9 +89,17 @@ Years <- as.numeric(rownames(ca533.crn))
 CAMstd <- ca533.crn[, 1]
 out.wave <- morlet(y1 = CAMstd, x1 = Years, p2 = 9, dj = 0.1,
                    siglvl = 0.99)
-wavelet.plot(out.wave)
+wavelet.plot(out.wave, useRaster = NA)
+\dontrun{
+## Alternative palette with better separation of colors
+if (require(RColorBrewer)) {
+  wavelet.plot(out.wave, key.cols=rev(brewer.pal(10, "Spectral")),
+               useRaster = NA)
+}
+}
 levs <- quantile(out.wave$Power, probs = c(0, 0.5, 0.75, 0.9, 0.99))
 wavelet.plot(out.wave, wavelet.levels = levs, add.sig = FALSE,
-             key.cols = c("white", "green", "blue", "red"))
+             key.cols = c("white", "green", "blue", "red"),
+             useRaster = NA)
 }
 \keyword{ hplot }

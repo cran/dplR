@@ -37,9 +37,9 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
     whitened using \code{\link{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
-  \item{method}{Can either "pearson", "kendall", or "spearman" which indicates
-    the correlation coefficient is to be used. Defaults to "spearman." See 
-    \code{\link{cor.test}}. }
+  \item{method}{Can be either \code{"pearson"}, \code{"kendall"}, or
+    \code{"spearman"} which indicates the correlation coefficient to be
+    used. Defaults to \code{"spearman"}. See \code{\link{cor.test}}. }
   \item{pcrit}{ a number between 0 and 1 giving the critical value for
     the correlation test. }
   \item{make.plot}{ \code{logical} flag indicating whether to make a
@@ -51,8 +51,8 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
 }
 \details{
 
-  This function calculates the correlation a tree-ring series and a
-  master chronology built from a rwl object. Correlations are done by
+  This function calculates the correlation between a tree-ring series and a
+  master chronology built from a rwl object.  Correlations are done by
   segment (see below) and with a moving correlation with length equal to
   the \code{\var{seg.length}}.  The function is typically invoked to
   produce a plot.
@@ -67,7 +67,7 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
   (segments). Matrix \code{\var{moving.rho}} contains the moving
   correlation and p-value for a moving average equal to
   \code{\var{seg.length}}.  Vector \code{\var{spearman.rho}} contains
-  the correlations each series by bin and \code{\var{p.val}} contains
+  the correlations by bin and \code{\var{p.val}} contains
   the p-values. Vector \code{\var{overall}} contains the average
   correlation and p-value.
 }

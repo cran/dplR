@@ -181,13 +181,13 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
 
   \item{rcritlo }{ a \code{numeric} vector of critical low values for
     the number of runs, i.e. the lowest value for accepting the null
-    hyphothesis at each level of significance \code{\var{p}}.  When
+    hypothesis at each level of significance \code{\var{p}}.  When
     returned from \code{redfit}, \code{NULL} when \code{\var{rcnt}} is
     \code{NULL}. }
 
   \item{rcrithi }{ a \code{numeric} vector of critical high values for
     the number of runs, i.e. the highest value for accepting the null
-    hyphothesis at each level of significance \code{\var{p}}.  When
+    hypothesis at each level of significance \code{\var{p}}.  When
     returned from \code{redfit}, \code{NULL} when \code{\var{rcnt}} is
     \code{NULL}. }
   
@@ -310,6 +310,8 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
 # a period of 10 and an amplitude of have the rednoise sd.
 library(graphics)
 library(stats)
+runif(1)
+rs <- .Random.seed
 set.seed(123)
 nyrs <- 500
 yrs <- 1:nyrs
@@ -332,6 +334,10 @@ x <- x + wav
 
 # Here is the redfit spec
 redf.x <- redfit(x, nsim = 500)
+
+# Acceptance region of number of runs test
+# (not useful with default arguments of redfit())
+runcrit(length(redf.x[["freq"]]))
 
 op <- par(no.readonly = TRUE) # Save to reset on exit
 par(tcl = 0.5, mar = rep(2.2, 4), mgp = c(1.1, 0.1, 0))
@@ -356,6 +362,7 @@ legend("topright", c("x", "CI99", "CI95", "CI90"), lwd = 2,
        bg = "white")
 box()
 
+\dontrun{
 # Second example with tree-ring data
 # Note the long-term low-freq signal in the data. E.g.,
 # crn.plot(cana157)
@@ -364,10 +371,6 @@ data(cana157)
 yrs <- as.numeric(rownames(cana157))
 x <- cana157[, 1]
 redf.x <- redfit(x, nsim = 1000)
-
-# Acceptance region of number of runs test
-# (not useful with default arguments of redfit())
-runcrit(length(redf.x[["freq"]]))
 
 plot(redf.x[["freq"]], redf.x[["gxxc"]],
      ylim = range(redf.x[["ci99"]], redf.x[["gxxc"]]),
@@ -389,7 +392,8 @@ legend("topright", c("x", "CI99", "CI95", "CI90"), lwd = 2,
        bg = "white")
 box()
 par(op)
-
+}
+.Random.seed <- rs
 }
 \keyword{ ts }
 \keyword{ htest }

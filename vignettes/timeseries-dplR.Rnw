@@ -6,12 +6,15 @@
 \input{ix-utf8enc.dfu} % more characters supported
 \title{Time Series Analysis in dplR} 
 \author{Andy Bunn \and Mikko Korpela}
+<<echo=FALSE,results=hide>>=
+library(dplR) # latexify(), latexDate()
+@ 
 \hypersetup{
   pdfauthor = {Andy Bunn; Mikko Korpela},
 }
-\date{\footnotesize{$ $Processed with dplR 
+\date{\footnotesize Processed with dplR 
 \Sexpr{packageDescription("dplR", field="Version")}
-in \Sexpr{R.version.string} on \today}}
+in \Sexpr{latexify(R.version.string)} on \Sexpr{latexDate()}}
 
 \begin{document}
 \bibliographystyle{jss}
@@ -31,8 +34,7 @@ Sys.setenv(LANGUAGE="en") # no translations to languages other than English
 \begin{abstract}
 In this vignette we cover some of the basic time series tools in dplR 
 (and in R to a much lesser extent). These include spectral analysis 
-using redfit and wavelets. We also discuss fitting AR, ARMA, and
-GARCH models.
+using redfit and wavelets. We also discuss fitting AR and ARMA.
 \end{abstract}
 \tableofcontents
 
@@ -115,7 +117,7 @@ plot(co021.crn, add.spline=TRUE, nyrs=64)
 \section{Characterizing the Data}
 
 Let's start with a quick exploratory data analysis into the time-series
-proThe \code{co021.crn} object has two columns, the first giving the chronology
+process. The \code{co021.crn} object has two columns, the first giving the chronology
 and the second the sample depth during that year. We will start our analysis
 on the chronology by looking at its autocorrelation structure using R's 
 \code{acf} and \code{pacf} functions.
@@ -237,7 +239,7 @@ the result via \code{wavelet.plot}.
 yrs <- as.numeric(rownames(co021.crn))
 out.wave <- morlet(y1 = dat, x1 = yrs, p2 = 8, dj = 0.1,
                    siglvl = 0.99)
-wavelet.plot(out.wave)
+wavelet.plot(out.wave, useRaster=NA)
 @
 \begin{figure}[h]
   \centering
@@ -305,16 +307,16 @@ them on the same y-axis. If the \code{scale} function were to be removed
 (and we leave that as an exercise to the reader) the variations between voices
 would be greatly reduced. Note the similarity in Figures~\ref{fig:wavelet} 
 and~\ref{fig:mra} for the variation in the 64-year band around the year 1600
-and the lower frequncy variation at 128 years around the year 1400.
+and the lower frequency variation at 128 years around the year 1400.
 \else% If "waveslim" is not available
 An example was dropped because \code{"waveslim"} is not available.
 \fi% End of conditional
 
 The pioneering work of Ed Cook -- e.g. \cite{cook1990} -- has left an enduring 
-mark on nearly every aspect of quantitative dendrochrnology. One such mark
+mark on nearly every aspect of quantitative dendrochronology. One such mark
 that we already alluded to above is the use of smoothing splines to detrend
 and filter tree-ring data. So, we'll close with an example of how one
-can visualise an individual tree-rins series using splines 
+can visualise an individual tree-ring series using splines 
 (Figure~\ref{fig:spl}).
 
 <<g, fig=TRUE>>=
