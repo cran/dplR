@@ -405,8 +405,8 @@ test.corr.series.seg <- function() {
     checkTrue(res1$bins[nrow(res1$bins), 1] == 450,
               msg="Last bin is in correct position (test 1)")
 
-    checkIdentical(res1$bins, res2$bins,
-                   msg="Bins are identical (tests 1 and 2)")
+    checkEquals(res1$bins, res2$bins,
+                msg="Bins are the same (tests 1 and 2)")
 
     checkTrue(all(res3$bins[, 2] - res3$bins[, 1] + 1 == 100),
               msg="Bins have correct length(test 3)")
@@ -456,7 +456,14 @@ test.corr.series.seg <- function() {
     checkEquals(c(-1, 1), range(res4$moving.rho[, "rho"], na.rm=TRUE),
                 msg="Moving correlations are as expected (test 4)")
 
-    checkIdentical(res5, res6, msg="Default method is spearman")
+    tmpNames <- names(res5)
+    checkEquals(tmpNames, names(res6),
+                msg="Result lists have the same names in the same order")
+    for (i in seq_along(res5)) {
+        checkEquals(res5[[i]], res6[[i]],
+                    msg=sprintf("Default method is spearman (%s)",
+                    tmpNames[i]))
+    }
     checkTrue(!isTRUE(all.equal(res6$overall, res7$overall)),
               msg="Overall correlation differs between methods (test 1)")
     checkTrue(!isTRUE(all.equal(res6$overall, res8$overall)),
@@ -476,24 +483,22 @@ test.corr.series.seg <- function() {
     checkTrue(!isTRUE(all.equal(res7$spearman.rho, res8$spearman.rho)),
               msg="Segment correlations differ between methods (test 3)")
 
-    tmp7 <- na.omit(res7$moving.rho[, "rho"])
+    tmp7 <- as.vector(na.omit(res7$moving.rho[, "rho"]))
     checkTrue(length(tmp7) == 451,
               msg = "Number of non-NA correlations (test 1)")
-    uniqueRho7 <- unique(tmp7)
-    checkTrue(length(uniqueRho7) == 1,
-              msg = "Correlation when segment length matches the common cycle of rwl and series")
+    checkEquals(rep(mean(tmp7), 451), tmp7,
+                msg = "Correlation when segment length matches the common cycle of rwl and series")
     tmp9 <- na.omit(res9$moving.rho[, "rho"])
     checkTrue(length(tmp9) == 453,
               msg = "Number of non-NA correlations (test 2)")
     uniqueRho9 <- unique(tmp9)
     checkTrue(length(uniqueRho9) == 50,
               msg = "Correlations for rwl and series with a common cycle, shorter segments")
-    tmp10 <- na.omit(res10$moving.rho[, "rho"])
+    tmp10 <- as.vector(na.omit(res10$moving.rho[, "rho"]))
     checkTrue(length(tmp10) == 401,
               msg = "Number of non-NA correlations (test 3)")
-    uniqueRho10 <- unique(tmp10)
-    checkTrue(length(uniqueRho10) == 1,
-              msg = "Correlation when segment length is a multiple of the length of the common cycle of rwl and series")
+    checkEquals(rep(mean(tmp10), 401), tmp10,
+                msg = "Correlation when segment length is a multiple of the length of the common cycle of rwl and series")
     tmp11 <- na.omit(res11$moving.rho[, "rho"])
     checkTrue(length(tmp11) == 359,
               msg = "Number of non-NA correlations (test 4)")
@@ -503,8 +508,8 @@ test.corr.series.seg <- function() {
 
     checkTrue(length(res6.2$spearman.rho) == length(res6$spearman.rho) + 2,
               msg = "Extra segments with different bin.floor")
-    checkIdentical(res6.2$spearman.rho[-c(1, 2)], res6$spearman.rho,
-                   msg = "Other segments have identical correlation")
+    checkEquals(res6.2$spearman.rho[-c(1, 2)], res6$spearman.rho,
+                msg = "Other segments have the same correlation")
 }
 
 test.ffcsaps <- function() {
