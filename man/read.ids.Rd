@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{read.ids}
 \alias{read.ids}
 \alias{autoread.ids}
@@ -98,7 +99,7 @@ autoread.ids(rwl, ignore.site.case = TRUE, ignore.case = "auto",
     numbers and alphabets
 
     \item Alphabetic site part (quite complicated actual
-    definition). Setting \code{\var{ignore.case}} to \code{"auto"}
+    definition).  Setting \code{\var{ignore.case}} to \code{"auto"}
     allows the function to try to guess when a case change in the middle
     of a sequence of alphabets signifies a boundary between the site
     part and the tree part.
@@ -147,9 +148,9 @@ autoread.ids(rwl, ignore.site.case = TRUE, ignore.case = "auto",
 
   } If the split of a tree / core part cannot be found with any of the
   methods described above, the prefix of the string is matched against a
-  previously found tree part, starting from the longest. The fallback
+  previously found tree part, starting from the longest.  The fallback
   mechanism for the still undecided tree / core parts is one of the
-  following. The first one is used if \code{\var{use.cor}} is
+  following.  The first one is used if \code{\var{use.cor}} is
   \code{TRUE}, number two if it is \code{FALSE}.
 
   \enumerate{
@@ -198,7 +199,7 @@ autoread.ids(rwl, ignore.site.case = TRUE, ignore.case = "auto",
       or vice versa.  There are requirements to how long a site string
       must be in order to be eligible for replacement / typo fixing,
       i.e. cannot be shortened to zero length, cannot change the only
-      character of a site string. The parameters
+      character of a site string.  The parameters
       \code{\var{ignore.case}} and \code{\var{ignore.site.case}} have
       some effect on this typo fixing mechanism. }
 
@@ -212,9 +213,9 @@ autoread.ids(rwl, ignore.site.case = TRUE, ignore.case = "auto",
       determines the decision threshold of interpreting the type of each
       character position as alphabet (digit): the ratio of alphabets
       (digits) to the total number of characters must be at least
-      \code{\var{typo.ratio} / (\var{typo.ratio} + 1)}. If a name
+      \code{\var{typo.ratio} / (\var{typo.ratio} + 1)}.  If a name
       differs from the majority type in more than one character
-      position, it is not fixed. Also, no fixes are performed if any of
+      position, it is not fixed.  Also, no fixes are performed if any of
       them would cause a possible monotonic order of numeric prefixes to
       break. }
     
@@ -247,7 +248,8 @@ autoread.ids(rwl, ignore.site.case = TRUE, ignore.case = "auto",
 \author{ Andy Bunn (original version) and Mikko Korpela (patches,
   \code{\var{stc}="auto"}, \code{\var{fix.typos}}, etc.). }
 \seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 read.ids(ca533, stc = c(3, 2, 3))
 autoread.ids(ca533)
 }

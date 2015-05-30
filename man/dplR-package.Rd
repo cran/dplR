@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{dplR-package}
 \alias{dplR-package}
 \alias{dplR}
@@ -30,14 +31,15 @@ License: \tab \acronym{GPL} (>= 2)\cr
   Zang.  Function \code{\link{redfit}} is an improved translation of
   program REDFIT which is original work of Manfred Mudelsee and Michael
   Schulz.  Jacob Cecile contributed a bug fix to
-  \code{\link{detrend.series}}.
+  \code{\link{detrend.series}}.  Allan Buras came up with the revised
+  formula of \code{\link{glk}} in dplR >= 1.6.1.
 }
 \references{
-  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences.}
-  Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
+  Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of
+    Dendrochronology: Applications in the Environmental Sciences}.
+    Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 
-  Fritts, H. C. (2001) \emph{Tree Rings and Climate.}
+  Fritts, H. C. (2001) \emph{Tree Rings and Climate}.
   Blackburn.  \acronym{ISBN-13}: 978-1-930665-39-2.
 }
 \keyword{ package }

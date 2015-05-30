@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{tridas.vocabulary}
 \alias{tridas.vocabulary}
 \title{
@@ -15,25 +16,29 @@ tridas.vocabulary(category = c("dating type", "measuring method",
 }
 \arguments{
   \item{category}{Vocabulary category as a \code{character} vector of
-    length one. One of \code{"dating type"}, \code{"measuring method"},
+    length one.  One of \code{"dating type"}, \code{"measuring method"},
     \code{"shape"}, \code{"location type"}, \code{"variable"},
     \code{"unit"}, \code{"remark"}, \code{"dating suffix"}, 
     \code{"presence / absence"}, \code{"complex presence / absence"},
-    \code{"certainty"}. Partial matches are allowed.}
-  \item{idx}{A \code{numeric} vector. Index to the \code{character}
+    \code{"certainty"}.  Partial matches are allowed.}
+  \item{idx}{A \code{numeric} vector.  Index to the \code{character}
     vector containing the vocabulary of the given category.}
-  \item{term}{A \code{character} vector. One or more (partial) terms to
+  \item{term}{A \code{character} vector.  One or more (partial) terms to
     look for in the given category.}
-  \item{match.exact}{A \code{logical} value. If \code{TRUE}, partial
-    matching of \code{\var{term}} is not used. Defaults to
+  \item{match.exact}{A \code{logical} value.  If \code{TRUE}, partial
+    matching of \code{\var{term}} is not used.  Defaults to
     \code{FALSE}.}
 }
 \details{
+  The Tree Ring Data Standard (TRiDaS) is described in Jansma et. al
+  (2010).  Information about the current version of the standard can be
+  found from \href{http://www.tridas.org/}{TRiDaS website}.
+
   The function has four usage modes:
   \enumerate{
 
     \item When \code{\var{idx}} is given, returns item number
-    \code{\var{idx}} in the given \code{\var{category}}. There may be
+    \code{\var{idx}} in the given \code{\var{category}}.  There may be
     several numbers in \code{\var{idx}}, in which case multiple items
     are returned.
 
@@ -64,8 +69,12 @@ tridas.vocabulary(category = c("dating type", "measuring method",
 
 }
 \references{
-  TRiDaS \enc{–}{--} The Tree Ring Data Standard,
-  \url{http://www.tridas.org/}
+  Jansma, E., Brewer, P. W., and Zandhuis, I. (2010) TRiDaS 1.1: The
+  tree-ring data standard.  \emph{Dendrochronologia}, \bold{28}(2),
+  99--130.
+
+  TRiDaS \enc{–}{--} The Tree Ring Data Standard.
+  \url{http://www.tridas.org/}.
 }
 \author{
   Mikko Korpela

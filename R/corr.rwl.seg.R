@@ -15,9 +15,8 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
 
     ## turn off warnings for this function
     ## The sig test for spearman's rho often produces warnings.
-    w <- options("warn")
+    w <- options(warn = -1)
     on.exit(options(w))
-    options(warn = -1)
 
     nseries <- length(rwl)
     if (is.null(master) && nseries < 2) {
@@ -128,7 +127,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
     bins <- seq(from=min.bin, to=max.bin, by=seg.lag)
-    bins <- cbind(bins, bins + (seg.length - 1))
+    bins <- cbind(bins, bins + (seg.length - 1), deparse.level=0)
     nbins <- nrow(bins)
     bin.names <- paste0(bins[, 1], ".", bins[, 2])
     ## structures for results

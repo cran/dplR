@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{hanning}
 \alias{hanning}
 \title{ Hanning Filter }
@@ -19,14 +20,15 @@ hanning(x, n = 7)
   A filtered vector.
 }
 \references{
-  Oppenheim, A. V., Schafer, R. W. and Buck, J. R. (1999) \emph{
-    Discrete-Time Signal Processing (2nd Edition)}.  Prentice-Hall.
+  Oppenheim, A. V., Schafer, R. W., and Buck, J. R. (1999) \emph{
+    Discrete-Time Signal Processing}.  Prentice-Hall, 2nd edition.
   \acronym{ISBN-13}: 978-0-13-754920-7.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link[stats]{filter} } }
 
 \examples{library(graphics)
+library(utils)
 data(ca533)
 yrs <- as.numeric(rownames(ca533))
 y <- ca533[, 1]

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{strip.rwl}
 \alias{strip.rwl}
 \title{Chronology Stripping by \acronym{EPS}}
@@ -67,15 +68,16 @@ strip.rwl(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
 }
 \references{
 
-  Fowler A. and Boswijk G. (2003) Chronology stripping as a tool for
+  Fowler, A. and Boswijk, G. (2003) Chronology stripping as a tool for
   enhancing the statistical quality of tree-ring
-  chronologies. \emph{Tree-Ring Research}, 59(2):53\enc{–}{--}62.
+  chronologies. \emph{Tree-Ring Research}, \bold{59}(2), 53\enc{–}{--}62.
   
 }
 \seealso{
   \code{\link{rwi.stats}}
 }
 \examples{
+library(utils)
 data(anos1)
 anos1.ids <- read.ids(anos1, stc = c(4, 3, 1))
 srwl <- strip.rwl(anos1, ids = anos1.ids, verbose = TRUE)

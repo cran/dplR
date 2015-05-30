@@ -14,13 +14,12 @@ series.rwl.plot <-
 
     ## turn off warnings for this function
     ## The sig test for spearman's rho often produces warnings.
-    w <- options("warn")
+    w <- options(warn = -1)
     on.exit(options(w))
-    options(warn = -1)
 
     seg.lag <- seg.length / 2
 
-    mask <- !apply(as.matrix(is.na(rwl2)), 1, all)
+    mask <- !rowAlls(as.matrix(is.na(rwl2)))
     yrs0 <- as.numeric(row.names(rwl2))[mask]
     ## Normalize.
     tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
@@ -62,7 +61,7 @@ series.rwl.plot <-
         stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
     bins <- seq(from=min.bin, to=to + seg.lag, by=seg.lag)
-    bins <- cbind(bins, bins + (seg.length - 1))
+    bins <- cbind(bins, bins + (seg.length - 1), deparse.level=0)
     nbins <- nrow(bins)
 
     op <- par(no.readonly=TRUE)
@@ -99,7 +98,7 @@ series.rwl.plot <-
          ylab=gettext("Master", domain="R-dplR"),
          xlab=gettext("Series", domain="R-dplR"), pch=20,
          sub=bquote(R^2==.(tmp)))
-    abline(lm1, lwd=2)
+    abline(coef = coef(lm1), lwd=2)
 
     ## plot 3
     plot(yrs, series2, type="n", ylim=c(-1, 1), ylab="",

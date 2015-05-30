@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{common.interval}
 \alias{common.interval}
 \title{Common Interval}
@@ -15,7 +16,7 @@ common.interval(rwl, type=c("series", "years", "both"),
     containing each series \acronym{ID} such as produced by
     \code{\link{read.rwl}}}
   \item{type}{a \code{character} string of
-    \code{"series"}, \code{"years"}, or \code{"both"}. Argument
+    \code{"series"}, \code{"years"}, or \code{"both"}.  Argument
     matching is performed. }
   \item{make.plot}{a \code{logical} indicating if a plot should be drawn }
 }
@@ -24,7 +25,7 @@ common.interval(rwl, type=c("series", "years", "both"),
   This trims an \code{rwl} object to a common interval that maximizes
   the number of series (\code{type="series"}), the number of years
   (\code{type="years"}), or a compromise between the two
-  (\code{type="both"}). A modified \code{\link{seg.plot}} can be drawn
+  (\code{type="both"}).  A modified \code{\link{seg.plot}} can be drawn
   as well.
   
 }
@@ -36,6 +37,7 @@ common.interval(rwl, type=c("series", "years", "both"),
 \seealso{ \code{\link{seg.plot}} }
 
 \examples{
+library(utils)
 data(co021)
 co021.s <- common.interval(co021, type="series", make.plot=TRUE)
 co021.y <- common.interval(co021, type="years", make.plot=TRUE)

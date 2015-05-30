@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{read.tucson}
 \alias{read.tucson}
 \title{ Read Tucson Format Ring Width File }
@@ -6,7 +7,7 @@
 }
 \usage{
 read.tucson(fname, header = NULL, long = FALSE,
-            encoding = getOption("encoding"))
+            encoding = getOption("encoding"), edge.zeros = TRUE)
 }
 \arguments{
   \item{fname}{ a \code{character} vector giving the file name of the
@@ -26,20 +27,24 @@ read.tucson(fname, header = NULL, long = FALSE,
     problem.  Examples of popular encodings available on many systems
     are \code{"ASCII"}, \code{"UTF-8"}, and \code{"latin1"} alias
     \code{"ISO-8859-1"}.  See the help of \code{\link{file}}. }
+  \item{edge.zeros}{ \code{logical} flag indicating whether leading or
+    trailing zeros in series will be preserved (when the flag is
+    \code{TRUE}, the default) or discarded, i.e. marked as \code{NA}
+    (when \code{FALSE}). }
 }
 \details{
   This reads in a standard rwl file as defined according to the
   standards of the \acronym{ITRDB} at
-  \url{http://www.ncdc.noaa.gov/paleo/treeinfo.html}. Despite the
+  \url{http://www.ncdc.noaa.gov/paleo/treeinfo.html}.  Despite the
   standards at the \acronym{ITRDB}, this occasionally fails due to
   formatting problems.
 }
 \value{
   A \code{data.frame} with the series in columns and the years as
-  rows. The series \acronym{ID}s are the column names and the years are
+  rows.  The series \acronym{ID}s are the column names and the years are
   the row names.
 }
-\author{ Andy Bunn. Patched and greatly improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and greatly improved by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}}, \code{\link{read.compact}},
   \code{\link{read.tridas}}, \code{\link{read.fh}},
   \code{\link{write.tucson}} }

@@ -9,7 +9,8 @@ importFrom(digest, digest)
 
 importFrom(gmp, as.bigq, as.bigz, chooseZ, is.bigq)
 
-importFrom(grDevices, dev.hold, dev.flush, rainbow)
+importFrom(grDevices, dev.hold, dev.flush, rainbow, dev.capabilities,
+           dev.cur, png, dev.off, dev.set, devAskNewPage)
 
 importFrom(grid, gpar, grid.lines, grid.newpage, grid.polygon,
            grid.segments, grid.text, pushViewport, seekViewport, unit,
@@ -20,14 +21,21 @@ importFrom(grid, gpar, grid.lines, grid.newpage, grid.polygon,
 importFrom(lattice, panel.abline, panel.dotplot, panel.segments,
            trellis.par.set, xyplot)
 
+importFrom(matrixStats, colAlls, colAnys, colMedians, colSds, rowAlls,
+           rowAnys, rowSds)
+
 importFrom(png, readPNG)
+
+importFrom(R.utils, captureOutput)
 
 importFrom(stringi, stri_trans_nfc, stri_trans_nfd)
 
 importFrom(stringr, str_pad, str_trim)
 
-importFrom(utils, head, installed.packages, read.fwf, tail,
-           packageVersion, write.table)
+importFrom(utils, head, packageDescription, read.fwf, tail,
+           packageVersion, write.table, read.table, write.csv)
+
+import(Matrix)
 
 importFrom(XML, xmlEventParse)
 
@@ -35,7 +43,7 @@ export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
        combine.rwl, common.interval, corr.rwl.seg, corr.series.seg,
        crn.plot, detrend, detrend.series, ffcsaps, fill.internal.NA,
        gini.coef, glk, hanning, i.detrend, i.detrend.series, morlet,
-       po.to.wc, pointer, powt, print.redfit, rcs, read.compact,
+       net, po.to.wc, pointer, powt, print.redfit, rcs, read.compact,
        read.crn, read.fh, read.ids, read.rwl, read.tridas,
        read.tucson, redfit, runcrit, rwi.stats, rwi.stats.legacy,
        rwi.stats.running, rwl.stats, sea, seg.plot, sens1, sens2,

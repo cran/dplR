@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{print.redfit}
 \alias{print.redfit}
 \title{
@@ -54,12 +55,12 @@
 \references{
 
   This function is based on the Fortran program
-  \href{http://www.ncdc.noaa.gov/paleo/softlib/redfit/redfit.html}{REDFIT},
+  \href{http://www.geo.uni-bremen.de/geomod/staff/mschulz/}{REDFIT},
   which is in the public domain.
 
   Schulz, M. and Mudelsee, M. (2002) REDFIT: estimating red-noise
   spectra directly from unevenly spaced paleoclimatic time series.
-  \emph{Computers & Geosciences}, 28(3):421\enc{–}{--}426.
+  \emph{Computers & Geosciences}, \bold{28}(3), 421\enc{–}{--}426.
 
 }
 \author{
@@ -68,7 +69,8 @@
 \seealso{
   \code{\link{redfit}}
 }
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 t <- as.numeric(row.names(ca533))
 x <- ca533[[1]]
 idx <- which(!is.na(x))

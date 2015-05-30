@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{read.tridas}
 \alias{read.tridas}
 
@@ -59,23 +60,31 @@ read.tridas(fname, ids.from.titles = FALSE,
   
 }
 
-\details{ The parameters used for rearranging
-  (\code{\var{ids.from.titles}}, \code{\var{ids.from.identifiers}}) and
-  combining (\code{\var{combine.series}}) measurement series only affect
-  the four lowest levels of document structure: element, sample, radius,
+\details{
+
+  The Tree Ring Data Standard (TRiDaS) is described in Jansma et. al
+  (2010).  Information about the current version of the standard can be
+  found from \href{http://www.tridas.org/}{TRiDaS website}.
+
+  The parameters used for rearranging (\code{\var{ids.from.titles}},
+  \code{\var{ids.from.identifiers}}) and combining
+  (\code{\var{combine.series}}) measurement series only affect the four
+  lowest levels of document structure: element, sample, radius,
   measurementSeries.  Series are not reorganized or combined at the
-  upper structural levels (project, object). }
+  upper structural levels (project, object).
+
+}
 
 \value{
   A list with a variable number of components according to the contents
-  of the input file. The possible list components are:
+  of the input file.  The possible list components are:
 
   \item{measurements}{A \code{data.frame} or a list of \code{data.frame}s with
     the series in columns and the years as rows.  Contains measurements
     (\samp{<measurementSeries>}) with known years.  The series
     \acronym{ID}s are the column names and the years are the row
-    names. The series \acronym{ID}s are derived from \samp{<title>}
-    elements in the input file. Each unique combination of
+    names.  The series \acronym{ID}s are derived from \samp{<title>}
+    elements in the input file.  Each unique combination of
     \samp{<project>}, \samp{<object>}, \samp{<unit>}, \samp{<taxon>},
     and \samp{<variable>} gets a separate \code{data.frame}. }
 
@@ -106,7 +115,7 @@ read.tridas(fname, ids.from.titles = FALSE,
     \code{"n.unmeasured.inner"}, \code{"n.unmeasured.outer"}. }
   
   \item{unit}{A \code{character} vector giving the unit of the
-    measurements. Length equals the number of \code{data.frame}s in
+    measurements.  Length equals the number of \code{data.frame}s in
     \code{\var{measurements}}. }
   
   \item{project.id}{A \code{numeric} vector giving the project
@@ -150,49 +159,49 @@ read.tridas(fname, ids.from.titles = FALSE,
     \describe{
 
       \item{data}{A \code{numeric} vector or a list of such vectors
-	containing measurement series }
+        containing measurement series }
 
       \item{unit}{A \code{character} vector giving the unit of the
-	measurements.  Length equals the number of measurement series in
-	\code{\var{undated}$\var{data}} }
+        measurements.  Length equals the number of measurement series in
+        \code{\var{undated}$\var{data}} }
 
       \item{ids}{A \code{data.frame} with columns named \code{"tree"},
-	\code{"core"}, \code{"radius"}, and \code{"measurement"},
-	together giving a \code{numeric} \acronym{ID} for each measurement
-	series in \code{\var{undated}$\var{data}}.  The rows are
-	guaranteed to be unique only when comparing measurement series
-	with the same \code{\var{project.id}} and \code{\var{site.id}},
-	but not if \code{\var{ids.from.titles} ||
-	  \var{ids.from.identifiers}}. }
+        \code{"core"}, \code{"radius"}, and \code{"measurement"},
+        together giving a \code{numeric} \acronym{ID} for each measurement
+        series in \code{\var{undated}$\var{data}}.  The rows are
+        guaranteed to be unique only when comparing measurement series
+        with the same \code{\var{project.id}} and \code{\var{site.id}},
+        but not if \code{\var{ids.from.titles} ||
+          \var{ids.from.identifiers}}. }
 
       \item{titles}{A \code{data.frame} with columns named
-	\code{"tree"}, \code{"core"}, \code{"radius"}, and
-	\code{"measurement"}, containing the \samp{<title>} hierarchy of
-	each measurement series in \code{\var{undated}$\var{data}} }
+        \code{"tree"}, \code{"core"}, \code{"radius"}, and
+        \code{"measurement"}, containing the \samp{<title>} hierarchy of
+        each measurement series in \code{\var{undated}$\var{data}} }
       
       \item{project.id}{A \code{numeric} vector giving the project
-	\acronym{ID} of each measurement series in
-	\code{\var{undated}$\var{data}} }
+        \acronym{ID} of each measurement series in
+        \code{\var{undated}$\var{data}} }
       
       \item{project.title}{A \code{character} vector giving the project
-	title of each measurement series in
-	\code{\var{undated}$\var{data}} }
+        title of each measurement series in
+        \code{\var{undated}$\var{data}} }
       
       \item{site.id}{A \code{data.frame} giving the site \acronym{ID} of
-	each measurement series in \code{\var{undated}$\var{data}} }
+        each measurement series in \code{\var{undated}$\var{data}} }
 
       \item{site.title}{A \code{data.frame} giving the site title of
-	each measurement series in \code{\var{undated}$\var{data}} }
+        each measurement series in \code{\var{undated}$\var{data}} }
 
       \item{variable}{A \code{data.frame} containing the variable of
-	each measurement series in \code{\var{undated}$\var{data}} }
+        each measurement series in \code{\var{undated}$\var{data}} }
 
       \item{taxon}{A \code{data.frame} containing taxonomic names of
-	each measurement series in \code{\var{undated}$\var{data}} }
+        each measurement series in \code{\var{undated}$\var{data}} }
 
       \item{wood.completeness}{A \code{data.frame} containing wood
-	completeness information of each measurement series in
-	\code{\var{undated}$\var{data}} }
+        completeness information of each measurement series in
+        \code{\var{undated}$\var{data}} }
       
     }
   }
@@ -203,41 +212,41 @@ read.tridas(fname, ids.from.titles = FALSE,
     \describe{
 
       \item{data}{A \code{numeric} vector or a list of such vectors
-	containing calculated series of values.}
+        containing calculated series of values.}
 
       \item{link}{A \code{list} of \code{data.frame}s, one for each
-	series in \code{\var{derived}$\var{data}}, giving links to the
-	measurements used to form the corresponding derived series.
-	Each \code{data.frame} has a subset of the following columns:
-	\code{"idRef"} (reference to a series in the same file),
-	\code{"xLink"} (\acronym{URI}), \code{"identifier"}, and
-	\code{"domain"} (identifier and its domain, not necessarily in
-	the same file).}
+        series in \code{\var{derived}$\var{data}}, giving links to the
+        measurements used to form the corresponding derived series.
+        Each \code{data.frame} has a subset of the following columns:
+        \code{"idRef"} (reference to a series in the same file),
+        \code{"xLink"} (\acronym{URI}), \code{"identifier"}, and
+        \code{"domain"} (identifier and its domain, not necessarily in
+        the same file).}
 
       \item{project.id}{A \code{numeric} vector giving the project
-	\acronym{ID} of each derived series in
-	\code{\var{derived}$\var{data}}}
+        \acronym{ID} of each derived series in
+        \code{\var{derived}$\var{data}}}
 
       \item{id}{A \code{numeric} vector giving the \acronym{ID} (order
-	of appearance in the project) of each derived series in
-	\code{\var{derived}$\var{data}}}
+        of appearance in the project) of each derived series in
+        \code{\var{derived}$\var{data}}}
 
       \item{title}{A \code{character} vector giving the title of each
-	derived series in \code{\var{derived}$\var{data}}}
+        derived series in \code{\var{derived}$\var{data}}}
 
       \item{project.title}{A \code{character} vector giving the project
-	title of each derived series in \code{\var{derived}$\var{data}}}
+        title of each derived series in \code{\var{derived}$\var{data}}}
 
       \item{unit}{A \code{character} vector giving the unit of the
-	derived series.  Length equals the number of series in
-	\code{\var{derived}$\var{data}}.}
+        derived series.  Length equals the number of series in
+        \code{\var{derived}$\var{data}}.}
 
       \item{standardizing.method}{A \code{character} vector giving the
-	standardizing method of the derived series.  Length equals the
-	number of series in \code{\var{derived}$\var{data}}.}
+        standardizing method of the derived series.  Length equals the
+        number of series in \code{\var{derived}$\var{data}}.}
 
       \item{variable}{A \code{data.frame} containing the variable of
-	each series in \code{\var{derived}$\var{data}}}
+        each series in \code{\var{derived}$\var{data}}}
       
     }
   }
@@ -246,7 +255,7 @@ read.tridas(fname, ids.from.titles = FALSE,
     entities, and metadata related to each \samp{type} element.
     Contents are \code{NA} where the metadata is not applicable (e.g.,
     no \code{\var{tree.id}} when the \samp{type} element refers to a
-    project). Columns are a subset of the following:
+    project).  Columns are a subset of the following:
 
     \describe{
 
@@ -257,16 +266,16 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{normal}{The normalized name of the type}
 
       \item{normalId}{The \acronym{ID} value of the type in the standard
-	dictionary}
+        dictionary}
 
       \item{normalStd}{The name of the standard}
 
       \item{project.id}{The \acronym{ID} of the project}
 
       \item{site.id}{One or more columns with this prefix, depending on
-	the maximum depth of the \samp{<object>} hierarchy. Gives the
-	\acronym{ID} of the site where the \samp{<type>} element
-	appeared.}
+        the maximum depth of the \samp{<object>} hierarchy.  Gives the
+        \acronym{ID} of the site where the \samp{<type>} element
+        appeared.}
 
       \item{tree.id}{The \acronym{ID} of the tree}
 
@@ -277,8 +286,8 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.title}{The title of the project}
 
       \item{site.title}{One or more columns with this prefix, depending
-	on the maximum depth of the \samp{<object>} hierarchy. Gives the
-	title of the site where the \samp{<type>} element appeared.}
+        on the maximum depth of the \samp{<object>} hierarchy.  Gives the
+        title of the site where the \samp{<type>} element appeared.}
 
       \item{tree.title}{The title of the tree}
 
@@ -291,7 +300,7 @@ read.tridas(fname, ids.from.titles = FALSE,
 
   \item{comments}{A \code{data.frame} containing comments to various
     entities, and metadata related to each \samp{comments} element.
-    Contents are \code{NA} where the metadata is not applicable. Columns
+    Contents are \code{NA} where the metadata is not applicable.  Columns
     are a subset of the following:
 
     \describe{
@@ -301,8 +310,8 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.id}{The \acronym{ID} of the project}
 
       \item{site.id}{One or more columns with this prefix, depending on
-	the maximum depth of the \samp{<object>} hierarchy. Gives the
-	\acronym{ID} of the site.}
+        the maximum depth of the \samp{<object>} hierarchy.  Gives the
+        \acronym{ID} of the site.}
 
       \item{tree.id}{The \acronym{ID} of the tree}
 
@@ -317,8 +326,8 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.title}{The title of the project}
 
       \item{site.title}{One or more columns with this prefix, depending
-	on the maximum depth of the \samp{<object>} hierarchy. Gives the
-	title of the site.}
+        on the maximum depth of the \samp{<object>} hierarchy.  Gives the
+        title of the site.}
 
       \item{tree.title}{The title of the tree}
 
@@ -336,7 +345,7 @@ read.tridas(fname, ids.from.titles = FALSE,
   \item{identifier}{A \code{data.frame} containing identifiers of
     various entities, and metadata related to each \samp{identifier}
     element.  Contents are \code{NA} where the metadata is not
-    applicable. Columns are a subset of the following:
+    applicable.  Columns are a subset of the following:
 
     \describe{
 
@@ -347,8 +356,8 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.id}{The \acronym{ID} of the project}
 
       \item{site.id}{One or more columns with this prefix, depending on
-	the maximum depth of the \samp{<object>} hierarchy. Gives the
-	\acronym{ID} of the site.}
+        the maximum depth of the \samp{<object>} hierarchy.  Gives the
+        \acronym{ID} of the site.}
 
       \item{tree.id}{The \acronym{ID} of the tree}
 
@@ -363,8 +372,8 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.title}{The title of the project}
 
       \item{site.title}{One or more columns with this prefix, depending
-	on the maximum depth of the \samp{<object>} hierarchy. Gives the
-	title of the site.}
+        on the maximum depth of the \samp{<object>} hierarchy.  Gives the
+        title of the site.}
 
       \item{tree.title}{The title of the tree}
 
@@ -385,50 +394,50 @@ read.tridas(fname, ids.from.titles = FALSE,
     \describe{
 
       \item{measurements}{Remarks related to measurements with a known
-	year. A \code{data.frame} with the following columns:
+        year.  A \code{data.frame} with the following columns:
 
-	\describe{
+        \describe{
 
-	  \item{text}{The remark}
+          \item{text}{The remark}
 
-	  \item{frame}{Index to a \code{data.frame} in
-	    \code{\var{measurements}}}
+          \item{frame}{Index to a \code{data.frame} in
+            \code{\var{measurements}}}
 
-	  \item{row}{Index to a row of the \code{data.frame}}
+          \item{row}{Index to a row of the \code{data.frame}}
 
-	  \item{col}{Index to a column of the \code{data.frame}}
+          \item{col}{Index to a column of the \code{data.frame}}
 
-	}
+        }
       }
       
       \item{undated}{Remarks related to measurements without a known
-	year. A \code{data.frame} with the following columns:
+        year.  A \code{data.frame} with the following columns:
 
-	\describe{
+        \describe{
 
-	  \item{text}{The remark}
+          \item{text}{The remark}
 
-	  \item{series}{Index to a series in
-	    \code{\var{undated}$\var{data}}}
+          \item{series}{Index to a series in
+            \code{\var{undated}$\var{data}}}
 
-	  \item{idx}{Index to a value in the series}
+          \item{idx}{Index to a value in the series}
 
-	}
+        }
       }
 
-      \item{derived}{Remarks related to derived values. A
-	\code{data.frame} with the following columns:
+      \item{derived}{Remarks related to derived values.  A
+        \code{data.frame} with the following columns:
 
-	\describe{
+        \describe{
 
-	  \item{text}{The remark}
+          \item{text}{The remark}
 
-	  \item{series}{Index to a series in
-	    \code{\var{derived}$\var{data}}}
+          \item{series}{Index to a series in
+            \code{\var{derived}$\var{data}}}
 
-	  \item{idx}{Index to a value in the series}
+          \item{idx}{Index to a value in the series}
 
-	}
+        }
       }
     }
   }
@@ -481,7 +490,7 @@ read.tridas(fname, ids.from.titles = FALSE,
   }
 
   \item{altitude}{A \code{data.frame} containing the altitude of
-    trees. Columns are the following:
+    trees.  Columns are the following:
 
     \describe{
 
@@ -490,16 +499,16 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.id}{The \acronym{ID} of the project}
 
       \item{site.id}{One or more columns with this prefix, depending on
-	the maximum depth of the \samp{<object>} hierarchy. Gives the
-	\acronym{ID} of the site.}
+        the maximum depth of the \samp{<object>} hierarchy.  Gives the
+        \acronym{ID} of the site.}
 
       \item{tree.id}{The \acronym{ID} of the tree}
 
       \item{project.title}{The title of the project}
 
       \item{site.title}{One or more columns with this prefix, depending
-	on the maximum depth of the \samp{<object>} hierarchy. Gives the
-	title of the site.}
+        on the maximum depth of the \samp{<object>} hierarchy.  Gives the
+        title of the site.}
 
       \item{tree.title}{The title of the tree}
 
@@ -507,7 +516,7 @@ read.tridas(fname, ids.from.titles = FALSE,
   }
 
   \item{preferred}{A \code{data.frame} containing links to preferred
-    measurement series. Columns are a subset of the following:
+    measurement series.  Columns are a subset of the following:
 
     \describe{
 
@@ -516,23 +525,23 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{xLink}{\acronym{URI}}
 
       \item{identifier}{Identifier of a series not necessarily in the
-	same file}
+        same file}
 
       \item{domain}{Domain which the identifier is applicable to}
 
       \item{project.id}{The \acronym{ID} of the project}
 
       \item{site.id}{One or more columns with this prefix, depending on
-	the maximum depth of the \samp{<object>} hierarchy. Gives the
-	\acronym{ID} of the site.}
+        the maximum depth of the \samp{<object>} hierarchy.  Gives the
+        \acronym{ID} of the site.}
 
       \item{tree.id}{The \acronym{ID} of the tree}
 
       \item{project.title}{The title of the project}
 
       \item{site.title}{One or more columns with this prefix, depending on
-	the maximum depth of the \samp{<object>} hierarchy. Gives
-	the title of the site.}
+        the maximum depth of the \samp{<object>} hierarchy.  Gives
+        the title of the site.}
 
       \item{tree.title}{The title of the tree}
 
@@ -540,8 +549,14 @@ read.tridas(fname, ids.from.titles = FALSE,
   }
 }
 
-\references{ TRiDaS - The Tree Ring Data Standard,
-  \url{http://www.tridas.org/} }
+\references{
+  Jansma, E., Brewer, P. W., and Zandhuis, I. (2010) TRiDaS 1.1: The
+  tree-ring data standard.  \emph{Dendrochronologia}, \bold{28}(2),
+  99--130.
+
+  TRiDaS \enc{–}{--} The Tree Ring Data Standard.
+  \url{http://www.tridas.org/}.
+}
 
 \author{ Mikko Korpela }
 

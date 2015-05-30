@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{combine.rwl}
 
 \alias{combine.rwl}
@@ -27,9 +28,10 @@ combine.rwl(x, y = NULL)
   rows.  The keycodes are the column names and the years are the row
   names. }
 
-\author{ Christian Zang. Patched by Mikko Korpela. }
+\author{ Christian Zang.  Patched by Mikko Korpela. }
 
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 data(co021)
 combi1 <- combine.rwl(list(ca533, co021))
 ## or alternatively for data.frames to combine

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{read.compact}
 \alias{read.compact}
 \title{ Read \acronym{DPL} Compact Format Ring Width File }
@@ -19,7 +20,7 @@ read.compact(fname)
 }
 \value{
   A \code{data.frame} with the series in columns and the years as
-  rows. The series \acronym{ID}s are the column names and the years are
+  rows.  The series \acronym{ID}s are the column names and the years are
   the row names.
 }
 \author{ Mikko Korpela }

@@ -1,3 +1,151 @@
+* CHANGES IN dplR VERSION 1.6.3
+
+File: crn.plot.R
+-------------
+
+- Added default x and y labels to plot. It would be better to use match.call()
+  to check to see if xlab and ylab were passed in as dots but it is a very 
+  cumbersome bit of code for only a little difference to the user.
+
+File: spag.plot.R
+--------------
+
+- Change to ylim in the plotting area.
+
+File: CITATION
+--------------
+
+- Removed a piece of obsolete code which raised a NOTE in recent R-devel
+  when checking --as-cran.
+
+File: DESCRIPTION
+-----------------
+
+- A new field, MailingList, shows the address of the web interface
+  to the dplR-help mailing list hosted on Google Groups.
+- New Imported packages: Matrix, matrixStats, R.utils.
+- New Suggested package: testthat. Unit tests are now done with testthat
+  instead of RUnit.
+- RUnit is no longer Suggested.
+- Updated version requirement: gmp (>= 0.5-5).  Earlier versions of gmp do
+  not export is.bigq() which is required by dplR.  The previous version
+  requirement (>= 0.5-2) was a mistake.
+- Updated version requirement: R (>= 2.15.2).  For some reason, R
+  CMD check does not play nice with testthat on earlier versions of R.
+- Removed one of the URLs in the URL field. BDR sent and email saying that 
+  having two URLs was breaking R and that we should put a comma in betwixt
+  them. But the comma is problematic as it is a valid part of some URLs.
+  We deicded the better part of valor was to keep only one URL and not fight
+  this particular battle.
+
+File: NAMESPACE
+---------------
+
+- Importing captureOutput() from R.utils.
+- Importing package Matrix.
+- Importing various functions from matrixStats.
+- Importing packageDescription() from utils, dropped installed.packages().
+- Exporting net().
+- Added previously missing imports.  From grDevices:
+  dev.capabilities(), dev.cur(), png(), dev.off(), dev.set(),
+  devAskNewPage().  From utils: read.table(), write.csv().  As these
+  packages are attached by default, the missing imports would not
+  have been a problem in most cases.
+
+Various .R files
+----------------
+
+- Using deparse.level=0 in some calls to cbind() and rbind() when names
+  are not needed in the result.  Due to this change, the first column of
+  the $bins matrix in the return value of ccf.series.rwl(),
+  corr.rwl.seg(), and corr.series.seg() does not have (undocumented)
+  column names anymore.
+- Using base::rowSums and functions from the matrixStats package
+  to speed up some operations on rows or columns of matrices.
+- Reduced the number of calls to options() by one when setting and
+  restoring options
+- Argument values, particularly those that should be character
+  vectors, are checked more thoroughly. This makes many functions
+  more robust against unusual values: wrong type, "bytes" encoding,
+  zero length or NA. Some values that previously failed are now
+  silently accepted by coercion to character, extraction of first
+  element when a single string is expected, and / or intepretation
+  of a zero length argument as an empty string. NA is equivalent to
+  "NA" in detrend.series() and skel.plot() where it is used for
+  plotting or text output, but forbidden otherwise, e.g. in chron().
+
+File: ffcsaps.R
+---------------
+
+- Increased performance by using sparse matrices from the Matrix
+  package.
+
+File: helpers.R
+---------------
+
+- Internal function vecMatched does not care if nzchar() starts
+  returning NA some day.
+
+File: latexify.R
+----------------
+
+- Improved efficiency when handling a large number of strings with
+  the "bytes" Encoding.  The code now uses R.utils::captureOutput()
+  instead of a home-baked re-implementation of (parts of)
+  utils::capture.output(), which is also a more compact solution in
+  terms of lines of code in dplR.  See Henrik Bengtsson's notes at
+  http://www.jottr.org/2014/05/captureOutput.html (referenced on
+  2015-01-07).
+- Removed an unused variable.
+
+File: net.R
+-----------
+
+- New function for computing the NET parameter (Esper et al., 2001).
+
+File: read.fh.R
+---------------
+
+- read.fh() now ignores empty lines at the end of series.
+
+File: read.tucson.R
+-------------------
+
+- New argument 'edge.zeros', TRUE (default) or FALSE.  If TRUE,
+  possible leading and trailing zero values in tree-ring series are
+  kept.  If FALSE, such values are dropped.  The latter is how the
+  function has worked between (pre-)release 1.5.5 and the previoius
+  release, and may be considered a bug or a misfeature.  To
+  reiterate, the default behavior has changed in some cases.  The
+  alternative, 1.5.5--1.6.2 behavior can be restored by changing the
+  value of the argument.  Reported by Daniel Bishop and Neil
+  Pederson.
+
+File: redfit.R
+--------------
+
+- Fixed a bug where redfit() would fail if the "stats" package was
+  not attached.
+
+File: series.rwl.plot.R
+-----------------------
+
+- Worked around a problem in graphics::abline(): the function
+  fails when a linear model is given and the "stats" package is not
+  attached. The solution is to extract the coefficients of the model
+  and use those in the call.
+
+File: write.crn.R
+-----------------
+
+- Better coding style: avoid using assign().
+
+File: write.tridas.R
+--------------------
+
+- Implementation detail: When checking the package version,
+  packageDescription() is now used instead of installed.packages().
+
 * CHANGES IN dplR VERSION 1.6.2
 
 No functional changes.  A unit test was changed so it would not fail

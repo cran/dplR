@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{sens1}
 \alias{sens1}
 \title{ Calculate Mean Sensitivity  }
@@ -24,17 +25,18 @@
 \references{
 
   Biondi, F. and Qeadan, F. (2008) Inequality in Paleorecords.
-  \emph{Ecology}, 89(4):1056\enc{–}{--}1067.
+  \emph{Ecology}, \bold{89}(4), 1056\enc{–}{--}1067.
 
   Bunn, A. G., Jansma, E., Korpela, M., Westfall, R. D., and Baldwin,
   J. (2013) Using simulations and data to evaluate mean sensitivity
   (\eqn{\zeta}{zeta}) as a useful statistic in dendrochronology.
-  \emph{Dendrochronologia}, 31(3):250\enc{–}{--}254.
+  \emph{Dendrochronologia}, \bold{31}(3), 250\enc{–}{--}254.
   
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }
 \seealso{ \code{\link{sens2}}, \code{\link{rwl.stats}} }
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 sens1(ca533.rwi[, 1])
 }

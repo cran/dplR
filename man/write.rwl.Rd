@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{write.rwl}
 \alias{write.rwl}
 \title{ Write Chronology File }
@@ -11,16 +12,16 @@ write.rwl(rwl.df, fname, format = c("tucson", "compact", "tridas"), \dots)
 \arguments{
 
   \item{rwl.df}{ a \code{data.frame} containing tree-ring ring widths
-    with the series in columns and the years as rows. The series
+    with the series in columns and the years as rows.  The series
     \acronym{ID}s are the column names and the years are the row
-    names. This type of \code{data.frame} is produced by
+    names.  This type of \code{data.frame} is produced by
     \code{\link{read.rwl}}. }
 
   \item{fname}{ a \code{character} vector giving the file name of the
     rwl file. }
 
-  \item{format}{ a \code{character} vector giving the format. This must
-    be \code{"tucson"}, \code{"compact"}, or \code{"tridas"}. Tucson
+  \item{format}{ a \code{character} vector giving the format.  This must
+    be \code{"tucson"}, \code{"compact"}, or \code{"tridas"}.  Tucson
     format is the default. }
 
   \item{\dots}{ arguments specific to the function implementing the
@@ -39,7 +40,8 @@ write.rwl(rwl.df, fname, format = c("tucson", "compact", "tridas"), \dots)
   \code{\link{write.compact}}, \code{\link{write.tridas}},
   \code{\link{read.rwl}}
 }
-\examples{data(co021)
+\examples{library(utils)
+data(co021)
 co021.hdr <- list(site.id = "CO021",
                   site.name = "SCHULMAN OLD TREE NO. 1, MESA VERDE",
                   spp.code = "PSME", state.country = "COLORADO",

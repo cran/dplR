@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{wc.to.po}
 \alias{wc.to.po}
 \title{
@@ -21,12 +22,12 @@ wc.to.po(wc)
   \code{\var{n.unmeasured.inner}} in \code{\var{wc}}.
 }
 \value{
-  A \code{data.frame} containing two variables. Variable one
+  A \code{data.frame} containing two variables.  Variable one
   (\code{\var{series}}) gives the series \acronym{ID} as either
-  \code{character}s or \code{factor}s. These match
-  \code{rownames(\var{wc})}. Variable two (\code{\var{pith.offset}}) is
+  \code{character}s or \code{factor}s.  These match
+  \code{rownames(\var{wc})}.  Variable two (\code{\var{pith.offset}}) is
   of \code{integer} type and gives the years from the beginning of the
-  core to the pith (or center) of the tree. The minimum value is 1.
+  core to the pith (or center) of the tree.  The minimum value is 1.
 }
 \author{
   Mikko Korpela
@@ -34,7 +35,8 @@ wc.to.po(wc)
 \seealso{
   \code{\link{po.to.wc}}, \code{\link{rcs}}, \code{\link{read.tridas}}
 }
-\examples{data(gp.po)
+\examples{library(utils)
+data(gp.po)
 all(wc.to.po(po.to.wc(gp.po)) == gp.po)
 }
 \keyword{ manip }

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{seg.plot}
 \alias{seg.plot}
 \title{ Segment Plot }
@@ -17,12 +18,13 @@ seg.plot(rwl, \dots)
   data set.
 }
 \value{
-  None. This function is invoked for its side effect, which is to
+  None.  This function is invoked for its side effect, which is to
   produce a plot.
 }
-\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{spag.plot}} }
-\examples{data(co021)
+\examples{library(utils)
+data(co021)
 seg.plot(co021, main = "Campito Mountain")
 }
 \keyword{ hplot }
