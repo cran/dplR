@@ -1,3 +1,83 @@
+* CHANGES IN dplR VERSION 1.6.4
+
+File: DESCRIPTION
+-----------------
+
+- Version number requirement for matrixStats is now (>= 0.50.0).
+
+File: chron-dplR-Rnw
+------------------
+- A new vignette for chronology building. This is pretty rough and could
+use some expanding.
+
+File: anos1.Rda
+------------------
+- The anos1 data from Christian Zang had been read into R incorrectly at
+  some point. AGB noticed negative ring widths in the file and emailed Zang
+  who sent along a corrected anos1.rda file.
+
+File: rasterPlot.R
+------------------
+- Added option 'Cairo' to control the preferred bitmap
+  device. FALSE (the default) for png() as before, and TRUE for
+  Cairo() as a new option. If the preferred device is unavailable,
+  the other one will be tried.
+- rasterPlot() now reverts to normal plotting if bitmap device is
+  unavailable or raster images are not supported. Previously an
+  error would be produced.
+- The function now also works if no high level plot exists,
+  i.e. if plot.new() has not been called.
+- Added option 'draw' to control whether the raster plot is to be drawn (TRUE,
+  the default) or returned (FALSE)
+- png plot is initialized with plot.new() instead of the previous
+  plot(type = "n", ...) arrangement.
+
+File: sea.R
+-----------
+- Updated sea() to return bootstrapped CIs.
+
+File: treeMean.R
+-------------
+- Made a new function to calculate the mean value of each tree when there are 
+  multiple cores.
+
+File: wavelet.plot.R
+--------------------
+- wavelet.plot() now passes ... arguments to rasterPlot().
+
+Files: detrend.R, detrend.series.R
+----------------------------------
+- New detrending method "Friedman" is Friedman's super smoother,
+  implemented in stats::supsmu().
+- When 'return.info' is TRUE, also the "f" parameter of
+  method="Spline" is returned.
+
+File: DESCRIPTION
+-----------------
+- New Suggested package: Cairo. Used (if available) in
+  rasterPlot() if the png() device is unavailable or if the user
+  specifies 'Cairo=TRUE'.
+
+File: NAMESPACE
+-------------
+- Added treeMean function.
+- Importing dev.capture() from grDevices.
+
+Various .R files
+----------------
+- Argument values are checked more thoroughly: 'prec', 'header'.
+- 'if (condition) optionA else optionB' is used instead of
+  'ifelse(condition, optionA, optionB)' where appropriate.
+- Number of characters is used instead of display width where
+  appropriate, or vice versa. Counterparts:
+    strtrim() and substr();
+    nchar(type = "width") and nchar() with default 'type';
+    format(string, width = w, justify = "left") and
+      stringr::str_pad(string, w, side="right").
+- Using 'rows' and 'cols' arguments of matrixStats functions where
+  appropriate. This should result in less time and memory being
+  used. Thanks to Henrik Bengtsson for the tip and code examples.
+
 * CHANGES IN dplR VERSION 1.6.3
 
 File: crn.plot.R
@@ -35,7 +115,7 @@ File: DESCRIPTION
 - Removed one of the URLs in the URL field. BDR sent and email saying that 
   having two URLs was breaking R and that we should put a comma in betwixt
   them. But the comma is problematic as it is a valid part of some URLs.
-  We deicded the better part of valor was to keep only one URL and not fight
+  We decided the better part of valor was to keep only one URL and not fight
   this particular battle.
 
 File: NAMESPACE
@@ -69,7 +149,7 @@ Various .R files
   more robust against unusual values: wrong type, "bytes" encoding,
   zero length or NA. Some values that previously failed are now
   silently accepted by coercion to character, extraction of first
-  element when a single string is expected, and / or intepretation
+  element when a single string is expected, and / or interpretation
   of a zero length argument as an empty string. NA is equivalent to
   "NA" in detrend.series() and skel.plot() where it is used for
   plotting or text output, but forbidden otherwise, e.g. in chron().
@@ -114,7 +194,7 @@ File: read.tucson.R
 - New argument 'edge.zeros', TRUE (default) or FALSE.  If TRUE,
   possible leading and trailing zero values in tree-ring series are
   kept.  If FALSE, such values are dropped.  The latter is how the
-  function has worked between (pre-)release 1.5.5 and the previoius
+  function has worked between (pre-)release 1.5.5 and the previous
   release, and may be considered a bug or a misfeature.  To
   reiterate, the default behavior has changed in some cases.  The
   alternative, 1.5.5--1.6.2 behavior can be restored by changing the
@@ -355,7 +435,7 @@ File: NAMESPACE
 - Added summary.rwl as an S3Method.
 - Added insert and delete.ring functions.
 
-File: xskel.ccf.plot.R and xskel.plot.R and 
+File: xskel.ccf.plot.R and xskel.plot.R
 ---------------
 
 - New plotting functions to help crossdate with skeleton plot

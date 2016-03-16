@@ -8,10 +8,11 @@
 }
 \usage{
 detrend.series(y, y.name = "", make.plot = TRUE,
-               method = c("Spline", "ModNegExp", "Mean", "Ar"),
+               method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman"),
                nyrs = NULL, f = 0.5, pos.slope = FALSE,
                constrain.modnegexp = c("never", "when.fail", "always"),
-               verbose=FALSE, return.info=FALSE)
+               verbose = FALSE, return.info = FALSE,
+               wt, span = "cv", bass = 0)
 }
 \arguments{
 
@@ -28,12 +29,14 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     \code{c("Spline", "ModNegExp", "Mean", "Ar")}.  Defaults to using all the
     available methods.}
 
-  \item{nyrs}{ a number giving the rigidity of the smoothing spline,
+  \item{nyrs}{ a number controlling the smoothness of the
+    fitted curve in method \code{"Spline"},
     defaults to 0.67 of series length if \code{\var{nyrs}} is
-    \code{NULL}. }
+    \code{NULL}. See \code{\link{ffcsaps}}.}
   
   \item{f}{ a number between 0 and 1 giving the frequency response or
-    wavelength cutoff.  Defaults to 0.5. }
+    wavelength cutoff in method \code{"Spline"}.  Defaults to 0.5. 
+    See \code{\link{ffcsaps}}.}
   
   \item{pos.slope}{ a \code{logical} flag.  Will allow for a positive
     slope to be used in method \code{"ModNegExp"}.  If \code{FALSE} the
@@ -55,6 +58,15 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     about models and data will be added to the return value.  See
     \sQuote{Value}. }
   
+  \item{wt}{ a \code{numeric} vector of case weights for method
+    \code{"Friedman"}. The default means equals weights. }
+
+  \item{span}{ a \code{numeric} value controlling method
+    \code{"Friedman"}, or \code{"cv"} (default) for automatic choice by
+    cross-validation. See \code{\link{supsmu}}. }
+
+  \item{bass}{ a \code{numeric} value controlling the smoothness of the
+    fitted curve in method \code{"Friedman"}. See \code{\link{supsmu}}. }
 }
 \details{
   This detrends and standardizes a tree-ring series.  The detrending is
@@ -114,6 +126,12 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   user to determine the best detrending method for their data.
   
   See the references below for further details on detrending.
+
+  The \code{"Friedman"} approach uses Friedman's \sQuote{super smoother}
+  as implemented in \code{\link{supsmu}}.  The parameters
+  \code{\var{wt}}, \code{\var{span}} and \code{\var{bass}} can be
+  adjusted, but \code{\var{periodic}} is always set to \code{FALSE}.
+
 }
 \value{
 
@@ -202,19 +220,20 @@ series.rwi <- detrend.series(y = series, y.name = "Foo", verbose=TRUE)
 data(ca533)
 series <- ca533[, "CAM011"]
 names(series) <- rownames(ca533)
-# defaults to all four methods
+# defaults to all five methods
 series.rwi <- detrend.series(y = series, y.name = "CAM011", verbose=TRUE)
 # see plot with three methods
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
-                             method=c("Spline", "ModNegExp","Mean"))
+                             method=c("Spline", "ModNegExp","Friedman"))
 # see plot with two methods
 # interesting to note difference from ~200 to 250 years 
 # in terms of what happens to low frequency growth
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
                              method=c("Spline", "ModNegExp"))
-# see plot with just one method
+# see plot with just one method and change the spline
+# stiffness to 50 years (which is not neccesarily a good choice!)
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
-                             method="Spline")
+                             method="Spline",nyrs=50)
 # note that method "Ar" doesn't get plotted in first panel
 # since this approach doesn't approximate a growth curve.
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
