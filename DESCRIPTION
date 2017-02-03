@@ -2,8 +2,8 @@ Encoding: UTF-8
 Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
-Version: 1.6.4
-Date: 2016-03-07
+Version: 1.6.5
+Date: 2017-02-03
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
@@ -15,13 +15,14 @@ Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "Cecile", role = "ctb"), person("Manfred", "Mudelsee", role =
         "ctb"), person("Michael", "Schulz", role = "ctb"))
 Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph], Allan Buras [ctb], Jacob Cecile [ctb], Manfred Mudelsee [ctb], Michael Schulz [ctb]
-Copyright: Authors and Aalto University (for work of M. Korpela)
+Copyright: Authors and file inst/COPYRIGHTS
 Maintainer: Andy Bunn <andy.bunn@wwu.edu>
 Depends: R (>= 2.15.2)
 Imports: graphics, grDevices, grid, stats, utils, lattice (>= 0.13-6),
         Matrix (>= 1.0-3), digest (>= 0.2.3), gmp (>= 0.5-5),
         matrixStats (>= 0.50.0), png (>= 0.1-1), R.utils (>= 1.32.0),
-        stringi (>= 0.2-2), stringr (>= 0.4), XML (>= 2.1-0)
+        stringi (>= 0.2-2), stringr (>= 0.4), XML (>= 2.1-0), plyr (>=
+        1.8)
 Suggests: Biobase, Cairo (>= 1.5-0), dichromat (>= 1.2-3), foreach,
         forecast, iterators, knitr, RColorBrewer, testthat (>= 0.8),
         tikzDevice, waveslim
@@ -30,9 +31,9 @@ Description: Perform tree-ring analyses such as detrending, chronology
         used in dendrochronology.
 LazyData: no
 License: GPL (>= 2)
-URL: http://R-Forge.R-project.org/projects/dplr/
+URL: https://r-forge.r-project.org/projects/dplr/
 MailingList: https://groups.google.com/d/forum/dplr-help
 NeedsCompilation: yes
-Packaged: 2016-03-15 23:18:58 UTC; bunna
+Packaged: 2017-02-03 17:57:27 UTC; bunna
 Repository: CRAN
-Date/Publication: 2016-03-16 11:11:58
+Date/Publication: 2017-02-03 19:31:01

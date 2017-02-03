@@ -1,3 +1,55 @@
+* CHANGES IN dplR VERSION 1.6.5
+
+File: combine.rwl.R
+----------------
+-Changed so that combine.rwl returns class data.frame and class rwl.
+
+
+File: crn.plot.R
+----------------
+
+- Graphical parameters (xlim, ylim, ...) are handled better in crn.plot().
+- Parameter 'ylim2' controls scale of secondary y axis.
+
+File: detrend and detrend.series.Rd
+-----------------
+
+- Added Friedman under method argument in the help file. It was ommitted by mistake. 
+- Bug in detrend fixed where make.plot was hard coded as FALSE which kept TRUE 
+  from being passed to detrend.series.
+
+File: helpers.R
+-----------------
+
+- Added function find.internal.na() that reutrns the index of internal NA in a series. This will be used by the rwl.report() function and could be used (maybe) by the fill.internal.NA
+
+File: rwl.report.R
+-----------------
+
+- Added function to provide a summary of information about an rwl object. This is still very much a work in progress.
+
+File: NAMESPACE
+-----------------
+
+- Added rwl.report to export
+- Added rwl.report print method
+- Added import from plyr
+
+File: DESCRIPTION
+-----------------
+
+- Added plyr (>= 1.8.3) to imports
+
+File: sea.R
+-----------------
+
+- Note on commit from Zang: sea() simplified and computation of p-values fixed; computation of p-values and CI bands for sea() now based on ecdf() and quantile() functions.
+
+File: zzz.R
+-----------------
+
+- .onUnload(): DLL / shared library is unloaded together with package
+
 * CHANGES IN dplR VERSION 1.6.4
 
 File: DESCRIPTION

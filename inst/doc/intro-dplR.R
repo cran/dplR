@@ -36,6 +36,7 @@ class(ca533) # note "rwl" class as well as "data.frame"
 ###################################################
 ### code chunk number 5: a
 ###################################################
+rwl.report(ca533)
 plot(ca533, plot.type="spag")
 
 
@@ -65,20 +66,20 @@ series.rwi <- detrend.series(y = series, y.name = "CAM011",
 
 
 ###################################################
-### code chunk number 9: intro-dplR.Rnw:229-230
+### code chunk number 9: intro-dplR.Rnw:226-227
 ###################################################
-rwl.stats(ca533[1:5])
+rwl.stats(ca533[1:5]) # can also be run via summary(ca533)
 
 
 ###################################################
-### code chunk number 10: intro-dplR.Rnw:250-252
+### code chunk number 10: intro-dplR.Rnw:246-248
 ###################################################
 ca533.ids <- read.ids(ca533, stc = c(3, 2, 3))
 rwi.stats(ca533.rwi, ca533.ids, prewhiten=TRUE)
 
 
 ###################################################
-### code chunk number 11: intro-dplR.Rnw:266-270
+### code chunk number 11: intro-dplR.Rnw:262-266
 ###################################################
 ca533.rho <- interseries.cor(ca533.rwi, prewhiten=TRUE,
                              method="spearman")
@@ -87,13 +88,13 @@ mean(ca533.rho[, 1])
 
 
 ###################################################
-### code chunk number 12: intro-dplR.Rnw:282-283
+### code chunk number 12: intro-dplR.Rnw:278-279
 ###################################################
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")
 
 
 ###################################################
-### code chunk number 13: intro-dplR.Rnw:288-290
+### code chunk number 13: intro-dplR.Rnw:284-286
 ###################################################
 dim(ca533.rwi)
 dim(ca533.crn)
