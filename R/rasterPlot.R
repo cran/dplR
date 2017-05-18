@@ -16,7 +16,7 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
     fallback <- TRUE
     for (k in 1:2) {
         if (Cairo2) {
-            if (requireNamespace("Cairo", quietly = TRUE)) {
+            if (requireVersion("Cairo", "1.4-8")) {
                 caps <- Cairo::Cairo.capabilities()
                 if (isTRUE(as.vector(caps["raster"]))) {
                     fallback <- FALSE
@@ -33,7 +33,7 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
                     break
                 }
             } else {
-                message("Cairo device unavailable")
+                message("Cairo device (>= 1.4-8) unavailable")
             }
             Cairo2 <- FALSE
         } else {
@@ -133,6 +133,7 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
             cairoType <- "raster"
             cairoFile <- ""
         } else {
+            check.tempdir()
             cairoType <- "png"
             cairoFile <- fname
         }
@@ -140,9 +141,11 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
                      units = "in", dpi = res, bg = bg,
                      type = cairoType, file = cairoFile, ...)
     } else if (missing(antialias)) {
+        check.tempdir()
         png(fname, width = pngWidthHeight[1], height = pngWidthHeight[2],
             units = "in", res = res, bg = bg, ...)
     } else {
+        check.tempdir()
         png(fname, width = pngWidthHeight[1], height = pngWidthHeight[2],
             units = "in", res = res, bg = bg, antialias = antialias, ...)
     }

@@ -1,3 +1,16 @@
+requireVersion <- function(package, ver) {
+    requireNamespace(package, quietly = TRUE) &&
+        packageVersion(package) >= ver
+}
+
+### Try to create directory named by tempdir() if it has gone missing
+check.tempdir <- function() {
+    td <- tempdir()
+    if (!file.exists(td)) {
+        dir.create(td, mode = "0700")
+    }
+}
+
 ### Checks that all arguments are TRUE or FALSE
 check.flags <- function(...) {
     flag.bad <- vapply(list(...),
@@ -204,7 +217,8 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
             }
             rename.flag[idx.bad] <- TRUE
             ## Remove inappropriate characters (replace with nothing)
-            x.cut[idx.bad] <- gsub(bad.chars, "", x.cut[idx.bad])
+            x.cut[idx.bad] <- gsub(bad.chars, "", x.cut[idx.bad],
+                                   useBytes = !l10n_info()[["MBCS"]])
         }
     }
     if (!is.null(limit)) {

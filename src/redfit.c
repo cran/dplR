@@ -22,18 +22,14 @@
 #include <Rmath.h>
 #include <complex.h>
 #include <string.h>
+#include "registered.h"
 
-SEXP seg50(SEXP k, SEXP nseg, SEXP segskip, SEXP np);
 void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit);
-SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
-	    SEXP nseg, SEXP nfreq, SEXP avgdt, SEXP freq, SEXP n50,
-	    SEXP segskip, SEXP lmfit);
 void ftfix(const double *xx, const double *tsamp, const size_t nxx,
 	   const double *freq, const size_t nfreq, const double si,
 	   const size_t lfreq, const double tzero, const double *tcos,
-	   const double *tsin, const double *wtau, const dplr_ldouble sumbysqrt,
-	   double *ftrx, double *ftix);
-SEXP makear1(SEXP t, SEXP np, SEXP tau);
+	   const double *tsin, const double *wtau,
+	   const dplr_ldouble sumbysqrt, double *ftrx, double *ftix);
 
 /* dplR: Find the start of a segment. */
 /* Formula from the original Fortran version:
@@ -106,10 +102,10 @@ void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit) {
     PROTECT(lmres = eval(lmcall, R_EmptyEnv));
 
     /* dplR: get residuals from the list given by lm.fit(x, y) */
-    lmnames = getAttrib(lmres, R_NamesSymbol);
     PROTECT(tmp = ncall = allocList(2));
     SET_TYPEOF(ncall, LANGSXP);
     SETCAR(tmp, lengthfun); tmp = CDR(tmp);
+    lmnames = getAttrib(lmres, R_NamesSymbol);
     SETCAR(tmp, lmnames);
     PROTECT_WITH_INDEX(sn = eval(ncall, R_BaseEnv), &ipx);
     REPROTECT(sn = coerceVector(sn, REALSXP), ipx);
@@ -288,8 +284,8 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 void ftfix(const double *xx, const double *tsamp, const size_t nxx,
 	   const double *freq, const size_t nfreq, const double si,
 	   const size_t lfreq, const double tzero, const double *tcos,
-	   const double *tsin, const double *wtau, const dplr_ldouble sumbysqrt,
-	   double *ftrx, double *ftix) {
+	   const double *tsin, const double *wtau,
+	   const dplr_ldouble sumbysqrt, double *ftrx, double *ftix) {
     const double_t tol1 = 1.0e-4;
     const double tol2 = 1.0e-8;
     const double_t const1 = M_SQRT1_2;

@@ -1,3 +1,82 @@
+* CHANGES IN dplR VERSION 1.6.6
+
+File: helpers.R
+----------------
+
+- Internal helper fix.names() is more robust when working in the C
+  locale.
+
+- Added internal helper function check.tempdir()
+
+- Added internal helper function requireVersion()
+
+File: latexify.R
+----------------
+
+- Fixed conversion bugs in the latexify() utility when working in
+  the C locale.
+
+File: rasterPlot.R
+----------------
+
+- In rasterPlot(Cairo = TRUE, ...), added a version check for the Cairo
+  package
+
+- Check if temporary directory is missing before use
+
+File: read.tucson.R
+----------------
+
+- Check if temporary directory is missing before use
+
+File: redfit.R
+----------------
+
+- Computation of the exact acceptance region of number of runs
+  distributions in runcrit(), if not precomputed, depends on package
+  "gmp" being installed (now optional).
+
+- Argument 'p' of redfit() and runcrit() may be numeric (which is
+  the default) or "bigq", but the latter now fails if "gmp" is not
+  installed.
+
+File: DESCRIPTION
+----------------
+
+- Version requirement for stringi bumped up to >= 0.2-3. Should have been
+  done for dplR 1.6.1
+
+- Version requirement for matrixStats bumped up to >= 0.50.2
+  because it's not possible to test 0.50.0, 0.50.1 with really old
+  versions of R, e.g. 2.15.2.
+
+- Version requirement for png bumped up to >= 0.1-2: difficulties
+  compiling 0.1-1 on a test system (type voidp not defined).
+
+Files: NAMESPACE, src/..., R/...
+----------------
+
+- Technical change: Native routines are registered.
+  <https://stat.ethz.ch/pipermail/r-devel/2017-February/073755.html>
+
+- Technical change: Visibility of native routines has been
+  limited, following 6.15 "Controlling visibility" in R-exts.
+
+- Package "gmp" is now in Suggests, not in Imports.
+
+File: rcs.R
+----------------
+
+- Technical changes to facilitate the future implementation of
+  signal-free rcs.
+
+File: src/redfit.c
+----------------
+
+- Fixed a pointer protection alert reported by rchk / Tomas
+  Kalibera. Seemed like a false alarm, but the code is slightly
+  cleaner as a result of the change.
+
 * CHANGES IN dplR VERSION 1.6.5
 
 File: combine.rwl.R
