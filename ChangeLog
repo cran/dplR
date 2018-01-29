@@ -1,3 +1,27 @@
+* CHANGES IN dplR VERSION 1.6.7
+
+File: latexify.R
+----------------
+
+- Fixed a bug in latexDate() which was causing failure on R-Devel.
+
+File: plotRings.R
+----------------
+
+- New function to plot a cross section. Contributed by Darwin Pucha-Cofrep and Jakob Wernicke
+
+File: DESCRIPTION
+----------------
+
+- Added in new authors (Darwin Pucha-Cofrep and Jakob Wernicke) 
+- Added animation to Imports list
+- Added gmp to Suggests
+
+File: NAMESPACE
+----------------
+
+- Added plotRings to export and importFrom(animation, saveGIF) to support it
+
 * CHANGES IN dplR VERSION 1.6.6
 
 File: helpers.R
