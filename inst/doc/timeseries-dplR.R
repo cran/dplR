@@ -63,18 +63,20 @@ dat.ar
 
 
 ###################################################
-### code chunk number 8: timeseries-dplR.Rnw:160-164
+### code chunk number 8: timeseries-dplR.Rnw:160-165
 ###################################################
 ## Test if forecast can be loaded
-if (require("forecast", character.only = TRUE)) {
+if (require("forecast", character.only = TRUE) &&
+    packageVersion("forecast") >= "3.6") {
     cat("\\forecastUsabletrue\n\n")# output to LaTeX
 }
 
 
 ###################################################
-### code chunk number 9: timeseries-dplR.Rnw:167-174
+### code chunk number 9: timeseries-dplR.Rnw:168-176
 ###################################################
-if (require("forecast", character.only = TRUE)) {
+if (require("forecast", character.only = TRUE) &&
+    packageVersion("forecast") >= "3.6") {
     dat.arima <- auto.arima(dat, ic="bic")
     summary(dat.arima)
     head(residuals(dat.arima))
@@ -96,7 +98,7 @@ plot(redf.dat[["freq"]], redf.dat[["gxxc"]],
      type = "n", ylab = "Spectrum (dB)", xlab = "Frequency (1/yr)",
      axes = FALSE)
 grid()
-lines(redf.dat[["freq"]], redf.dat[["gxxc"]], col = "#1B9E77")
+lines(redf.dat[["freq"]], redf.dat[["gxxc"]], col = "#1B9E77",lwd=2)
 lines(redf.dat[["freq"]], redf.dat[["ci99"]], col = "#D95F02")
 lines(redf.dat[["freq"]], redf.dat[["ci95"]], col = "#7570B3")
 lines(redf.dat[["freq"]], redf.dat[["ci90"]], col = "#E7298A")
@@ -116,14 +118,14 @@ par(op)
 ###################################################
 ### code chunk number 11: e
 ###################################################
-yrs <- as.numeric(rownames(co021.crn))
+yrs <- time(co021.crn)
 out.wave <- morlet(y1 = dat, x1 = yrs, p2 = 8, dj = 0.1,
                    siglvl = 0.99)
-wavelet.plot(out.wave, useRaster=NA)
+wavelet.plot(out.wave, useRaster=NA, reverse.y = TRUE)
 
 
 ###################################################
-### code chunk number 12: timeseries-dplR.Rnw:261-265
+### code chunk number 12: timeseries-dplR.Rnw:263-267
 ###################################################
 ## Test if waveslim can be loaded
 if (require("waveslim", character.only = TRUE)) {
@@ -149,8 +151,10 @@ if (require("waveslim", character.only = TRUE)) {
   axis(side=1)
   mtext("Years",side=1,line = 1.25)
   Offset <- 0
+  dat.mra2 <- scale(as.data.frame(dat.mra))
   for(i in nPwrs2:1){
-    x <- scale(dat.mra[[i]]) + Offset
+#    x <- scale(dat.mra[[i]]) + Offset
+    x <- dat.mra2[,i] + Offset
     lines(yrs,x)
     abline(h=Offset,lty="dashed")
     mtext(names(dat.mra)[[i]],side=2,at=Offset,line = 0)

@@ -69,7 +69,7 @@ seg.60 <- corr.series.seg(rwl=dat, series="643114",
 ### code chunk number 8: d
 ###################################################
 win <- 1800:1960
-dat.yrs <- as.numeric(rownames(dat))
+dat.yrs <- time(dat)
 dat.trunc <- dat[dat.yrs %in% win, ]
 ccf.30 <- ccf.series.rwl(rwl=dat.trunc, series="643114", 
                          seg.length=30, bin.floor=50)

@@ -6,6 +6,7 @@
     }
     yr <- as.numeric(row.names(rwl))
     first.year <- as.matrix(apply(rwl, 2, yr.range, yr.vec=yr))[1, ]
+    last.year <- as.matrix(apply(rwl, 2, yr.range, yr.vec=yr))[2, ]
     neworder <- order(first.year, decreasing=FALSE)
     segs <- rwl[, neworder, drop=FALSE]
     n.col <- ncol(segs)
@@ -20,8 +21,8 @@
     op <- par(no.readonly=TRUE) # Save par
     on.exit(par(op))            # Reset par on exit
     par(mar=c(2, 5, 2, 5) + 0.1, mgp=c(1.1, 0.1, 0), tcl=0.5,
-        xaxs="i")
-    plot(yr, segs[[1]], type="n", ylim=c(0, n.col), axes=FALSE,
+        xaxs="i",yaxs="i")
+    plot(yr, segs[[1]], type="n", ylim=c(0, n.col+1), axes=FALSE,
          ylab="", xlab=gettext("Year", domain="R-dplR"), ...)
     abline(h=seq.col,lwd=1,col="grey")
     grid(ny = NA)

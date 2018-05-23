@@ -1,3 +1,51 @@
+* CHANGES IN dplR VERSION 1.6.8
+
+- Note that Darwin Alexander Pucha Cofrep has been added as a developer to work on plotRings() etc.
+
+File: DESCRIPTION
+----------------
+
+- Fixing the version requirement for "animation" (>= 2.0-2)
+- Fixing the version requirement for "R.utils" (>= 1.32.1)
+- Introducing version requirement (>= 3.6) for suggested package "forecast"
+
+File: plotRings.R
+----------------
+
+- Big change made is to aspect so that the plot area is square: par(pty="s"). Will contact author to check on the reasonableness of this. Other changes. R CMD CHECK was throwing flags. Notes an issue in the length.unit arg to the function given differently in the Rd file vs the R file. Made a quick fix. Also made a small adjustment to the axis limits as it seemed there was a lot of extra white space in the plot. Removed bty for the legend. Adjusted par. Added documentation language. Not sure if I understand the full rationale behind the way the function is written though. There is a lot of redundant code. -AGB
+
+File: csv2rwl.R
+----------------
+Adding new function to read csv files in as rwl objects. Also adding that capability into read.rwl. Mikko should see if the error checks etc pass muster.
+
+File: read.crn.R
+----------------
+Adding argument 'long' (default is TRUE) for supporting (non-standard) long
+series with more than 4 characters used for the decade field. Use FALSE to
+revert to the old way of assuming 6 characters for site ID and 4 characters
+for decade. Thanks to Richard Telford for notcing the bug.
+
+File: read.rwl.R
+	----------------
+Adding read2csv into read.rwl both as a format specification and as an auto detect. Mikko should see if the error checks etc pass muster.
+
+File: time.rwl.R
+----------------
+
+- Two convenience functions time.rwl and time.crn which extract the row.names of
+  rwl and crn objects as numerics. Used as a S3 method with class rwl and class crn.
+  This resulted in various changes to Rd files to make use of this capability.
+
+File: seg.plot.R
+----------------
+
+- Fixed an issue with ylim and yaxs which should cut out extra white space.
+
+File: xdate-dplR.Rnw
+----------------
+
+- Fixed typos 
+
 * CHANGES IN dplR VERSION 1.6.7
 
 File: latexify.R
