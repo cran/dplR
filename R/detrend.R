@@ -1,17 +1,17 @@
 `detrend` <-
     function(rwl, y.name = names(rwl), make.plot = FALSE,
-             method=c("Spline", "ModNegExp", "Mean", "Ar", "Friedman"),
+             method=c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
-             constrain.modnegexp = c("never", "when.fail", "always"),
+             constrain.nls = c("never", "when.fail", "always"),
              verbose = FALSE, return.info = FALSE,
-             wt, span = "cv", bass = 0)
+             wt, span = "cv", bass = 0, difference = FALSE)
 {
     stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE),
               identical(verbose, TRUE) || identical(verbose, FALSE),
               identical(return.info, TRUE) || identical(return.info, FALSE))
-    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar", "Friedman")
-    constrain2 <- match.arg(constrain.modnegexp)
+    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff")
+    constrain2 <- match.arg(constrain.nls)
     method2 <- match.arg(arg = method,
                          choices = known.methods,
                          several.ok = TRUE)
@@ -22,14 +22,14 @@
     detrend.args <- c(alist(rwl.i),
                       list(make.plot = make.plot, method = method2,
                            nyrs = nyrs, f = f, pos.slope = pos.slope,
-                           constrain.modnegexp = constrain2,
+                           constrain.nls = constrain2,
                            verbose = FALSE, return.info = return.info,
-                           span = span, bass = bass))
+                           span = span, bass = bass, difference = difference))
     if (!missing(wt)) {
         detrend.args <- c(detrend.args, list(wt = wt))
     }
     if(!make.plot && !verbose &&
-       ("Spline" %in% method2 || "ModNegExp" %in% method2) &&
+       ("Spline" %in% method2 || "ModNegExp" %in% method2 || "ModHugershoff" %in% method2) &&
        !inherits(try(suppressWarnings(req.it <-
                                       requireNamespace("iterators",
                                                        quietly=TRUE)),
@@ -45,6 +45,10 @@
         rwl.i <- NULL
 
         exportFun <- c("names<-", "detrend.series")
+        ## Use a dummy loop to suppress possible (non-)warning from
+        ## initial call to %dopar% with a sequential backend...
+        foo <- suppressWarnings(foreach::"%dopar%"(foreach::foreach(i=1), {}))
+        ## ... but leave actual warnings on for the real loop.
         out <- foreach::"%dopar%"(foreach::foreach(rwl.i=it.rwl,
                                                    .export=exportFun),
                               {
@@ -53,14 +57,16 @@
                               })
 
         if (return.info) {
-            modelStats <- lapply(out, "[[", 2)
-            dataStats <- lapply(out, "[[", 3)
+            modelCurves <- lapply(out, "[[", 2)
+            modelStats <- lapply(out, "[[", 3)
+            dataStats <- lapply(out, "[[", 4)
             out <- lapply(out, "[[", 1)
         }
     } else{
         n.series <- ncol(rwl)
         out <- vector(mode = "list", length = n.series)
         if (return.info) {
+            modelCurves <- vector(mode = "list", length = n.series)
             modelStats <- vector(mode = "list", length = n.series)
             dataStats <- vector(mode = "list", length = n.series)
         }
@@ -70,8 +76,9 @@
         for (i in seq_len(n.series)) {
             fits <- do.call(detrend.series, detrend.args)
             if (return.info) {
-                modelStats[[i]] <- fits[[2]]
-                dataStats[[i]] <- fits[[3]]
+                modelCurves[[i]] <- fits[[2]]
+                modelStats[[i]] <- fits[[3]]
+                dataStats[[i]] <- fits[[4]]
                 fits <- fits[[1]]
             }
             if (is.data.frame(fits)) {
@@ -85,11 +92,15 @@
     if(length(method2) == 1){
         out <- data.frame(out, row.names = rn)
         names(out) <- y.name
+        if(return.info){
+          modelCurves <- data.frame(modelCurves, row.names = rn)
+          names(modelCurves) <- y.name
+        }
     }
     if (return.info) {
         names(modelStats) <- series.names
         names(dataStats) <- series.names
-        list(series = out, model.info = modelStats, data.info = dataStats)
+        list(series = out, curves = modelCurves, model.info = modelStats, data.info = dataStats)
     } else {
         out
     }

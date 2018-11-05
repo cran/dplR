@@ -8,11 +8,12 @@
 }
 \usage{
 detrend.series(y, y.name = "", make.plot = TRUE,
-               method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman"),
+               method = c("Spline", "ModNegExp", 
+               "Mean", "Ar", "Friedman", "ModHugershoff"),
                nyrs = NULL, f = 0.5, pos.slope = FALSE,
-               constrain.modnegexp = c("never", "when.fail", "always"),
+               constrain.nls = c("never", "when.fail", "always"),
                verbose = FALSE, return.info = FALSE,
-               wt, span = "cv", bass = 0)
+               wt, span = "cv", bass = 0, difference = FALSE)
 }
 \arguments{
 
@@ -25,9 +26,9 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     and detrended data if \code{TRUE}. }
 
   \item{method}{ a \code{character} vector to determine the detrending
-    methods.  See details below.  Possible values are all subsets of
-    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman")}.  Defa
-    ults to using all the available methods.}
+    methods.  See details below.  Possible values are all subsets of\cr
+    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff")}.
+    Defaults to using all the available methods.}
 
   \item{nyrs}{ a number controlling the smoothness of the
     fitted curve in method \code{"Spline"},
@@ -42,17 +43,19 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     slope to be used in method \code{"ModNegExp"}.  If \code{FALSE} the
     line will be horizontal. }
 
-  \item{constrain.modnegexp}{ a \code{character} string which controls
-    the constraints of the \code{"ModNegExp"} model.  The value is an
-    answer to the question: When should the parameters of the modified
-    negative exponential function be constrained?  The options are
+  \item{constrain.nls}{ a \code{character} string which controls
+    the constraints of the \code{"ModNegExp"} model and and the 
+    \code{"ModHugershoff"} model which are fit using nonlinear least-squares 
+    via \code{\link{nls}}.  The value is an
+    answer to the question: When should the parameters of the \code{\link{nls}}
+    function be constrained?  The options are
     \code{"never"}: do not constrain (the default), \code{"when.fail"}:
     only compute the constrained solution if the unconstrained fit
     contains other than positive values, and \code{"always"}: return the
     constrained solution, even if the unconstrained one would have been
     valid.  See \sQuote{Details}. }
   
-  \item{verbose}{ a \code{logical} flag.  Write out details? }
+  \item{verbose}{ a \code{logical} flag.  Write out details to the screen? }
 
   \item{return.info}{ a \code{logical} flag.  If \code{TRUE}, details
     about models and data will be added to the return value.  See
@@ -67,37 +70,41 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 
   \item{bass}{ a \code{numeric} value controlling the smoothness of the
     fitted curve in method \code{"Friedman"}. See \code{\link{supsmu}}. }
+
+  \item{difference}{ a \code{logical} flag.  Compute residuals by substraction if TRUE, otherwise use division. }
+
 }
 \details{
   This detrends and standardizes a tree-ring series.  The detrending is
   the estimation and removal of the tree\enc{’}{'}s natural biological growth
   trend.  The standardization is done by dividing each series by the
   growth trend to produce units in the dimensionless ring-width index
-  (\acronym{RWI}).  There are currently three methods available for
+  (\acronym{RWI}).  There are currently six methods available for
   detrending although more are certainly possible.  The methods
   implemented are a smoothing spline via \code{\link{ffcsaps}}
   (\code{\var{method} = "Spline"}), a modified negative exponential
-  curve (\code{\var{method} = "ModNegExp"}), or a simple horizontal line
-  (\code{\var{method} = "Mean"}).
+  curve (\code{\var{method} = "ModNegExp"}), a simple horizontal line
+  (\code{\var{method} = "Mean"}), the residuals of an AR model
+  (\code{\var{method} = "Ar"}), Friedman's Super Smoother 
+  (\code{\var{method} = "Friedman"}), or a modified Hugershoff
+  curve (\code{\var{method} = "ModHugershoff"}).
 
   The \code{"Spline"} approach uses an spline where the frequency
   response is 0.50 at a wavelength of 0.67 * \dQuote{series length in
   years}, unless specified differently using \code{\var{nyrs}} and
-  \code{\var{f}} in the function \code{\link{ffcsaps}}.  This attempts
-  to remove the low frequency variability that is due to biological or
-  stand effects.
+  \code{\var{f}} in the function \code{\link{ffcsaps}}.
 
   The \code{"ModNegExp"} approach attempts to fit a classic nonlinear
   model of biological growth of the form \eqn{f(t) = a e^{b t} + k}{f(t)
   = a exp(b t) + k}, where the argument of the function is time, using
   \code{\link{nls}}.  See Fritts (2001) for details about the
-  parameters.  Option \code{\var{constrain.modnegexp}} gives a
+  parameters.  Option \code{\var{constrain.nls}} gives a
   possibility to constrain the parameters of the modified negative
   exponential function.  If the constraints are enabled, the nonlinear
   optimization algorithm is instructed to keep the parameters in the
   following ranges: \eqn{a \ge 0}{a >= 0}, \eqn{b \le 0}{b <= 0} and
   \eqn{k \ge 0}{k >= 0}.  The default is to not constrain the parameters
-  (\code{\var{constrain.modnegexp} = "never"}) for  \code{\link{nls}} but
+  (\code{\var{constrain.nls} = "never"}) for  \code{\link{nls}} but
   warn the user when the parameters go out of range.
   
   If a suitable nonlinear model cannot be fit
@@ -118,6 +125,25 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   This method removes all but the high frequency variation in the series
   and should only be used as such.
   
+  The \code{"ModHugershoff"} approach attempts to fit a Hugershoff
+  model of biological growth of the form \eqn{f(t) = a t^b e^{-g t} + d}{f(t)
+  = a t^b exp(-g t) + d}, where the argument of the function is time, using
+  \code{\link{nls}}.  See Fritts (2001) for details about the
+  parameters.  Option \code{\var{constrain.nls}} gives a
+  possibility to constrain the parameters of the modified negative
+  exponential function.  If the constraints are enabled, the nonlinear
+  optimization algorithm is instructed to keep the parameters in the
+  following ranges: \eqn{a \ge 0}{a >= 0}, \eqn{b \ge 0}{b >= 0} and
+  \eqn{d \ge 0}{d >= 0}.  The default is to not constrain the parameters
+  (\code{\var{constrain.nls} = "never"}) for  \code{\link{nls}} but
+  warn the user when the parameters go out of range.
+  
+  If a suitable nonlinear model cannot be fit
+  (function is non-decreasing or some values are not positive) then a
+  linear model is fit.  That linear model can have a positive slope
+  unless \code{\var{pos.slope}} is \code{FALSE} in which case method
+  \code{"Mean"} is used.
+
   These methods are chosen because they are commonly used in
   dendrochronology.  There is a rich literature on detrending
   and many researchers are particularly skeptical of the use of the 
@@ -141,10 +167,12 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   only one method is selected, returns a vector.
 
   If \code{\var{return.info}} is \code{TRUE}, the return value is a
-  \code{list} with three parts:
+  \code{list} with four parts:
 
   \item{series}{ the main result described above (\code{data.frame} or
     vector) }
+
+  \item{curves}{ the curve or line used to detrend \code{series}. Either a \code{data.frame} or vector. }
 
   \item{model.info}{ Information about the models corresponding to each
     output series.  Whereas \code{\var{series}} may return a vector,
@@ -175,7 +203,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
       \item{is.constrained}{ A \code{logical} flag indicating whether
         the parameters of the \code{"ModNegExp"} model were
         constrained.  Only interesting when argument
-        \code{\var{constrain.modnegexp}} is set to \code{"when.fail"}. }
+        \code{\var{constrain.nls}} is set to \code{"when.fail"}. }
 
       \item{nyrs}{ The value of \code{\var{nyrs}} used for
         \code{\link{ffcsaps}}.  Only for method \code{"Spline"}. }
@@ -211,20 +239,16 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 \seealso{ \code{\link{detrend}} }
 \examples{library(stats)
 library(utils)
-## Using a plausible representation of a tree-ring series
-gt <- 0.5 * exp (-0.05 * 1:200) + 0.2
-noise <- c(arima.sim(model = list(ar = 0.7), n = 200, sd = 0.5))+2
-series <- gt * noise
-series.rwi <- detrend.series(y = series, y.name = "Foo", verbose=TRUE)
 ## Use series CAM011 from the Campito data set
 data(ca533)
 series <- ca533[, "CAM011"]
 names(series) <- rownames(ca533)
-# defaults to all five methods
+# defaults to all six methods
 series.rwi <- detrend.series(y = series, y.name = "CAM011", verbose=TRUE)
 # see plot with three methods
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
-                             method=c("Spline", "ModNegExp","Friedman"))
+                             method=c("Spline", "ModNegExp","Friedman"),
+                             difference=TRUE)
 # see plot with two methods
 # interesting to note difference from ~200 to 250 years 
 # in terms of what happens to low frequency growth
@@ -234,9 +258,22 @@ series.rwi <- detrend.series(y = series, y.name = "CAM011",
 # stiffness to 50 years (which is not neccesarily a good choice!)
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
                              method="Spline",nyrs=50)
+                             
 # note that method "Ar" doesn't get plotted in first panel
 # since this approach doesn't approximate a growth curve.
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
                              method="Ar")
+                             
+# note the difference between ModNegExp and ModHugershoff at the 
+# start of the series. Also notice how curves, etc. are returned
+# via return.info
+data(co021)
+series <- co021[, 4]
+names(series) <- rownames(co021)
+series.rwi <- detrend.series(y = series, y.name = names(co021)[4],
+                             method=c("ModNegExp", "ModHugershoff"),
+                             verbose = TRUE, return.info = TRUE, 
+                             make.plot = TRUE)
+
 }
 \keyword{ manip }
