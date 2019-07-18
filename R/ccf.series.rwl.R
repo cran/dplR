@@ -3,8 +3,12 @@ ccf.series.rwl <- function(rwl, series,
                            seg.length = 50, bin.floor = 100, n = NULL,
                            prewhiten = TRUE, biweight = TRUE,
                            pcrit = 0.05, lag.max = 5, make.plot = TRUE,
-                           floor.plus1 = FALSE, ...) {
+                           floor.plus1 = FALSE, series.x = FALSE, ...) {
 
+    series.x.txt <- ifelse(series.x,
+                           "NB: With series.x = TRUE, postive lags indicate missing rings in series",
+                           "NB: With series.x = FALSE (default), negative lags indicate missing rings in series")
+    cat(series.x.txt)
     ## Handle different types of 'series'
     tmp <- pick.rwl.series(rwl, series, series.yrs)
     rwl2 <- tmp[[1]]
@@ -79,8 +83,15 @@ ccf.series.rwl <- function(rwl, series,
             bin.ccf <- NA
         }
         else {
-            tmp <- ccf(series2[mask], master[mask], lag.max=lag.max,
+            if(series.x){
+              tmp <- ccf(x = series2[mask], y = master[mask], lag.max=lag.max,
+                         plot=FALSE)  
+            }
+          else {
+            tmp <- ccf(x = master[mask], y = series2[mask], lag.max=lag.max,
                        plot=FALSE)
+          }
+            
             bin.ccf <- as.vector(tmp$acf)
         }
         res.cor[, j] <- bin.ccf
@@ -128,8 +139,13 @@ ccf.series.rwl <- function(rwl, series,
                        panel.dotplot(x, y, col = col, fill=bg,
                                      pch=21,...)
                    }, ...)
+        if(series.x) { ccf.plot <- update(ccf.plot, sub=series.x.txt) }
+        else { ccf.plot <- update(ccf.plot, sub=series.x.txt) }
         trellis.par.set(strip.background = list(col = "transparent"),
-                        warn = FALSE)
+                        warn = FALSE,
+                        par.sub.text = list(font = 1, cex=0.75,
+                                            just = "left", 
+                                            x = grid::unit(5, "mm")))
         print(ccf.plot)
     }
     res <- list(res.cor,bins)

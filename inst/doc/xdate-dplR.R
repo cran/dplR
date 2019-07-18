@@ -92,7 +92,7 @@ xskel.ccf.plot(rwl=dat, series="643114",
 
 
 ###################################################
-### code chunk number 11: xdate-dplR.Rnw:282-286
+### code chunk number 11: xdate-dplR.Rnw:284-288
 ###################################################
 j
 colnames(co021)[j]

@@ -1,3 +1,64 @@
+* CHANGES IN dplR VERSION 1.7.0
+
+File: insert.ring.R and delete.ring.R
+----------------
+
+- Adding an argument fix.length to maintain the length of the input and output. This makes it much easier to edit series and insert them back into a rwl object as needed.
+
+File: plot.crs.R
+----------------
+
+- This is a new S3 method for plotting the ouptut from corr.rwl.seg. The rationale for this is to reduce computational overhard in the shiny app I'm developing for xdating.
+
+File: corr.rwl.seg.R
+----------------
+
+- Added class crs to the output object as well as added some new items to the list that are returned (e.g., the rwi, seg legnths and so on). This is done so that I could make a new S3 method for plotting objects `plot.crs()`. New output ites are explained in man file. The plotting code if make.plot=TRUE is gone and replaced with a call to plot.crs.
+
+File: redfit.R
+----------------
+
+- Fixed bug where the handling of series with duplicate times (ages)
+  would produce an error. Thanks to Mark Hall for reporting.
+
+File: plotRings.R and .Rd
+----------------
+
+- Making plotRings defunct as there were too maby issues with the animation library and especially ImageMagick integrating smoothly for some users. Suggested to Darwin that he make plotRings a stand alone library.
+
+
+File: xdate-dplR.Rnw
+----------------
+
+- Rewritten to explain new args in ccf.
+
+File: xskel.ccf.plot.R and .Rd
+----------------
+
+- Added new argument to allow user to specify whether a series or master gets 
+  passed to ccf as x. The convention was screwy.
+  
+File: ccf.series.rwl.R and .Rd
+----------------
+
+- Added new argument to allow user to specify whether a series or master gets 
+  passed to ccf as x. The convention was screwy.
+
+File: xdate.floater.R and .Rd
+----------------
+
+- New function to cross date a floating series (i.e., one with no dates).
+
+File: series.rwl.plot
+----------------
+
+- Cosmetic changes to plot
+
+File: intro-dplR
+----------------
+
+- typos
+
 * CHANGES IN dplR VERSION 1.6.9
 
 File: sss.R and .Rd
