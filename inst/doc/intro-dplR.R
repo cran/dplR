@@ -1,5 +1,4 @@
 ### R code from vignette source 'intro-dplR.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: intro-dplR.Rnw:9-10

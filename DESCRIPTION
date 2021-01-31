@@ -2,10 +2,10 @@ Encoding: UTF-8
 Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
-Version: 1.7.1
-Date: 2020-02-28
+Version: 1.7.2
+Date: 2021-01-27
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
-        "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
+        "cre", "trl"), email = "bunna@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "cph", "trl")), person("Franco", "Biondi",
         role = c("aut", "cph")), person("Filipe", "Campelo", role =
         c("aut", "cph")), person("Pierre", "Mérian", role = c("aut",
@@ -13,20 +13,11 @@ Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         person("Christian", "Zang", role = c("aut", "cph")),
         person("Allan", "Buras", role = "ctb"), person("Jacob",
         "Cecile", role = "ctb"), person("Manfred", "Mudelsee", role =
-        "ctb"), person("Michael", "Schulz", role = "ctb"))
-Author: Andy Bunn [aut, cph, cre, trl],
-  Mikko Korpela [aut, cph, trl],
-  Franco Biondi [aut, cph],
-  Filipe Campelo [aut, cph],
-  Pierre Mérian [aut, cph],
-  Fares Qeadan [aut, cph],
-  Christian Zang [aut, cph],
-  Allan Buras [ctb],
-  Jacob Cecile [ctb],
-  Manfred Mudelsee [ctb],
-  Michael Schulz [ctb]
+        "ctb"), person("Michael", "Schulz", role = "ctb"),
+        person("Klesse","Stefan", role = "ctb"), 
+        person("Frank","David", role = "ctb"), 
+        person("Visser","Ronald", role = "ctb"))
 Copyright: Authors and file inst/COPYRIGHTS
-Maintainer: Andy Bunn <andy.bunn@wwu.edu>
 Depends: R (>= 2.15.2)
 Imports: graphics, grDevices, grid, stats, utils, lattice (>= 0.13-6),
         Matrix (>= 1.0-3), digest (>= 0.2.3), matrixStats (>= 0.50.2),
@@ -42,6 +33,21 @@ LazyData: no
 License: GPL (>= 2)
 URL: https://github.com/AndyBunn/dplR
 NeedsCompilation: yes
-Packaged: 2020-03-18 23:55:49 UTC; bunna
+Packaged: 2021-01-29 20:07:54 UTC; bunna
+Author: Andy Bunn [aut, cph, cre, trl],
+  Mikko Korpela [aut, cph, trl],
+  Franco Biondi [aut, cph],
+  Filipe Campelo [aut, cph],
+  Pierre Mérian [aut, cph],
+  Fares Qeadan [aut, cph],
+  Christian Zang [aut, cph],
+  Allan Buras [ctb],
+  Jacob Cecile [ctb],
+  Manfred Mudelsee [ctb],
+  Michael Schulz [ctb],
+  Klesse Stefan [ctb],
+  Frank David [ctb],
+  Visser Ronald [ctb]
+Maintainer: Andy Bunn <bunna@wwu.edu>
 Repository: CRAN
-Date/Publication: 2020-03-19 13:20:02 UTC
+Date/Publication: 2021-01-31 17:20:02 UTC

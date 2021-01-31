@@ -1,5 +1,4 @@
 ### R code from vignette source 'timeseries-dplR.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: timeseries-dplR.Rnw:9-10

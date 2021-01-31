@@ -1,5 +1,4 @@
 ### R code from vignette source 'chron-dplR.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: chron-dplR.Rnw:9-10
