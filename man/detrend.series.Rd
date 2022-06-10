@@ -8,8 +8,8 @@
 }
 \usage{
 detrend.series(y, y.name = "", make.plot = TRUE,
-               method = c("Spline", "ModNegExp", 
-               "Mean", "Ar", "Friedman", "ModHugershoff"),
+               method = c("Spline", "ModNegExp", "Mean", 
+               "Ar", "Friedman", "ModHugershoff","AgeDepSpline"),
                nyrs = NULL, f = 0.5, pos.slope = FALSE,
                constrain.nls = c("never", "when.fail", "always"),
                verbose = FALSE, return.info = FALSE,
@@ -27,20 +27,20 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 
   \item{method}{ a \code{character} vector to determine the detrending
     methods.  See details below.  Possible values are all subsets of\cr
-    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff")}.
+    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff",
+    "AgeDepSpline")}.
     Defaults to using all the available methods.}
 
   \item{nyrs}{ a number controlling the smoothness of the
-    fitted curve in method \code{"Spline"},
-    defaults to 0.67 of series length if \code{\var{nyrs}} is
-    \code{NULL}. See \code{\link{ffcsaps}}.}
+    fitted curve in methods. See Details.}
   
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff in method \code{"Spline"}.  Defaults to 0.5. 
-    See \code{\link{ffcsaps}}.}
+    See \code{\link{caps}}.}
   
   \item{pos.slope}{ a \code{logical} flag.  Will allow for a positive
-    slope to be used in method \code{"ModNegExp"}.  If \code{FALSE} the
+    slope to be used in method \code{"ModNegExp"} or \code{"AgeDepSpline"}.  
+    If \code{FALSE} the
     line will be horizontal. }
 
   \item{constrain.nls}{ a \code{character} string which controls
@@ -75,13 +75,11 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 
 }
 \details{
-  This detrends and standardizes a tree-ring series.  The detrending is
-  the estimation and removal of the tree\enc{’}{'}s natural biological growth
-  trend.  The standardization is done by dividing each series by the
-  growth trend to produce units in the dimensionless ring-width index
-  (\acronym{RWI}).  There are currently six methods available for
+  This detrends and standardizes a tree-ring series.  The detrending is the estimation and removal of the tree\enc{’}{'}s natural biological growth trend.  The default standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring-width index (\acronym{RWI}).  If \code{difference} is TRUE, the index is calculated by subtraction. Values of zero (typically missing rings) in \code{y} are set to 0.001. 
+  
+  There are currently six methods available for
   detrending although more are certainly possible.  The methods
-  implemented are a smoothing spline via \code{\link{ffcsaps}}
+  implemented are a smoothing spline via \code{\link{caps}}
   (\code{\var{method} = "Spline"}), a modified negative exponential
   curve (\code{\var{method} = "ModNegExp"}), a simple horizontal line
   (\code{\var{method} = "Mean"}), the residuals of an AR model
@@ -89,10 +87,11 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   (\code{\var{method} = "Friedman"}), or a modified Hugershoff
   curve (\code{\var{method} = "ModHugershoff"}).
 
-  The \code{"Spline"} approach uses an spline where the frequency
+  The \code{"Spline"} approach uses a spline where the frequency
   response is 0.50 at a wavelength of 0.67 * \dQuote{series length in
   years}, unless specified differently using \code{\var{nyrs}} and
-  \code{\var{f}} in the function \code{\link{ffcsaps}}.
+  \code{\var{f}} in the function \code{\link{caps}}. If some of the fitted 
+  values are not positive then method \code{"Mean"} is used.
 
   The \code{"ModNegExp"} approach attempts to fit a classic nonlinear
   model of biological growth of the form \eqn{f(t) = a e^{b t} + k}{f(t)
@@ -144,20 +143,34 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   unless \code{\var{pos.slope}} is \code{FALSE} in which case method
   \code{"Mean"} is used.
 
+  The \code{"Friedman"} approach uses Friedman\enc{’}{'}s \sQuote{super
+  smoother} as implemented in \code{\link{supsmu}}.  The parameters
+  \code{\var{wt}}, \code{\var{span}} and \code{\var{bass}} can be
+  adjusted, but \code{\var{periodic}} is always set to \code{FALSE}. If some of 
+  the fitted values are not positive then method \code{"Mean"} is used.
+
+  The \code{"AgeDepSpline"} approach uses an age-dependent spline with an initial
+  stiffness of 50 (code{\var{nyrs}=50}). See \code{\link{ads}}. If some of the fitted 
+  values are not positive then method \code{"Mean"} is used. However, this is
+  extremely unlikely.
+
   These methods are chosen because they are commonly used in
   dendrochronology.  There is a rich literature on detrending
   and many researchers are particularly skeptical of the use of the 
   classic nonlinear model of biological growth (\eqn{f(t) = a e^{b t} + k}{f(t)
   = a exp(b t) + k}) for detrending.  It is, of course, up to the 
   user to determine the best detrending method for their data.
-  
-  See the references below for further details on detrending.
 
-  The \code{"Friedman"} approach uses Friedman\enc{’}{'}s \sQuote{super
-  smoother} as implemented in \code{\link{supsmu}}.  The parameters
-  \code{\var{wt}}, \code{\var{span}} and \code{\var{bass}} can be
-  adjusted, but \code{\var{periodic}} is always set to \code{FALSE}.
+  Note that the user receives a warning if a series has negative values in the  
+  fitted curve. This happens fairly commonly with with the \sQuote{Ar} method 
+  on high-order data. It happens less often with method \sQuote{Spline} but
+  isn't unheard of (see \sQuote{Examples}). If this happens, users should look
+  carefully at their data before continuing. Automating detrending and not 
+  evaluating each series individually is folly. Remember, frustration over 
+  detrending is the number one cause of dendros going to live as hermits in 
+  the tallgrass prairie, where there are no trees to worry about.  
 
+  See the references below for further details on detrending. It's a dark art.
 }
 \value{
 
@@ -206,7 +219,8 @@ detrend.series(y, y.name = "", make.plot = TRUE,
         \code{\var{constrain.nls}} is set to \code{"when.fail"}. }
 
       \item{nyrs}{ The value of \code{\var{nyrs}} used for
-        \code{\link{ffcsaps}}.  Only for method \code{"Spline"}. }
+        \code{\link{caps}}. For methods \code{"Spline"} and
+         \code{"AgeDepSpline"}. }
 
       \item{order}{ The order of the autoregressive model, selected by
         AIC (Akaike information criterion).  Only for method
@@ -274,6 +288,18 @@ series.rwi <- detrend.series(y = series, y.name = names(co021)[4],
                              method=c("ModNegExp", "ModHugershoff"),
                              verbose = TRUE, return.info = TRUE, 
                              make.plot = TRUE)
+                             
+# A dirty dog.
+# In the case of method=="Spline" the function carries-on
+# and applies method=="Mean" as an alternative. 
+data(nm046)
+series <- nm046[,8]
+names(series) <- rownames(nm046)
+series.rwi <- detrend.series(y = series, y.name = names(nm046)[8],
+                             method="Spline",
+                             make.plot = FALSE)
+
+
 
 }
 \keyword{ manip }

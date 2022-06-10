@@ -1,6 +1,7 @@
 `detrend` <-
     function(rwl, y.name = names(rwl), make.plot = FALSE,
-             method=c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff"),
+             method=c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", 
+                      "ModHugershoff", "AgeDepSpline"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
              constrain.nls = c("never", "when.fail", "always"),
              verbose = FALSE, return.info = FALSE,
@@ -10,7 +11,8 @@
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE),
               identical(verbose, TRUE) || identical(verbose, FALSE),
               identical(return.info, TRUE) || identical(return.info, FALSE))
-    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff")
+    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", 
+                       "ModHugershoff", "AgeDepSpline")
     constrain2 <- match.arg(constrain.nls)
     method2 <- match.arg(arg = method,
                          choices = known.methods,
@@ -41,8 +43,10 @@
                      silent = TRUE),
                  "try-error") && req.fe){
         it.rwl <- iterators::iter(rwl, by = "col")
+        # get series name for each iteration in dopar as well
+        it.names <- iterators::iter(names(rwl), by = "col")
         ## a way to get rid of "no visible binding" NOTE in R CMD check
-        rwl.i <- NULL
+        rwl.i <- y.name.i <- NULL
 
         exportFun <- c("names<-", "detrend.series")
         ## Use a dummy loop to suppress possible (non-)warning from
@@ -50,10 +54,13 @@
         foo <- suppressWarnings(foreach::"%dopar%"(foreach::foreach(i=1), {}))
         ## ... but leave actual warnings on for the real loop.
         out <- foreach::"%dopar%"(foreach::foreach(rwl.i=it.rwl,
+                                                   y.name.i=it.names,
                                                    .export=exportFun),
                               {
                                   names(rwl.i) <- rn
-                                  do.call(detrend.series, detrend.args)
+                                  # append the series name to detrend.args
+                                  do.call(detrend.series, 
+                                          c(detrend.args,list(y.name=y.name.i)))
                               })
 
         if (return.info) {
@@ -72,7 +79,11 @@
         }
         detrend.args[1] <- alist(rwl[[i]])
         detrend.args[["verbose"]] <- verbose
+        # how to append detrend.args in the dopar call so that
+        # name gets passed in? Important for detrend.series warnings
+        # about neg values.
         detrend.args <- c(detrend.args, alist(y.name = y.name[i]))
+    
         for (i in seq_len(n.series)) {
             fits <- do.call(detrend.series, detrend.args)
             if (return.info) {

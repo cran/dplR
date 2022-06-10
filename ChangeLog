@@ -1,3 +1,75 @@
+* CHANGES IN dplR VERSION 1.7.3
+
+File: Various
+----------------
+
+- Replaced ffcsaps with caps in most instances across the package.
+- Removing prefix argument from chron.
+- Removing all vingettes and pointing to Learning to Love dplR on startup
+- Typos and code cleanup in several files
+
+File: zzz
+----------------
+
+- Adding startup message when dplR is loaded
+
+
+File: crn.plot
+----------------
+
+- Added crn names to plot. helpful for ars crn and var stab crn plotting.
+
+File: ssf
+----------------
+
+- A simple signal free implementation.
+
+File: chron.ars
+----------------
+
+- The ARSTAN chronology at long last.
+
+File: detrend
+----------------
+
+- When dopar is used for the looping, the series name wasn't being passed in. So modified code to take the series name. I think I did it marginally right. But dopar, foreach, and do.call are all prety opaque to me.
+
+File: detrend.series
+----------------
+
+- Went to heroic efforts to improve the warnings that the user sees when there are negative fits from detrending. It was a huge time sink and hassle.
+
+
+File: nm046
+----------------
+
+- Added new data file, nm046 is a rwl file that has a dirty dog in it (one where spline fits are negative in detrending).
+
+File: ffcsaps
+----------------
+
+- Added `ties = "ordered"` to approx() to avoid warning thrown by regularize.values
+
+File: caps
+----------------
+
+- Added new function caps() for Cook and Peters Spline. This is a function to calculate the classic ARSTAN spline. The work is done in Fortran and involved a C wrapper for the Fortran code. As a result the new files are caps.R, caps.Rd for the main files and the help function. But there are new Fortran and C files (caps.f95, caps.c) and changes to init.c and registered.h. Oh and NAMESPACE too. Note that this function is 1000s of times faster than ffcsaps.
+
+File: ads
+----------------
+
+- Added new function ads(). This is a function to calculate age-dependent splines that came via Ed Cook. The work is done in Fortran and involved a C wrapper for the Fortran code. As a result the new files are ads.R, ads.Rd for the main files and the help function. But there are new Fortran and C files (adsf.f95, adsc.c) and changes to init.c and registered.h. Oh and NAMESPACE too.
+
+File: bai.out, bai.in
+----------------
+
+- Added check to make sure `d2pith` and `diam` are data.frames and not, say, tibbles
+
+File: ca533.Rd, cana157.Rd, co021.Rd, wa082.Rd
+----------------
+
+- Updated access dates and changed ftp to https per email from BDR on April 20 2021
+
 * CHANGES IN dplR VERSION 1.7.2
 
 
@@ -62,7 +134,7 @@ File: redfit.R
 File: plotRings.R and .Rd
 ----------------
 
-- Making plotRings defunct as there were too maby issues with the animation library and especially ImageMagick integrating smoothly for some users. Suggested to Darwin that he make plotRings a stand alone library.
+- Making plotRings defunct as there were too many issues with the animation library and especially ImageMagick integrating smoothly for some users. Suggested to Darwin that he make plotRings a stand alone library.
 
 
 File: xdate-dplR.Rnw

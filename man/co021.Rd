@@ -15,8 +15,8 @@
   years in rows.
 }
 \source{
-  International tree-ring data bank, Accessed on 12-September-2011 at
-  \url{ftp://ftp.ncdc.noaa.gov/pub/data/paleo/treering/measurements/northamerica/usa/co021.rwl}
+  International tree-ring data bank, Accessed on 20-April-2021 at
+  \url{https://www.ncei.noaa.gov/pub/data/paleo/treering/measurements/northamerica/usa/co021.rwl}
 }
 \references{
   Schulman, E. (1963) Schulman Old Tree No. 1 Data Set.  \acronym{IGBP}
