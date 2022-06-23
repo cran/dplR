@@ -71,7 +71,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   \item{bass}{ a \code{numeric} value controlling the smoothness of the
     fitted curve in method \code{"Friedman"}. See \code{\link{supsmu}}. }
 
-  \item{difference}{ a \code{logical} flag.  Compute residuals by substraction if TRUE, otherwise use division. }
+  \item{difference}{ a \code{logical} flag.  Compute residuals by subtraction if TRUE, otherwise use division. }
 
 }
 \details{
@@ -234,10 +234,14 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     
   }
 
+
   \item{data.info}{ Information about the input series: number
     (\code{"n.zeros"}) and location (\code{"zero.years"}) of zero
     values.  If the locations are in a \code{character} vector, they are
     years.  Otherwise they are indices to the input series. }
+    
+  \item{dirtDog}{ A logical flag indicating whether the requested method resulted in neagtive values for the curve fit. }
+
 
 }
 \references{

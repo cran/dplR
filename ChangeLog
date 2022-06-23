@@ -1,3 +1,16 @@
+* CHANGES IN dplR VERSION 1.7.4
+
+File: chron.ci
+----------------
+
+- New function that calculates conf intervals for a chron via boot
+
+File: detrend.series
+----------------
+
+- Fixed bug with method Ar using difference.
+- Added in a flag for dirtyDogs to return.info
+
 * CHANGES IN dplR VERSION 1.7.3
 
 File: Various

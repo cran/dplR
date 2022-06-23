@@ -2,18 +2,18 @@ Encoding: UTF-8
 Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
-Version: 1.7.3
-Date: 2022-06-10
-Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
-        "cre", "trl"), email = "bunna@wwu.edu"), person("Mikko",
-        "Korpela", role = c("aut", "cph", "trl")), person("Franco", "Biondi",
-        role = c("aut", "cph")), person("Filipe", "Campelo", role =
-        c("aut", "cph")), person("Pierre", "Mérian", role = c("aut",
-        "cph")), person("Fares", "Qeadan", role = c("aut", "cph")),
+Version: 1.7.4
+Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph","cre", "trl"), email = "bunna@wwu.edu"), 
+        person("Mikko","Korpela", role = c("aut", "cph", "trl")), 
+        person("Franco", "Biondi", role = c("aut", "cph")), 
+        person("Filipe", "Campelo", role = c("aut", "cph")), 
+        person("Pierre", "Mérian", role = c("aut","cph")), 
+        person("Fares", "Qeadan", role = c("aut", "cph")),
         person("Christian", "Zang", role = c("aut", "cph")),
-        person("Allan", "Buras", role = "ctb"), person("Alice",
-        "Cecile", role = "ctb"), person("Manfred", "Mudelsee", role =
-        "ctb"), person("Michael", "Schulz", role = "ctb"),
+        person("Allan", "Buras", role = "ctb"), 
+        person("Alice","Cecile", role = "ctb"), 
+        person("Manfred", "Mudelsee", role ="ctb"), 
+        person("Michael", "Schulz", role = "ctb"),
         person("Stefan","Klesse", role = "ctb"), 
         person("David", "Frank",role = "ctb"), 
         person("Ronald","Visser", role = "ctb"),
@@ -24,7 +24,7 @@ Depends: R (>= 3.5.0)
 Imports: graphics, grDevices, grid, stats, utils, lattice (>= 0.13-6),
         Matrix (>= 1.0-3), digest (>= 0.2.3), matrixStats (>= 0.50.2),
         png (>= 0.1-2), R.utils (>= 1.32.1), stringi (>= 0.2-3),
-        stringr (>= 0.4), XML (>= 2.1-0), plyr (>= 1.8), signal
+        stringr (>= 0.4), XML (>= 2.1-0), plyr (>= 1.8), signal, boot
 Suggests: Cairo (>= 1.5-0), dichromat (>= 1.2-3), foreach, forecast (>=
         3.6), gmp (>= 0.5-5), iterators, knitr, RColorBrewer,
         rmarkdown, testthat (>= 0.8), tikzDevice, waveslim
@@ -35,7 +35,7 @@ LazyData: no
 License: GPL (>= 2)
 URL: https://github.com/AndyBunn/dplR
 NeedsCompilation: yes
-Packaged: 2022-06-10 20:28:45 UTC; bunna
+Packaged: 2022-06-23 22:00:57 UTC; bunna
 Author: Andy Bunn [aut, cph, cre, trl],
   Mikko Korpela [aut, cph, trl],
   Franco Biondi [aut, cph],
@@ -54,4 +54,4 @@ Author: Andy Bunn [aut, cph, cre, trl],
   Kevin Anchukaitis [ctb]
 Maintainer: Andy Bunn <bunna@wwu.edu>
 Repository: CRAN
-Date/Publication: 2022-06-10 21:00:02 UTC
+Date/Publication: 2022-06-23 23:00:06 UTC
