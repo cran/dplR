@@ -1,3 +1,61 @@
+* CHANGES IN dplR VERSION 1.7.5
+
+File: adsf.f95 and capsf.f95
+----------------
+
+- Replaced DFLOAT with DBLE as per BDR's reasonable demand.
+
+File: ssf
+----------------
+
+- Changed output to be class(crn) for list with long output
+
+File: chron.ci
+----------------
+
+- Changed output to be class(crn)
+
+File: crn.plot and plot.crn
+----------------
+
+- Finally reconciled the misnaming of crn.plot vs plot.crn etc. The new default plot method is simpler and cleaner. Help pages updated and a warning crn.plot is called directly.
+
+File: chron.stabilized
+----------------
+
+- Added class crn to returned value as per github issue #18
+
+File: read.fh
+----------------
+
+- Ron Visser added a BC correction to the function.
+
+File: read.rwl
+----------------
+
+- Edited function to look for commas (",") in lower blocks of data as opposed to the header
+
+File: csv2rwl
+----------------
+
+- Added a stop error and message when there are duplicate series IDs
+
+File: read.tucson
+----------------
+
+- Changed error message when there are duplicate series IDs to be more informative
+
+File: normalize1
+----------------
+
+- Found a bug so that when hanning was used (in say corr.rel.seg) a div0 error could occur resulting in a Nan that got propogated forward. Dealt with in the same way as detrend.series by setting 0 to 0.001.
+
+
+File: powt.series
+----------------
+
+- Adding function so that a power transform can be done on a single series alone
+
 * CHANGES IN dplR VERSION 1.7.4
 
 File: chron.ci

@@ -2,7 +2,7 @@ Encoding: UTF-8
 Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
-Version: 1.7.4
+Version: 1.7.5
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph","cre", "trl"), email = "bunna@wwu.edu"), 
         person("Mikko","Korpela", role = c("aut", "cph", "trl")), 
         person("Franco", "Biondi", role = c("aut", "cph")), 
@@ -35,7 +35,7 @@ LazyData: no
 License: GPL (>= 2)
 URL: https://github.com/AndyBunn/dplR
 NeedsCompilation: yes
-Packaged: 2022-06-23 22:00:57 UTC; bunna
+Packaged: 2023-08-30 01:11:15 UTC; bunna
 Author: Andy Bunn [aut, cph, cre, trl],
   Mikko Korpela [aut, cph, trl],
   Franco Biondi [aut, cph],
@@ -54,4 +54,4 @@ Author: Andy Bunn [aut, cph, cre, trl],
   Kevin Anchukaitis [ctb]
 Maintainer: Andy Bunn <bunna@wwu.edu>
 Repository: CRAN
-Date/Publication: 2022-06-23 23:00:06 UTC
+Date/Publication: 2023-08-30 04:30:02 UTC
