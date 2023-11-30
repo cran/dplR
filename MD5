@@ -1,5 +1,5 @@
-ebb96200ed8a871a82e0d2989a09ad47 *ChangeLog
-0270a905d8fcb4fe24b6679d4e815aaf *DESCRIPTION
+723fc4b6485d2b765d80b9397fc2d199 *ChangeLog
+0c7360e1a1f6aa87fe2420160bd8c2c7 *DESCRIPTION
 d3f5c23b2f6274a9f0010d81d284520b *NAMESPACE
 cb9b1e523874a10d189430b37a67e92a *R/ads.R
 8f32644a772a0a92f854713ef12e452b *R/as.rwl.R
@@ -122,7 +122,7 @@ e29c1dfb642dccb01d362f0b039bcd7d *man/common.interval.Rd
 0ce9f281e81e5156d78624c0e80e1901 *man/corr.series.seg.Rd
 c7521c27ff75203a783e2b26d1342196 *man/csv2rwl.Rd
 ce77e914481e7b616777088aaa1d1f4f *man/detrend.Rd
-0bb35d6d31d5e0e2cdcfb19bd422540e *man/detrend.series.Rd
+abc629319b3d216db56f2747c000ba89 *man/detrend.series.Rd
 eaf35db8f93d451e26f0deedb5dfc2f0 *man/dplR-defunct.Rd
 e39ebae67ef03c61dd334b8a3bacb9ba *man/dplR-package.Rd
 5427e5a875d96b6db753e667d42f2ab4 *man/ffcsaps.Rd
@@ -154,7 +154,7 @@ f3d8aa5a575ceafc54436f22a9c4cf3e *man/print.redfit.Rd
 1a9f7ba75522e623d154be84e00586a1 *man/print.rwl.report.Rd
 8e92db17909cd940e24edbc603e44987 *man/rasterPlot.Rd
 5c83ed8de4ebebba8b70c7504bca39c7 *man/rcs.Rd
-280150eb2f7312163b79604219863f91 *man/read.compact.Rd
+2458a8c909f44defef80c8148ccf30d6 *man/read.compact.Rd
 cfdb9096a0f7f73fe4e92bc2faeef3ae *man/read.crn.Rd
 9022a151b496e6618f2e5160ba37e4a2 *man/read.fh.Rd
 08b7f8f81310f093835e4286ee91bf11 *man/read.ids.Rd
@@ -209,7 +209,7 @@ c1ad3f45819339867cececdff8a51dbd *src/exactmean.c
 d7c3976d0993a8aac7aa3cb44c1ed566 *src/exactsum.h
 b176f323f4ffba9760a374482a6b099f *src/gini.c
 839848c26e8d06d6ffd14e1f9c758559 *src/init.c
-a77dd8daeefdf167ce65e2dee65ce982 *src/rcompact.c
+8890c219a03ddb5bedb9c1a05484b2ef *src/rcompact.c
 f5fd428ca8aac0977ea772115ae2452a *src/readloop.c
 67e1bf290afb5cbfd38c1a0db585da09 *src/redfit.c
 c9b3b7689996f33fca546188299cc153 *src/registered.h
