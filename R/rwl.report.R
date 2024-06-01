@@ -2,59 +2,121 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   oldw <- getOption("warn")
   options(warn = -1)
   
+  # make sure input is class(rwl)
+  if (!inherits(rwl, "rwl")) {
+    stop('use only with "rwl" objects')
+  }
+  
   res <- list()
   res$small.thresh <- small.thresh
   res$big.thresh <- big.thresh
-  # get a summary
+  
+  
+  # start with a summary
   tmp.sum <- summary.rwl(rwl)
-  res$nseries <- ncol(rwl)
+  res$nSeries <- ncol(rwl)
   res$n <- length(rwl[!is.na(rwl)])
-  res$segbar <- mean(tmp.sum$year)
-  res$yr0 <- min(tmp.sum$first)
-  res$yr1 <- max(tmp.sum$last)
-  res$ar1bar <- mean(tmp.sum$ar1)
-  res$ar1bar.sd <- sd(tmp.sum$ar1)
-  # interseries
-  res$interrbar <- mean(interseries.cor(rwl)[,1])
-  res$interrbar.sd <- sd(interseries.cor(rwl)[,1])
+  res$meanSegLength <- mean(tmp.sum$year)
+  res$firstYear <- min(tmp.sum$first)
+  res$lastYear <- max(tmp.sum$last)
+  res$meanAR1 <- mean(tmp.sum$ar1)
+  res$sdAR1 <- sd(tmp.sum$ar1)
+  
+  # unconnected spans
+  naRowSum <- apply(rwl,1,function(x) { sum(is.na(x))})
+  unconnectedFlag <- naRowSum == res$nSeries
+  res$unconnected <- any(unconnectedFlag)
+  res$unconnectedYrs <- time(rwl)[which(unconnectedFlag)]
   
   # missing rings
-  zeds <- rwl == 0
-  res$nzeros <- table(zeds)["TRUE"] 
-  zeds <- apply(zeds,2,which)
+  zedsLogical <- rwl == 0
+  res$nZeros <- table(zedsLogical)["TRUE"] 
+  zeds <- apply(zedsLogical,2,which)
   zeds <- sapply(zeds, function(x) {as.numeric(names(x))} )
   zeds <- zeds[lapply(zeds,length)>0]
   if(length(zeds)<1) res$zeros <- numeric(0)
   else res$zeros <- zeds
   
+  # any years with all zeros?
+  samps <- rowSums(!is.na(rwl))
+  pctSeriesZero <- rowSums(zedsLogical,na.rm = TRUE)/samps
+  res$allZeroYears <- which(pctSeriesZero==1)
+  
+  # Any places with >1 consecutive zeros?
+  # Find runs of consecutive zeros
+  consecutiveZerosVec <- function(x){
+    # Extract lengths of runs and values using the ever confusing rle()
+    runs <- rle(x == 0)
+    run_lengths <- runs$lengths
+    run_values <- runs$values
+    
+    # Identify positions where there are >1 consecutive zeros
+    consecutive_zeros_indices <- which(run_values & run_lengths > 1)
+    
+    # Create a logical vector of length x indicating where there are >1 consecutive zeros
+    consecutive_zeros_logical <- logical(length(x))
+    for (i in consecutive_zeros_indices) {
+      consecutive_zeros_logical[(sum(run_lengths[1:(i-1)]) + 1):(sum(run_lengths[1:i]))] <- TRUE
+    }
+    consecutive_zeros_logical
+  }
+  
+  consecutiveZerosLogical <- apply(rwl,2,consecutiveZerosVec)
+  rownames(consecutiveZerosLogical) <- time(rwl)
+  # make a list where every series is an element
+  consecutiveZerosLogicalList <- apply(consecutiveZerosLogical,2,which)
+  # get years from names instead of indices
+  consecutiveZerosLogicalList <- sapply(consecutiveZerosLogicalList, 
+                                       function(x) {as.numeric(names(x))})
+  # drop series without consec zeroes 
+  mask <- lapply(consecutiveZerosLogicalList,length)>0
+  consecutiveZerosLogicalList <- consecutiveZerosLogicalList[mask]
+  # clean up for output
+  if(length(consecutiveZerosLogicalList)<1) res$consecutiveZeros <- numeric(0)
+  else res$consecutiveZeros <- consecutiveZerosLogicalList
+  
+  
+  # check overlap of all series
+  
+  # interseries correlation
+  res$meanInterSeriesCor <- mean(interseries.cor(rwl)[,1])
+  res$sdInterSeriesCor <- sd(interseries.cor(rwl)[,1])
+  
+  
   # internal NA
-  internalNAs <- alply(rwl, 2, find.internal.na) # like apply but forces a list
+  # this used alply from plyr. cutting it out. feb 2024
+  # internalNAs <- alply(rwl, 2, find.internal.na) # like apply but forces a list
+  # names(internalNAs) <- names(rwl)
+  # internalNAs <- sapply(internalNAs, function(x) {as.numeric(rownames(rwl)[x])} )
+  # internalNAs <- internalNAs[lapply(internalNAs,length)>0]
+  internalNAs <- as.list(apply(rwl, 2, find.internal.na))
   names(internalNAs) <- names(rwl)
-  internalNAs <- sapply(internalNAs, function(x) {as.numeric(rownames(rwl)[x])} )
+  internalNAs <- sapply(internalNAs, function(x) {as.numeric(names(x))} )
   internalNAs <- internalNAs[lapply(internalNAs,length)>0]
+  
   if(length(internalNAs)<1) res$internalNAs <- numeric(0)
   else res$internalNAs <- internalNAs
 
   # small rings
-  if(is.na(small.thresh)) res$small <- numeric(0)
+  if(is.na(small.thresh)) res$smallRings <- numeric(0)
   else {
-    small <- rwl > 0 & rwl < small.thresh
-    small <- apply(small,2,which)
-    small <- sapply(small, function(x) {as.numeric(names(x))} )
-    small <- small[lapply(small,length)>0]
-    if(length(small)<1) res$small <- numeric(0)
-    else res$small <- small
+    smallRings <- rwl > 0 & rwl < small.thresh
+    smallRings <- apply(smallRings,2,which)
+    smallRings <- sapply(smallRings, function(x) {as.numeric(names(x))} )
+    smallRings <- smallRings[lapply(smallRings,length)>0]
+    if(length(smallRings)<1) res$smallRings <- numeric(0)
+    else res$smallRings <- smallRings
   }
 
   # big rings
-  if(is.na(big.thresh)) res$big <- numeric(0)
+  if(is.na(big.thresh)) res$bigRings <- numeric(0)
   else {
-    big <- rwl > big.thresh
-    big <- apply(big,2,which)
-    big <- sapply(big, function(x) {as.numeric(names(x))} )
-    big <- big[lapply(big,length)>0]
-    if(length(big)<1) res$big <- numeric(0)
-    else res$big <- big
+    bigRings <- rwl > big.thresh
+    bigRings <- apply(bigRings,2,which)
+    bigRings <- sapply(bigRings, function(x) {as.numeric(names(x))} )
+    bigRings <- bigRings[lapply(bigRings,length)>0]
+    if(length(bigRings)<1) res$bigRings <- numeric(0)
+    else res$bigRings <- bigRings
   }
   
   options(warn = oldw)
@@ -63,17 +125,36 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
 }
 
 print.rwl.report <- function(x, ...){
-  cat("Number of dated series:",x$nseries,"\n")
+  cat("Number of dated series:",x$nSeries,"\n")
   cat("Number of measurements:",x$n,"\n")
-  cat("Avg series length:",x$segbar,"\n")
-  cat("Range: ", x$yr1 - x$yr0 + 1, "\n")
-  cat("Span: ",x$yr0, "-", x$yr1, "\n")
-  cat("Mean (Std dev) series intercorrelation: ",x$interrbar, " (", 
-      x$interrbar.sd,")\n",sep="")
-  cat("Mean (Std dev) AR1: ",x$ar1bar, " (", 
-      x$ar1bar.sd,")\n",sep="")
+  cat("Number of missing (0) rings: ", x$nZeros, 
+      " (", round(x$nZeros/x$n * 100, 3),"%)\n",sep="")    
+  cat("Avg series length:",x$meanSegLength,"\n")
+  cat("Range: ", x$lastYear - x$firstYear + 1, "\n")
+  cat("Span: ",x$firstYear, "-", x$lastYear, "\n")
+  cat("Mean (Std dev) series intercorrelation: ",x$meanInterSeriesCor, " (", 
+      x$sdInterSeriesCor,")\n",sep="")
+  cat("Mean (Std dev) AR1: ",x$meanAR1, " (", 
+      x$sdAR1,")\n",sep="")
+  
   cat("-------------\n")
-  cat("Years with absent rings listed by series \n")
+  cat("Years where all rings are NA\n")
+  if(!x$unconnected) cat("    None \n")
+  else{
+    cat("Warning: Having years with all NA is not standard practice and can break dplR.\n")
+    cat(x$unconnectedYrs,"\n")
+  }
+  
+  cat("-------------\n")
+  cat("Years where all rings are zero\n")
+  if(length(x$allZeroYears)==0) cat("    None \n")
+  else{
+    cat("Warning: Having years with all zeros is atypical (but not unheard of).\n")
+    cat(x$allZeroYears,"\n")
+  }
+  
+  cat("-------------\n")
+  cat("Years with missing (0) rings listed by series \n")
   if(length(x$zeros)==0) cat("    None \n")
   else{
     for(i in 1:length(x$zeros)){
@@ -82,7 +163,17 @@ print.rwl.report <- function(x, ...){
       cat("    Series", names(x$zeros)[i],"--",tmp,"\n",  
           sep = " ")
     }
-    cat(x$nzeros, " absent rings (", round(x$nzeros/x$n * 100, 3),"%)\n", sep="")    
+  }
+  cat("-------------\n")
+  cat("Years with more than one consecutive missing (0) rings listed by series \n")
+  if(length(x$consecutiveZeros)==0) cat("    None \n")
+  else{
+    for(i in 1:length(x$consecutiveZeros)){
+      tmp = x$consecutiveZeros[[i]]
+      if(length(tmp)==0) next()
+      cat("    Series", names(x$consecutiveZeros)[i],"--",tmp,"\n",  
+          sep = " ")
+    }
   }
   cat("-------------\n")
   cat("Years with internal NA values listed by series \n")
@@ -99,12 +190,12 @@ print.rwl.report <- function(x, ...){
   if(!is.na(x$small.thresh)){
     cat("-------------\n")
     cat("Years with values <", x$small.thresh, "listed by series \n")
-    if(length(x$small)==0) cat("    None \n")
+    if(length(x$smallRings)==0) cat("    None \n")
     else{
-      for(i in 1:length(x$small)){
-        tmp = x$small[[i]]
+      for(i in 1:length(x$smallRings)){
+        tmp = x$smallRings[[i]]
         if(length(tmp)==0) next()
-        cat("   Series", names(x$small)[i],"--",tmp,"\n",  
+        cat("   Series", names(x$smallRings)[i],"--",tmp,"\n",  
             sep = " ")
       }
     }
@@ -112,15 +203,14 @@ print.rwl.report <- function(x, ...){
   if(!is.na(x$big.thresh)){
     cat("-------------\n")
     cat("Years with values >", x$big.thresh, " listed by series \n")
-    if(length(x$big)==0) cat("    None \n")
+    if(length(x$bigRings)==0) cat("    None \n")
     else{
-      for(i in 1:length(x$big)){
-        tmp = x$big[[i]]
+      for(i in 1:length(x$bigRings)){
+        tmp = x$bigRings[[i]]
         if(length(tmp)==0) next()
-        cat("   Series", names(x$big)[i],"--",tmp,"\n",  
+        cat("   Series", names(x$bigRings)[i],"--",tmp,"\n",  
             sep = " ")
       }
     }
   }
-  invisible(x)
 }
