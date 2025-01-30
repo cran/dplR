@@ -68,7 +68,12 @@
 \examples{library(utils)
   data(ca533)
   ca533.glklist <- glk(ca533)
-  mean(ca533.glklist$glk_mat, na.rm = TRUE)
+  ca533.glk_mat <- ca533.glklist$glk_mat
+  # calculating the mean GLK including self-similarities
+  mean(ca533.glk_mat, na.rm = TRUE) 
+  # calculating the mean GLK excluding self-similarities
+  mean(ca533.glk_mat[upper.tri(ca533.glk_mat)], na.rm = TRUE) 
+
 }
 
 \keyword{ ts }

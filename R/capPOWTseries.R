@@ -1,16 +1,15 @@
-powt.series <- function (series, rescale = FALSE)
+capPOWTseries <- function (series, rescale = FALSE, return.power=FALSE) 
 {
-
+  
   # add a check for negative nums
-  if(any(series <0,na.rm = TRUE)) {
-    stop("'series' values must be greater than zero")
+  if(any(series < 0,na.rm = TRUE)) {
+    stop("'series' values cannot be negative")
   }
-
-
-   #  check rescale
+  
+  #  check rescale
   if (!is.logical(rescale))
     stop("'rescale' must be either FALSE (the default) or TRUE")
-
+  
   # helpers
   # used to set min numb to zeros.
   getprec <- function(series) {
@@ -32,7 +31,7 @@ powt.series <- function (series, rescale = FALSE)
       10^-maxdig
     }
   }
-
+  
   # to get p
   fit.lm <- function(series) {
     n <- length(series)
@@ -46,7 +45,7 @@ powt.series <- function (series, rescale = FALSE)
     b <- mod[["coefficients"]][2]
     1 - b
   }
-
+  
   # do the trans
   transf <- function(x) {
     Xt <- x
@@ -55,19 +54,25 @@ powt.series <- function (series, rescale = FALSE)
     p <- abs(fit.lm(X))
     X2 <- X^p
     Xt[X.nna] <- X2
-    Xt
+    res <- list(Xt=Xt,p=p) 
+    return(res)
   }
-
+  
   prec <- getprec(series)
-
-  xt <- transf(series)
-
+  
+  xt <- transf(series)[['Xt']]
+  p <-  transf(series)[['p']]
   if(rescale){
     xtNames <- names(xt)
     xt <- c(scale(xt) * sd(series,na.rm = TRUE) + mean(series,na.rm = TRUE))
     names(xt) <- xtNames
   }
-  xt
+  res <- xt
+  
+  if(return.power==TRUE){ #optional output of the power coefficient, default is FALSE
+    names(p) <- NULL
+    res <- list(transformed.data=res,power=p)
+  }
+  
+  return(res)
 }
-
-
